@@ -1,0 +1,23 @@
+{
+  "name": "inzynieriaprojekt",
+  "version": "1.0.0",
+  "description": "prejekt grupowy na inzynierie oprogramowania",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/quqacz/inzynieriaProjekt.git"
+  },
+  "author": "Adrian Kunikowski, Marcin Nowak",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/quqacz/inzynieriaProjekt/issues"
+  },
+  "homepage": "https://github.com/quqacz/inzynieriaProjekt#readme",
+  "dependencies": {
+    "ejs": "^3.1.6",
+    "express": "^4.17.1"
+  }
+}
