@@ -1,13 +1,16 @@
 const express = require('express');
 const mongoose = require('mongoose');
-
-const User = require('./models/user');
-const Group = require('./models/group');
-
 const path = require('path');
 const app = express();
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
+const User = require('./models/user');
+const Group = require('./models/group');
+
+//express setup
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+app.use(express.static(__dirname+"/public"));
 
 //połączenie do bazy danych
 mongoose.connect('mongodb://localhost:27017/inzynieria-projekt', {
@@ -22,10 +25,6 @@ db.on("error", console.error.bind(console, 'connection error:'));
 db.once("open", ()=>{
     console.log("Database connected");
 })
-
-
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
 
 // routes
 app.get('/', (req,res)=>{
