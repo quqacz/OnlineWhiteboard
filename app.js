@@ -32,7 +32,7 @@ app.get('/', (req,res)=>{
 })
 
 app.get('/login', (req, res)=>{
-    res.send("login page");
+	res.render("login");
 })
 
 app.post('/login', (req, res)=>{
@@ -40,7 +40,7 @@ app.post('/login', (req, res)=>{
 })
 
 app.get('/register', (req, res)=>{
-    res.send('register page');
+	 res.render("register");
 })
 
 app.post('/register', (req, res)=>{
@@ -52,7 +52,7 @@ app.get('/user/:id', (req, res)=>{
 })
 
 app.get('/group/:id', (req, res)=>{
-    res.send(`strona info grupy ${req.params.id}`);
+	 res.render('group')
 })
 
 app.delete('/group/:id/delete', (req, res)=>{
@@ -64,7 +64,7 @@ app.post('/group/:id/add', (req, res)=>{
 })
 
 app.get('/group/:id/board', (req, res)=>{
-    res.send(`strona grupy ${req.params.id} do rysowania`);
+	res.render('board')
 })
 
 app.listen(3000, ()=>{

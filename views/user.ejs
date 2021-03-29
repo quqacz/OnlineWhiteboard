@@ -1,13 +1,25 @@
-<!Doctype html>
-<HTML>
-    <HEAD>
-        <title>Main Page</title>
-    </HEAD>
-    <body>
-        <p>user page</p>
-        <a href="/user/<%= Math.floor(Math.random()*10)%>">przejscie do losowego usera</a></br>
-        <a href="/login"> login page</a></br>
-        <a href="/register"> register page</a></br>
-        <p><%= info %></p>
-    </body>
-</HTML>
+<%- include ('partials/header') %>
+<%- include ('partials/navbar') %>
+
+<div class="d-flex align-items-center min-vh-100 justify-content-center ">
+	<span>
+		<img src="https://cdn.business2community.com/wp-content/uploads/2015/10/42454567_m.jpg.jpg" class="img-thumbnail rounded-circle" alt="img_usr"> 
+		<span id="daneusera"> &nbsp &nbsp dane </span><br><br>
+			<div class="d-flex flex-row align-self-baseline flex-fill ">
+				<div class="border border-primary p-2 flex-fill" >Dołącz do grupy </div>
+				<div class="border border-primary p-2 flex-fill" >Dołącz</div>
+			</div> <br> Grupy do których należysz: <br>
+			<div class="align-self-baseline">
+			<img src="..." class="img-thumbnail rounded-circle" alt="img_gr">
+			<span>Nazwa grupy </span>
+			<span>Dołącz do spotkania</span>
+			</div> 
+			<br> Grupy którymi zarządzasz: <br>
+			<div class="align-self-baseline">
+			<img src="..." class="img-thumbnail rounded-circle" alt="img_gr">
+			<span>Nazwa grupy </span>
+			<span>Dołącz do spotkania</span>
+			</div>
+	</span>
+</div>
+<%- include ('partials/footer') %>
