@@ -30,9 +30,19 @@ db.once("open", ()=>{
 // socket connection
 io.on('connection', (socket) => {
     console.log("user connected");
+
     socket.on('disconnect', () => {
         console.log("disconnect");
     });
+
+    socket.on('joinBoardGroup', (roomId)=>{
+        socket.join(roomId);
+        socket.room = roomId;
+    })
+
+    socket.on('sayHello', (payload)=>{
+        socket.to(socket.room).emit('sayHello', payload);
+    })
 });
 
 
