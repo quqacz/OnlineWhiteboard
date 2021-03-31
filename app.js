@@ -26,6 +26,16 @@ db.once("open", ()=>{
     console.log("Database connected");
 })
 
+
+// socket connection
+io.on('connection', (socket) => {
+    console.log("user connected");
+    socket.on('disconnect', () => {
+        console.log("disconnect");
+    });
+});
+
+
 // routes
 app.get('/', (req,res)=>{
     res.render("mainPage");
@@ -52,7 +62,7 @@ app.get('/user/:id', (req, res)=>{
 })
 
 app.get('/group/:id', (req, res)=>{
-	 res.render('group')
+	 res.render('group', {groupId: req.params.id})
 })
 
 app.delete('/group/:id/delete', (req, res)=>{
@@ -64,9 +74,9 @@ app.post('/group/:id/add', (req, res)=>{
 })
 
 app.get('/group/:id/board', (req, res)=>{
-	res.render('board')
+	res.render('board', {groupId: req.params.id})
 })
 
-app.listen(3000, ()=>{
+http.listen(3000, ()=>{
     console.log("app runs on port 3000");
 })
