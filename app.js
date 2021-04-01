@@ -6,6 +6,8 @@ const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 const User = require('./models/user');
 const Group = require('./models/group');
+const users = require('./users');
+
 
 //express setup
 app.set('view engine', 'ejs');
@@ -72,7 +74,7 @@ app.get('/user/:id', (req, res)=>{
 })
 
 app.get('/group/:id', (req, res)=>{
-	 res.render('group', {groupId: req.params.id})
+	res.render('group', {groupId: req.params.id})
 })
 
 app.delete('/group/:id/delete', (req, res)=>{
@@ -84,7 +86,13 @@ app.post('/group/:id/add', (req, res)=>{
 })
 
 app.get('/group/:id/board', (req, res)=>{
-	res.render('board', {groupId: req.params.id})
+    let dummyUsers = [];
+    
+    for(let i = 0; i < 15; i ++){
+        dummyUsers.push(users[Math.floor(Math.random()*users.length)]);
+        // console.log(dummyUsers[dummyUsers.length])
+    }
+	res.render('board', {groupId: req.params.id, users: dummyUsers})
 })
 
 http.listen(3000, ()=>{
