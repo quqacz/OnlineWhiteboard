@@ -16,7 +16,10 @@
                 2 of 3 (wider)
             </div>
             <div class="col-4">
-                3 of 3
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <button type="button" class="btn btn-secondary active" id="uczestnicy">Uczestnicy</button>
+                    <button type="button" class="btn btn-secondary" id="chat">Czat</button>
+                </div>
             </div>
         </div>
     </div>
@@ -29,12 +32,17 @@
 
             </canvas>
         </div>
-        <div class="col-2 borderHighlight">
-            <%for(let i = 0; i < users.length; i++){%>
-                <p><%= users[i].first_name%> </p>
-                <p><%= users[i].last_name%> </p>
-                <hr>
-            <%};%>
+        <div class="col-2 borderHighlight noPaddingAndMargin">
+            <div class="container-fluid borderHighlight scrollable" id="connectedUsers">
+                <%for(let i = 0; i < users.length; i++){%>
+                    <p><%= users[i].first_name%> </p>
+                    <p><%= users[i].last_name%> </p>
+                    <hr>
+                <%};%>
+            </div>
+            <div class="container-fluid borderHighlight hideElement scrollable" id="chatBox">
+                safasgagsaga
+            </div>
         </div>
     </div>
 </div>

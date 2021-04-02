@@ -90,7 +90,6 @@ app.get('/group/:id/board', (req, res)=>{
     
     for(let i = 0; i < 15; i ++){
         dummyUsers.push(users[Math.floor(Math.random()*users.length)]);
-        // console.log(dummyUsers[dummyUsers.length])
     }
 	res.render('board', {groupId: req.params.id, users: dummyUsers})
 })

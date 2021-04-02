@@ -5,7 +5,14 @@ const gumka = document.querySelector('#gumka');
 const rysik = document.querySelector('#rysik');
 const linia = document.querySelector('#linia');
 
+const uczestnicy = document.querySelector('#uczestnicy');
+const czat = document.querySelector('#chat');
+
+const boardUsers = document.querySelector('#connectedUsers');
+const boardChat = document.querySelector('#chatBox');
+
 const toolbarControls = [gumka, rysik, linia];
+const sidePanelControls = [uczestnicy, czat];
 
 const settings = {
     tool: 'RYSIK',
@@ -17,29 +24,49 @@ const settings = {
 
 gumka.addEventListener('click', ()=>{
     settings.tool = 'GUMKA';
-    removeActiveStyle()
+    removeActiveStyle(toolbarControls)
     gumka.classList.add('active');
 })
 
 rysik.addEventListener('click', ()=>{
     settings.tool = 'RYSIK';
-    removeActiveStyle()
+    removeActiveStyle(toolbarControls)
     rysik.classList.add('active');
 })
 
 linia.addEventListener('click', ()=>{
     settings.tool = 'LINIA';
-    removeActiveStyle()
+    removeActiveStyle(toolbarControls)
     linia.classList.add('active');
+})
+
+czat.addEventListener('click', ()=>{
+    removeActiveStyle(sidePanelControls);
+    czat.classList.add('active');
+})
+
+czat.addEventListener('click', ()=>{
+    removeActiveStyle(sidePanelControls);
+    czat.classList.add('active');
+    boardUsers.classList.add('hideElement');
+    boardChat.classList.remove('hideElement');
+})
+
+uczestnicy.addEventListener('click', ()=>{
+    removeActiveStyle(sidePanelControls);
+    uczestnicy.classList.add('active');
+    boardChat.classList.add('hideElement');
+    boardUsers.classList.remove('hideElement');
 })
 
 window.addEventListener('resize', ()=>{
     resizeCanvas();
 })
 
+
 resizeCanvas();
 
-function removeActiveStyle(){
+function removeActiveStyle(toolbarControls){
     for(tool of toolbarControls)
         tool.classList.remove('active');
 }
@@ -51,4 +78,7 @@ function resizeCanvas(){
     console.log(`${parentW}: ${height}`);
     canvas.width = parentW;
     canvas.height = height;
+    boardChat.setAttribute("style",`height:${height}px`);
+    boardUsers.setAttribute("style",`height:${height}px`);
+    boardUsers.parentNode.setAttribute("style",`height:${height}px`);
 }

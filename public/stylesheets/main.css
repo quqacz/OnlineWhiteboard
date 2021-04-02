@@ -2,15 +2,28 @@
     margin: 0;
     padding: 0;
 }
-body{
+/* body{
     height: 100vh;
-}
+} */
+
 #canvas{
     background-color: red;
 }
+
 .hideElement{
     display: none;
 }
+
 .borderHighlight{
     border: 1px solid silver;
+}
+
+.noPaddingAndMargin{
+    margin: 0;
+    padding: 0;
+}
+
+.scrollable{
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
