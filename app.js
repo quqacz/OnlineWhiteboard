@@ -37,13 +37,15 @@ io.on('connection', (socket) => {
         console.log("disconnect");
     });
 
-    socket.on('joinBoardGroup', (roomId)=>{
+    socket.on('joinBoardGroup', (roomId, name, lastName)=>{
         socket.join(roomId);
         socket.room = roomId;
+        socket.name = name;
+        socket.lastName = lastName;
     })
 
-    socket.on('sayHello', (payload)=>{
-        socket.to(socket.room).emit('sayHello', payload);
+    socket.on('sendMessage', (payload)=>{
+        socket.to(socket.room).emit('sendMessage', payload, socket.name, socket.lastName);
     })
 });
 

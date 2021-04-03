@@ -27,7 +27,7 @@
 
 <div class="container-fluid">
     <div class="row">
-        <div class="col-10">
+        <div class="col-10 noPaddingRight">
             <canvas id="canvas" class="borderHighlight">
 
             </canvas>
@@ -35,13 +35,20 @@
         <div class="col-2 borderHighlight noPaddingAndMargin">
             <div class="container-fluid borderHighlight scrollable" id="connectedUsers">
                 <%for(let i = 0; i < users.length; i++){%>
+                    <img src="<%=users[i].profile_pic%>" alt="">
                     <p><%= users[i].first_name%> </p>
                     <p><%= users[i].last_name%> </p>
                     <hr>
                 <%};%>
             </div>
-            <div class="container-fluid borderHighlight hideElement scrollable" id="chatBox">
-                safasgagsaga
+            <div class="container-fluid borderHighlight hideElement noPaddingAndMargin" id="chatBox">
+                <div class="container-fluid borderHighlight noPaddingAndMargin chatBoxMessagesHeight scrollable" id="chatBoxMessages">
+                    
+                </div>
+                <div class="input-group borderHighlight noPaddingAndMargin chatBoxHeight">
+                    <span class="input-group-text" id="sendChatMessage">Wyślij</span>
+                    <textarea class="form-control" aria-label="Wyślij" id="textMessageContent"></textarea>
+                </div>
             </div>
         </div>
     </div>
@@ -51,6 +58,8 @@
 <script src="https://cdn.socket.io/3.1.3/socket.io.min.js" integrity="sha384-cPwlPLvBTa3sKAgddT6krw0cJat7egBga3DJepJyrLl4Q9/5WLra3rrnMcyTyOnh" crossorigin="anonymous"></script>
 <script> 
     const groupId = '<%-groupId%>'; 
+    const userName = '<%- users[1].first_name%>';
+    const userLastName = '<%- users[1].last_name%>';
 </script> 
 <script src="/scripts/board.js"></script>
 <script src="/scripts/boardSocket.js"></script>

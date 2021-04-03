@@ -11,6 +11,10 @@ const czat = document.querySelector('#chat');
 const boardUsers = document.querySelector('#connectedUsers');
 const boardChat = document.querySelector('#chatBox');
 
+const sendMessageButton = document.querySelector('#sendChatMessage');
+const textMessageContent = document.querySelector('#textMessageContent');
+const chatBoxMessages = document.querySelector('#chatBoxMessages');
+
 const toolbarControls = [gumka, rysik, linia];
 const sidePanelControls = [uczestnicy, czat];
 
@@ -59,6 +63,10 @@ uczestnicy.addEventListener('click', ()=>{
     boardUsers.classList.remove('hideElement');
 })
 
+sendMessageButton.addEventListener('click', ()=>{
+    sendMessage();
+});
+
 window.addEventListener('resize', ()=>{
     resizeCanvas();
 })
@@ -75,7 +83,6 @@ function resizeCanvas(){
     const ratio = 827/1575;
     let parentW = canvas.parentNode.clientWidth-12;
     let height = ratio * parentW;
-    console.log(`${parentW}: ${height}`);
     canvas.width = parentW;
     canvas.height = height;
     boardChat.setAttribute("style",`height:${height}px`);

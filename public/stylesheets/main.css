@@ -23,7 +23,19 @@
     padding: 0;
 }
 
+.noPaddingRight{
+    padding-right: 0;
+}
+
 .scrollable{
     overflow-y: scroll;
     overflow-x: hidden;
+}
+
+.chatBoxMessagesHeight{
+    height: 90%;
+}
+
+.chatBoxHeight{
+    height: 10%;
 }
