@@ -22,7 +22,24 @@ socket.on('sendMessage', (payload, name, lastName)=>{
 })
 
 
+socket.on('sendCanvasToViewers', (dataURI)=>{
+    let data = JSON.parse(dataURI);
+    let image = new Image();
+    image.onload = function () {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(image, 0, 0, canvas.width, canvas.height); // draw the new image to the screen
+    }
+    image.src = data.image; // data.image contains the data URL
+})
+
 function sendMessage(){
     const payload = textMessageContent.value;
     socket.emit('sendMessage', payload);
+}
+
+function sendCanvasContentToViewers(){
+    let canvasContents = canvas.toDataURL(); // a data URL of the current canvas image
+    let data = { image: canvasContents, date: Date.now() };
+    let string = JSON.stringify(data);
+    socket.emit('sendCanvasToViewers', string);
 }

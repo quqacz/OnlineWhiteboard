@@ -47,6 +47,10 @@ io.on('connection', (socket) => {
     socket.on('sendMessage', (payload)=>{
         socket.to(socket.room).emit('sendMessage', payload, socket.name, socket.lastName);
     })
+
+    socket.on('sendCanvasToViewers', (canvasDataURI)=>{
+        socket.to(socket.room).emit('sendCanvasToViewers', canvasDataURI);
+    })
 });
 
 
