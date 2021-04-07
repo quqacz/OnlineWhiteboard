@@ -1,6 +1,9 @@
 const canvas = document.querySelector('#canvas');
 const ctx = canvas.getContext('2d');
 
+ctx.lineCap = "round";
+ctx.lineJoin = "round";
+
 const gumka = document.querySelector('#gumka');
 const rysik = document.querySelector('#rysik');
 const linia = document.querySelector('#linia');
@@ -40,7 +43,7 @@ const mousePos = {
 
 let drawing = false;
 
-let lastCanvasContent = '';
+let lastCanvasURI = '';
 
 gumka.addEventListener('click', ()=>{
     settings.tool = 'GUMKA';
@@ -118,6 +121,7 @@ canvas.addEventListener('mouseup', ()=>{
 
 window.addEventListener('resize', ()=>{
     resizeCanvas();
+    drawFromBase64(lastCanvasURI);
 })
 
 

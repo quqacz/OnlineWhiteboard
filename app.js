@@ -9,6 +9,8 @@ const Group = require('./models/group');
 const users = require('./users');
 
 
+const roomsData = {};
+
 //express setup
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -42,13 +44,24 @@ io.on('connection', (socket) => {
         socket.room = roomId;
         socket.name = name;
         socket.lastName = lastName;
+        if(roomsData[roomId]){
+            roomsData[roomId].users.push(name);
+            socket.emit('sendCanvasToViewers', roomsData[roomId].canvasData);
+        }else{
+            roomsData[roomId] = {};
+            roomsData[roomId].users = [];
+            roomsData[roomId].users.push(name);
+            roomsData[roomId].canvasData = '';
+        }
     })
 
     socket.on('sendMessage', (payload)=>{
         socket.to(socket.room).emit('sendMessage', payload, socket.name, socket.lastName);
+        socket.emit('sendMessage', payload, socket.name, socket.lastName);
     })
 
     socket.on('sendCanvasToViewers', (canvasDataURI)=>{
+        roomsData[socket.room].canvasData = canvasDataURI;
         socket.to(socket.room).emit('sendCanvasToViewers', canvasDataURI);
     })
 });
