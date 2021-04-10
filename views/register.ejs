@@ -1,0 +1,41 @@
+<%- include ('partials/header') %>
+<%- include ('partials/navbar') %>
+
+<div>
+	<div class="d-flex align-items-center min-vh-100 justify-content-center">
+		<span class="border border-white">
+			<div class="bg-light" >	
+				<form action="post">
+					
+					<div class="form-floating mb-3"> <!-- w-25 -->
+						<input type="text" class="form-control" id="floatingDane" placeholder="Publiczna nazwa">
+						<label for="floatingDane">Publiczna nazwa</label>
+					</div>
+
+					<div class="form-floating mb-3"> <!-- w-25 -->
+						<input type="text" class="form-control" id="floatingInput" placeholder="Login">
+						<label for="floatingInput">Login</label>
+					</div>
+					
+					<div class="form-floating mb-3">
+						<input type="password" class="form-control" id="floatingPassword" placeholder="Password">
+						<label for="floatingPassword">Hasło</label>
+					</div>
+
+					<div class="form-floating mb-3">
+						<input type="password" class="form-control" id="floatingPassword2" placeholder="Confirm password">
+						<label for="floatingPassword2">Zatwierdź Hasło</label>
+					</div>
+
+					<center>
+						<button class="btn btn-primary" type="submit">Zarejestruj się</button>
+					</center>
+
+				</form>
+			</div>	
+		</span>
+	</div>
+</div>
+	
+
+<%- include ('partials/footer') %>
