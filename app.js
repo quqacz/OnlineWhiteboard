@@ -39,19 +39,39 @@ io.on('connection', (socket) => {
         console.log("disconnect");
     });
 
+    socket.on('disconnecting', ()=>{
+        let vievID, editID;
+        if(roomsData[socket.roomId] && roomsData[socket.roomId].viewers)
+            vievID = roomsData[socket.roomId].viewers.includes(socket.id) ? roomsData[socket.roomId].viewers.indexOf(socket.id) : undefined;
+
+        if(roomsData[socket.roomId] && roomsData[socket.roomId].editors)
+            editID = roomsData[socket.roomId].editors.includes(socket.id) ? roomsData[socket.roomId].editors.indexOf(socket.id) : undefined;
+
+        if(vievID)
+            roomsData[socket.roomId].viewers.splice(vievID, 1);
+
+        if(editID)
+            roomsData[socket.roomId].editors.splice(editID, 1);
+    })
+
     socket.on('joinBoardGroup', (roomId, name, lastName)=>{
         socket.join(roomId);
         socket.room = roomId;
         socket.name = name;
         socket.lastName = lastName;
         if(roomsData[roomId]){
-            roomsData[roomId].users.push(name);
-            socket.emit('sendCanvasToViewers', roomsData[roomId].canvasData);
+            roomsData[roomId].viewers.push(socket.id);
+            socket.emit('joinedViewres');
+            socket.emit('sendCanvasToViewers', roomsData[roomId].canvasDataBase64);
         }else{
             roomsData[roomId] = {};
-            roomsData[roomId].users = [];
-            roomsData[roomId].users.push(name);
-            roomsData[roomId].canvasData = '';
+            roomsData[roomId].editors = [];
+            roomsData[roomId].viewers = [];
+            roomsData[roomId].editors.push(socket.id);
+            roomsData[roomId].canvasDataBase64 = '';
+            roomsData[roomId].canvasDataJson = '';
+            console.log(socket.id);
+            socket.emit('joinedEditors');
         }
     })
 
@@ -61,8 +81,20 @@ io.on('connection', (socket) => {
     })
 
     socket.on('sendCanvasToViewers', (canvasDataURI)=>{
-        roomsData[socket.room].canvasData = canvasDataURI;
-        socket.to(socket.room).emit('sendCanvasToViewers', canvasDataURI);
+        roomsData[socket.room].canvasDataBase64 = canvasDataURI;
+        let viewer = roomsData[socket.room].viewers;
+        for(let i = 0; i < viewer.length; i++){
+            io.to(viewer[i]).emit('sendCanvasToViewers', canvasDataURI);
+        }
+    })
+
+    socket.on('sendCanvasToEditors', (canvasDataURI)=>{
+        roomsData[socket.room].canvasDataJson = canvasDataURI;
+        let editors = roomsData[socket.room].editors;
+        for(let i = 0; i < editors.length; i++){
+            if(editors[i] !== socket.id)
+                io.to(editors[i]).emit('sendCanvasToEditors', canvasDataURI);
+        }
     })
 });
 

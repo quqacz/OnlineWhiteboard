@@ -38,6 +38,8 @@ let canvasDimentions = {
     height: canvas.height
 }
 
+let isViewer = true;
+
 const settings = {
     tool: 'RYSIK',
     strokeWidth: 1,
@@ -141,6 +143,9 @@ sendMessageButton.addEventListener('click', ()=>{
 canvas.addEventListener('mousemove', (event)=>{
     mousePos.x = event.offsetX;
     mousePos.y = event.offsetY;
+
+    if(isViewer) return;
+
     if(settings.tool === 'RYSIK' && drawing){
         canvasContent.lines.push(new Point(mousePos.x, mousePos.y, settings.strokeWidth, settings.strokeColor, true, canvasDimentions, false));
         ctx.lineCap = "round";
@@ -148,10 +153,13 @@ canvas.addEventListener('mousemove', (event)=>{
         ctx.lineTo(mousePos.x, mousePos.y);
         ctx.stroke();
         sendCanvasContentToViewers();
+        sendCanvasContentToEditors();
     }
 })
 
 canvas.addEventListener('mousedown', ()=>{
+    if(isViewer) return;
+
     if(settings.tool === 'RYSIK'){
         canvasContent.lines.push(new Point(mousePos.x, mousePos.y, settings.strokeWidth, settings.strokeColor, true, canvasDimentions, true));
         drawing = true;
@@ -163,6 +171,8 @@ canvas.addEventListener('mousedown', ()=>{
 })
 
 canvas.addEventListener('mouseup', ()=>{
+    if(isViewer) return;
+
     if(settings.tool === 'RYSIK'){
         canvasContent.lines.push(new Point(mousePos.x, mousePos.y, settings.strokeWidth, settings.strokeColor, true, canvasDimentions, false));
         canvasContent.lines.push(new Point(mousePos.x, mousePos.y, settings.strokeWidth, settings.strokeColor, false, canvasDimentions, false));
@@ -172,6 +182,8 @@ canvas.addEventListener('mouseup', ()=>{
         ctx.lineTo(mousePos.x, mousePos.y);
         ctx.stroke();
         ctx.closePath();
+        sendCanvasContentToViewers();
+        sendCanvasContentToEditors();
     }
 })
 
@@ -210,25 +222,25 @@ function resizeCanvas(){
     boardUsers.parentNode.setAttribute("style",`height:${height}px`);
     canvasDimentions.width = parentW;
     canvasDimentions.height = height;
-    renderPoints();
+    renderPoints(canvasContent.lines);
 }
 
-function renderPoints(){
-    for(let i = 0; i < canvasContent.lines.length; i++){
-        if(canvasContent.lines[i].isControl){
-            ctx.moveTo(canvasContent.lines[i].x * canvasDimentions.width, canvasContent.lines[i].y * canvasDimentions.height);
+function renderPoints(linesArray){
+    for(let i = 0; i < linesArray.length; i++){
+        if(linesArray[i].isControl){
+            ctx.moveTo(linesArray[i].x * canvasDimentions.width, linesArray[i].y * canvasDimentions.height);
             ctx.beginPath();
-            ctx.lineWidth = canvasContent.lines[i].size;
-            ctx.strokeStyle = canvasContent.lines[i].color;
+            ctx.lineWidth = linesArray[i].size;
+            ctx.strokeStyle = linesArray[i].color;
         }else{
-            if(canvasContent.lines[i].drawable){
+            if(linesArray[i].drawable){
                 ctx.lineCap = "round";
                 ctx.lineJoin = "round";
-                ctx.lineTo(canvasContent.lines[i].x * canvasDimentions.width, canvasContent.lines[i].y * canvasDimentions.height)
+                ctx.lineTo(linesArray[i].x * canvasDimentions.width, linesArray[i].y * canvasDimentions.height)
             }else{
                 ctx.lineCap = "round";
                 ctx.lineJoin = "round";
-                ctx.lineTo(canvasContent.lines[i].x * canvasDimentions.width, canvasContent.lines[i].y * canvasDimentions.height)
+                ctx.lineTo(linesArray[i].x * canvasDimentions.width, linesArray[i].y * canvasDimentions.height)
                 ctx.stroke();
                 ctx.closePath();
             }
