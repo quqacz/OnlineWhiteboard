@@ -6,6 +6,10 @@ const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 const User = require('./models/user');
 const Group = require('./models/group');
+const users = require('./users');
+
+
+const roomsData = {};
 
 //express setup
 app.set('view engine', 'ejs');
@@ -26,13 +30,50 @@ db.once("open", ()=>{
     console.log("Database connected");
 })
 
+
+// socket connection
+io.on('connection', (socket) => {
+    console.log("user connected");
+
+    socket.on('disconnect', () => {
+        console.log("disconnect");
+    });
+
+    socket.on('joinBoardGroup', (roomId, name, lastName)=>{
+        socket.join(roomId);
+        socket.room = roomId;
+        socket.name = name;
+        socket.lastName = lastName;
+        if(roomsData[roomId]){
+            roomsData[roomId].users.push(name);
+            socket.emit('sendCanvasToViewers', roomsData[roomId].canvasData);
+        }else{
+            roomsData[roomId] = {};
+            roomsData[roomId].users = [];
+            roomsData[roomId].users.push(name);
+            roomsData[roomId].canvasData = '';
+        }
+    })
+
+    socket.on('sendMessage', (payload)=>{
+        socket.to(socket.room).emit('sendMessage', payload, socket.name, socket.lastName);
+        socket.emit('sendMessage', payload, socket.name, socket.lastName);
+    })
+
+    socket.on('sendCanvasToViewers', (canvasDataURI)=>{
+        roomsData[socket.room].canvasData = canvasDataURI;
+        socket.to(socket.room).emit('sendCanvasToViewers', canvasDataURI);
+    })
+});
+
+
 // routes
 app.get('/', (req,res)=>{
     res.render("mainPage");
 })
 
 app.get('/login', (req, res)=>{
-    res.send("login page");
+	res.render("login");
 })
 
 app.post('/login', (req, res)=>{
@@ -40,7 +81,7 @@ app.post('/login', (req, res)=>{
 })
 
 app.get('/register', (req, res)=>{
-    res.send('register page');
+	 res.render("register");
 })
 
 app.post('/register', (req, res)=>{
@@ -52,7 +93,7 @@ app.get('/user/:id', (req, res)=>{
 })
 
 app.get('/group/:id', (req, res)=>{
-    res.send(`strona info grupy ${req.params.id}`);
+	res.render('group', {groupId: req.params.id})
 })
 
 app.delete('/group/:id/delete', (req, res)=>{
@@ -64,9 +105,14 @@ app.post('/group/:id/add', (req, res)=>{
 })
 
 app.get('/group/:id/board', (req, res)=>{
-    res.send(`strona grupy ${req.params.id} do rysowania`);
+    let dummyUsers = [];
+    
+    for(let i = 0; i < 15; i ++){
+        dummyUsers.push(users[Math.floor(Math.random()*users.length)]);
+    }
+	res.render('board', {groupId: req.params.id, users: dummyUsers})
 })
 
-app.listen(3000, ()=>{
+http.listen(3000, ()=>{
     console.log("app runs on port 3000");
 })

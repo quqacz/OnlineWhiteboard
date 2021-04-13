@@ -1,0 +1,66 @@
+<%- include ('partials/header') %>
+<%- include ('partials/boardNavbar') %>
+
+<!-- pasek narzędzi -->
+<div class="container-fluid" >
+    <div class="container">
+        <div class="row">
+            <div class="col-4">
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <button type="button" class="btn btn-secondary active" id="rysik">Rysik</button>
+                    <button type="button" class="btn btn-secondary" id="gumka">Gumka</button>
+                    <button type="button" class="btn btn-secondary" id="linia">Linia</button>
+                </div>
+            </div>
+            <div class="col-4">
+                2 of 3 (wider)
+            </div>
+            <div class="col-4">
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <button type="button" class="btn btn-secondary active" id="uczestnicy">Uczestnicy</button>
+                    <button type="button" class="btn btn-secondary" id="chat">Czat</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-10 noPaddingRight">
+            <canvas id="canvas" class="borderHighlight">
+
+            </canvas>
+        </div>
+        <div class="col-2 borderHighlight noPaddingAndMargin">
+            <div class="container-fluid borderHighlight scrollable" id="connectedUsers">
+                <%for(let i = 0; i < users.length; i++){%>
+                    <img src="<%=users[i].profile_pic%>" alt="">
+                    <p><%= users[i].first_name%> </p>
+                    <p><%= users[i].last_name%> </p>
+                    <hr>
+                <%};%>
+            </div>
+            <div class="container-fluid borderHighlight hideElement noPaddingAndMargin" id="chatBox">
+                <div class="container-fluid borderHighlight noPaddingAndMargin chatBoxMessagesHeight scrollable" id="chatBoxMessages">
+                    
+                </div>
+                <div class="input-group borderHighlight noPaddingAndMargin chatBoxHeight">
+                    <span class="input-group-text" id="sendChatMessage">Wyślij</span>
+                    <textarea class="form-control" aria-label="Wyślij" id="textMessageContent"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://cdn.socket.io/3.1.3/socket.io.min.js" integrity="sha384-cPwlPLvBTa3sKAgddT6krw0cJat7egBga3DJepJyrLl4Q9/5WLra3rrnMcyTyOnh" crossorigin="anonymous"></script>
+<script> 
+    const groupId = '<%-groupId%>'; 
+    const userName = '<%- users[1].first_name%>';
+    const userLastName = '<%- users[1].last_name%>';
+</script> 
+<script src="/scripts/board.js"></script>
+<script src="/scripts/boardSocket.js"></script>
+<%- include ('partials/footer') %>
