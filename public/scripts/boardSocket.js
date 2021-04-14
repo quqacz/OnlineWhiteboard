@@ -27,16 +27,39 @@ socket.on('sendCanvasToViewers', (dataURI)=>{
     lastCanvasURI = dataURI;
 })
 
+socket.on('sendCanvasToEditors', (jsonObject)=>{
+    let content ='';
+    if(jsonObject.length !== 0){
+        content = JSON.parse(jsonObject);
+        canvasContent.lines = content.lines;
+        canvasContent.shapes = content.shapes;
+        renderPoints(content.lines);
+    }
+})
+
+socket.on('joinedViewres', ()=>{
+    isViewer = true;
+})
+
+socket.on('joinedEditors', ()=>{
+    isViewer = false;
+})
+
 function sendMessage(){
     const payload = textMessageContent.value;
     socket.emit('sendMessage', payload);
 }
 
 function sendCanvasContentToViewers(){
-    let canvasContents = canvas.toDataURL(); // a data URL of the current canvas image
+    let canvasContents = canvas.toDataURL();
     let data = { image: canvasContents, date: Date.now() };
     let string = JSON.stringify(data);
     socket.emit('sendCanvasToViewers', string);
+}
+
+function sendCanvasContentToEditors(){
+    let canvasShapes = JSON.stringify(canvasContent);
+    socket.emit('sendCanvasToEditors', canvasShapes);
 }
 
 function drawFromBase64(URI){
