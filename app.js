@@ -7,7 +7,8 @@ const io = require('socket.io')(http);
 const User = require('./models/user');
 const Group = require('./models/group');
 const users = require('./users');
-
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
 
 const roomsData = {};
 
@@ -15,6 +16,12 @@ const roomsData = {};
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(__dirname+"/public"));
+
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 //połączenie do bazy danych
 mongoose.connect('mongodb://localhost:27017/inzynieria-projekt', {
@@ -102,6 +109,16 @@ io.on('connection', (socket) => {
 // routes
 app.get('/', (req,res)=>{
     res.render("mainPage");
+})
+
+app.get('/fake', async (req, res)=>{
+    const user = new User({
+        username: 'Q.q',
+        name: 'Marcin',
+        lastName: 'Nowak'
+    });
+    const newUser = await User.register(user, 'lol');
+    res.send(newUser);
 })
 
 app.get('/login', (req, res)=>{
