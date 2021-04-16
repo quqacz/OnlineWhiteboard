@@ -7,6 +7,7 @@ const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 const User = require('./models/user');
 const Group = require('./models/group');
+const Lesson = require('./models/lesson');
 const users = require('./users');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
@@ -42,7 +43,6 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 app.use((req, res, next) => {
-    console.log(req.session)
     res.locals.currentUser = req.user;
     next();
 })
@@ -135,16 +135,6 @@ app.get('/', (req,res)=>{
     res.render("mainPage");
 })
 
-app.get('/fake', async (req, res)=>{
-    const user = new User({
-        username: 'Q.q',
-        name: 'Marcin',
-        lastName: 'Nowak'
-    });
-    const newUser = await User.register(user, 'lol');
-    res.send(newUser);
-})
-
 app.get('/login', (req, res)=>{
 	res.render("login");
 })
@@ -159,11 +149,10 @@ app.get('/register', (req, res)=>{
 
 app.post('/register', async(req, res)=>{
     try{
-    const {name, lastName, username, password} = req.body;
-    const user = new User({ name, lastName, username});
-    const regUser = await User.register(user, password);
-    console.log(username, password);
-    res.redirect('/user/'+regUser._id);
+        const {name, lastName, username, password} = req.body;
+        const user = new User({ name, lastName, username});
+        const regUser = await User.register(user, password);
+        res.redirect('/user/'+regUser._id);
     }catch (e){
         console.log(e);
         res.redirect('/register');
@@ -175,8 +164,58 @@ app.get('/user/:id', async(req, res)=>{
     res.render('user', {user})
 })
 
-app.get('/group/:id', (req, res)=>{
-	res.render('group', {groupId: req.params.id})
+app.get('/group/add', (req,res)=>{
+    res.render('newGroup');
+})
+
+app.post('/group/add', async(req,res)=>{
+    try{
+        const {groupName, description} = req.body;
+        const entryCode = ~~(Math.random()*10000000000);
+
+        const newGroup = new Group({ groupName, description, entryCode })
+
+        const group = await newGroup.save();
+        res.redirect('/group/'+group._id);
+    }
+    catch(e){
+        console.log(e);
+        res.redirect('/group/add');
+    }
+})
+
+app.get('/group/:id/lesson/add', (req,res)=>{
+    res.render('newLesson', {groupId: req.params.id});
+})
+
+app.post('/group/:id/lesson/add', async(req, res)=>{
+    try{
+        const { topic } = req.body;
+        const newLesson = new Lesson({
+            topic
+        })
+        newLesson.save();
+        const group = await Group.findOne({_id: req.params.id});
+        console.log(req.params.id);
+        group.lessons.push(newLesson);
+        const updatedGroup = await group.save();
+        console.log(updatedGroup);
+        res.redirect('/group/'+req.params.id);
+    }catch (e){
+        console.log(e)
+        res.redirect('/group/'+req.params.id);
+    }
+})
+
+app.get('/group/:id', async(req, res)=>{
+    try{
+        const group = await Group.findOne({_id: req.params.id}).populate('lessons');
+        console.log(group);
+        res.render('group', {groupId: req.params.id, groupData: group})
+    }catch(e){
+        console.log(e);
+        res.redirect('/');
+    }
 })
 
 app.delete('/group/:id/delete', (req, res)=>{
