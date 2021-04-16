@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
 const app = express();
+const session = require('express-session');
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 const User = require('./models/user');
@@ -9,6 +10,8 @@ const Group = require('./models/group');
 const users = require('./users');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
+const methodOverride = require('method-override');
+
 
 const roomsData = {};
 
@@ -17,11 +20,32 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(__dirname+"/public"));
 
+app.use(express.urlencoded({ extended: true }));
 app.use(passport.initialize());
 app.use(passport.session());
+
+const sessionConfig = {
+    secret: 'dngdngmvmvcbmfgwgfejhfkjghkfghjkrsywrgreykiyt',
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        httpOnly: true,
+        expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+        maxAge: 1000 * 60 * 60 * 24 * 7
+    }
+}
+
+app.use(session(sessionConfig))
+
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
+
+app.use((req, res, next) => {
+    console.log(req.session)
+    res.locals.currentUser = req.user;
+    next();
+})
 
 //połączenie do bazy danych
 mongoose.connect('mongodb://localhost:27017/inzynieria-projekt', {
@@ -125,20 +149,30 @@ app.get('/login', (req, res)=>{
 	res.render("login");
 })
 
-app.post('/login', (req, res)=>{
-    res.redirect('/');
+app.post('/login', passport.authenticate('local', {failureRedirect: '/login'}), (req, res)=>{
+    res.redirect('/user/'+req.user._id);
 })
 
 app.get('/register', (req, res)=>{
 	 res.render("register");
 })
 
-app.post('/register', (req, res)=>{
-    res.redirect('/');
+app.post('/register', async(req, res)=>{
+    try{
+    const {name, lastName, username, password} = req.body;
+    const user = new User({ name, lastName, username});
+    const regUser = await User.register(user, password);
+    console.log(username, password);
+    res.redirect('/user/'+regUser._id);
+    }catch (e){
+        console.log(e);
+        res.redirect('/register');
+    }
 })
 
-app.get('/user/:id', (req, res)=>{
-    res.render('user', {info: req.params.id + " to jest numer tej strony"})
+app.get('/user/:id', async(req, res)=>{
+    const user = User.findOne({_id: req.params.id});
+    res.render('user', {user})
 })
 
 app.get('/group/:id', (req, res)=>{

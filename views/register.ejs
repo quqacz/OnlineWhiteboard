@@ -5,30 +5,36 @@
 	<div class="d-flex align-items-center min-vh-100 justify-content-center">
 		<span class="border border-white">
 			<div class="bg-light" >	
-				<form action="post">
+				<form action="/register" method="POST">
 					
 					<div class="form-floating mb-3"> <!-- w-25 -->
-						<input type="text" class="form-control" id="floatingDane" placeholder="Publiczna nazwa">
-						<label for="floatingDane">Publiczna nazwa</label>
+						<label for="imie">Imie</label>
+						<input type="text" name="name"  class="form-control" id="imie" placeholder="Imie" required>
+						
 					</div>
 
 					<div class="form-floating mb-3"> <!-- w-25 -->
-						<input type="text" class="form-control" id="floatingInput" placeholder="Login">
+						<input type="text" name="lastName" class="form-control" id="nazwisko" placeholder="Nazwisko"  required>
+						<label for="nazwisko">Nazwisko</label>
+					</div>
+
+					<div class="form-floating mb-3"> <!-- w-25 -->
+						<input type="text" name="username" class="form-control" id="floatingInput" placeholder="Login"  required>
 						<label for="floatingInput">Login</label>
 					</div>
 					
 					<div class="form-floating mb-3">
-						<input type="password" class="form-control" id="floatingPassword" placeholder="Password">
+						<input type="password" name="password" class="form-control" id="floatingPassword" placeholder="Password"  required>
 						<label for="floatingPassword">Password</label>
 					</div>
 
 					<div class="form-floating mb-3">
-						<input type="password" class="form-control" id="floatingPassword2" placeholder="Confirm password">
+						<input type="password" class="form-control" id="floatingPassword2" placeholder="Confirm password" required>
 						<label for="floatingPassword2">Confirm password</label>
 					</div>
 
 					<center>
-						<button class="btn btn-primary" type="submit">Zarejestruj się</button>
+						<button class="btn btn-primary">Zarejestruj się</button>
 					</center>
 
 				</form>
