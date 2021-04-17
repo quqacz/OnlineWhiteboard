@@ -12,6 +12,7 @@ const users = require('./users');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const methodOverride = require('method-override');
+const { isLoggedIn } = require('./middleware');
 
 
 const roomsData = {};
@@ -22,8 +23,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(__dirname+"/public"));
 
 app.use(express.urlencoded({ extended: true }));
-app.use(passport.initialize());
-app.use(passport.session());
+app.use(methodOverride('_method'));
 
 const sessionConfig = {
     secret: 'dngdngmvmvcbmfgwgfejhfkjghkfghjkrsywrgreykiyt',
@@ -37,6 +37,10 @@ const sessionConfig = {
 }
 
 app.use(session(sessionConfig))
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
@@ -140,7 +144,7 @@ app.get('/login', (req, res)=>{
 })
 
 app.post('/login', passport.authenticate('local', {failureRedirect: '/login'}), (req, res)=>{
-    res.redirect('/user/'+req.user._id);
+    res.redirect(req.session.returnTo ? req.session.returnTo : '/login');
 })
 
 app.get('/register', (req, res)=>{
@@ -152,23 +156,33 @@ app.post('/register', async(req, res)=>{
         const {name, lastName, username, password} = req.body;
         const user = new User({ name, lastName, username});
         const regUser = await User.register(user, password);
-        res.redirect('/user/'+regUser._id);
+        req.login(regUser, err=>{
+            if(err)
+                res.redirect('/register')
+            else
+                res.redirect('/user/'+regUser._id);
+        });
     }catch (e){
         console.log(e);
         res.redirect('/register');
     }
 })
 
-app.get('/user/:id', async(req, res)=>{
+app.get('/logout', (req,res)=>{
+    req.logOut();
+    res.redirect('/');
+})
+
+app.get('/user/:id', isLoggedIn, async(req, res)=>{
     const user = User.findOne({_id: req.params.id});
     res.render('user', {user})
 })
 
-app.get('/group/add', (req,res)=>{
+app.get('/group/add', isLoggedIn, (req,res)=>{
     res.render('newGroup');
 })
 
-app.post('/group/add', async(req,res)=>{
+app.post('/group/add', isLoggedIn, async(req,res)=>{
     try{
         const {groupName, description} = req.body;
         const entryCode = ~~(Math.random()*10000000000);
@@ -184,11 +198,11 @@ app.post('/group/add', async(req,res)=>{
     }
 })
 
-app.get('/group/:id/lesson/add', (req,res)=>{
+app.get('/group/:id/lesson/add', isLoggedIn, (req,res)=>{
     res.render('newLesson', {groupId: req.params.id});
 })
 
-app.post('/group/:id/lesson/add', async(req, res)=>{
+app.post('/group/:id/lesson/add', isLoggedIn, async(req, res)=>{
     try{
         const { topic } = req.body;
         const newLesson = new Lesson({
@@ -196,10 +210,8 @@ app.post('/group/:id/lesson/add', async(req, res)=>{
         })
         newLesson.save();
         const group = await Group.findOne({_id: req.params.id});
-        console.log(req.params.id);
         group.lessons.push(newLesson);
         const updatedGroup = await group.save();
-        console.log(updatedGroup);
         res.redirect('/group/'+req.params.id);
     }catch (e){
         console.log(e)
@@ -207,10 +219,9 @@ app.post('/group/:id/lesson/add', async(req, res)=>{
     }
 })
 
-app.get('/group/:id', async(req, res)=>{
+app.get('/group/:id', isLoggedIn, async(req, res)=>{
     try{
         const group = await Group.findOne({_id: req.params.id}).populate('lessons');
-        console.log(group);
         res.render('group', {groupId: req.params.id, groupData: group})
     }catch(e){
         console.log(e);
@@ -218,15 +229,15 @@ app.get('/group/:id', async(req, res)=>{
     }
 })
 
-app.delete('/group/:id/delete', (req, res)=>{
+app.delete('/group/:id/delete', isLoggedIn, (req, res)=>{
     res.send('strona do usuwania usera z grupy')
 })
 
-app.post('/group/:id/add', (req, res)=>{
+app.post('/group/:id/add', isLoggedIn, (req, res)=>{
     res.send('strona do dodawnia usera do grupy')
 })
 
-app.get('/group/:id/board', (req, res)=>{
+app.get('/group/:id/board', isLoggedIn, (req, res)=>{
     let dummyUsers = [];
     
     for(let i = 0; i < 15; i ++){
