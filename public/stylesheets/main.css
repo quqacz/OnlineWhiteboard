@@ -6,12 +6,21 @@
     height: 100vh;
 } */
 
+.center {
+	display: flex;
+	justify-content: center;
+}
+
 .hideElement{
     display: none;
 }
 
 .borderHighlight{
     border: 1px solid silver;
+}
+
+.borderMain{
+	border: 5px solid black;
 }
 
 .noPaddingAndMargin{
