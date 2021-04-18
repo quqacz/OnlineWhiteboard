@@ -4,15 +4,15 @@
 <div class="d-flex align-items-center min-vh-100 justify-content-center">
 	<span class="border border-white">
 		<div class="bg-light">
-			<form action="post">
+			<form action="/login" method="POST">
 				
 				<div class="form-floating mb-3"> <!-- w-25 -->
-					<input type="text" class="form-control" id="floatingInput" placeholder="Login">
+					<input type="text" class="form-control" id="floatingInput" placeholder="Login" name='username'>
 					<label for="floatingInput">Login</label>
 				</div>
 
 				<div class="form-floating mb-3">
-					<input type="password" class="form-control" id="floatingPassword" placeholder="Password">
+					<input type="password" class="form-control" id="floatingPassword" placeholder="Password" name='password'>
 					<label for="floatingPassword">Hasło</label>
 				</div>
 

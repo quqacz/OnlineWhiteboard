@@ -5,21 +5,25 @@
 	<div class="d-flex align-items-center min-vh-100 justify-content-center">
 		<span class="border border-white">
 			<div class="bg-light" >	
-				<form action="/register" onsubmit="return validate()" method="POST" id="reg-form">
-					
+				<form action="/register" onsubmit="return validate()" method="POST" id="reg-form">					
 					<center><span id="informacja"></span></center>
 					<div class="form-floating mb-3"> <!-- w-25 -->
-						<input type="text" class="form-control" id="floatingDane" placeholder="Publiczna nazwa" required>
-						<label for="floatingDane">Publiczna nazwa</label>
+						<input type="text" name="name"  class="form-control" id="imie" placeholder="Imie" required>
+         		<label for="imie">Imie</label>
 					</div>
 
-					<div class="form-floating mb-3"> 
-						<input type="text" class="form-control" id="floatingLogin" placeholder="Login" required>
-						<label for="floatingLogin">Login</label>
+					<div class="form-floating mb-3"> <!-- w-25 -->
+						<input type="text" name="lastName" class="form-control" id="nazwisko" placeholder="Nazwisko"  required>
+						<label for="nazwisko">Nazwisko</label>
+					</div>
+
+					<div class="form-floating mb-3"> <!-- w-25 -->
+						<input type="text" name="username" class="form-control" id="floatingInput" placeholder="Login"  required>
+						<label for="floatingInput">Login</label>
 					</div>
 					
 					<div class="form-floating mb-3">
-						<input type="password" class="form-control" id="floatingPassword" placeholder="Password" minlength="8" maxlength="32" required >
+						<input type="password" name="password" class="form-control" id="floatingPassword" placeholder="Password" minlength="8" maxlength="32"  required>
 						<label for="floatingPassword">Hasło</label>
 					</div>
 
@@ -29,7 +33,7 @@
 					</div>
 
 					<center>
-						<button class="btn btn-primary ZarejestrujSubmit" type="submit">Zarejestruj się</button>
+						<button class="btn btn-primary" type="submit">Zarejestruj się</button>
 					</center>
 
 				</form>
@@ -37,8 +41,9 @@
 				<script>
 
 					function validate() {
-						const dane = document.getElementById('floatingDane').value // W razie jakby pozniej bylo potrzeba
-						const login = document.getElementById('floatingLogin').value // W razie jakby pozniej bylo potrzeba
+						const imie = document.getElementById('imie').value // W razie jakby pozniej bylo potrzeba
+            const nazwisko = document.getElementById('nazwisko').value // W razie jakby pozniej bylo potrzeba
+						const login = document.getElementById('floatingInput').value // W razie jakby pozniej bylo potrzeba
 						const haslo = document.getElementById('floatingPassword').value
 						const haslo2 = document.getElementById('floatingPassword2').value
 						if(haslo!=haslo2)

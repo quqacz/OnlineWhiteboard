@@ -1,12 +1,18 @@
 const canvas = document.querySelector('#canvas');
 const ctx = canvas.getContext('2d');
 
-ctx.lineCap = "round";
-ctx.lineJoin = "round";
+const nowaTablica = document.querySelector('#nowaTablica');
+const wyczysc = document.querySelector('#wyczysc');
 
 const gumka = document.querySelector('#gumka');
 const rysik = document.querySelector('#rysik');
 const linia = document.querySelector('#linia');
+const prostokat = document.querySelector('#prostokat');
+const elipsa = document.querySelector('#elipsa');
+
+const lineColorPicker = document.querySelector('#lineColor');
+const lineWidth = document.querySelector('#lineWidth');
+
 
 const uczestnicy = document.querySelector('#uczestnicy');
 const czat = document.querySelector('#chat');
@@ -18,13 +24,21 @@ const sendMessageButton = document.querySelector('#sendChatMessage');
 const textMessageContent = document.querySelector('#textMessageContent');
 const chatBoxMessages = document.querySelector('#chatBoxMessages');
 
-const toolbarControls = [gumka, rysik, linia];
+
+const lineControl = document.querySelector('#lineControls');
+const rubberControl = document.querySelector('#rubberControls');
+const shapeControl = document.querySelector('#shapeControls');
+
+const toolbarControls = [gumka, rysik, linia, prostokat, elipsa];
 const sidePanelControls = [uczestnicy, czat];
+const toolSettings = [lineControl, rubberControl, shapeControl];
 
 let canvasDimentions = {
     width: canvas.width,
     height: canvas.height
 }
+
+let isViewer = true;
 
 const settings = {
     tool: 'RYSIK',
@@ -34,7 +48,10 @@ const settings = {
     backgroundFill: 'white'
 }
 
-const lines = [];
+const canvasContent = {
+    lines: [],
+    shapes: []
+}
 
 const mousePos = {
     x: 0,
@@ -47,36 +64,73 @@ let lastCanvasURI = '';
 
 gumka.addEventListener('click', ()=>{
     settings.tool = 'GUMKA';
-    removeActiveStyle(toolbarControls)
+    removeStyle(toolbarControls, "active")
     gumka.classList.add('active');
+    addStyle(toolSettings, "hideElement");
+    rubberControl.classList.remove('hideElement');
 })
 
 rysik.addEventListener('click', ()=>{
     settings.tool = 'RYSIK';
-    removeActiveStyle(toolbarControls)
+    removeStyle(toolbarControls, "active")
     rysik.classList.add('active');
+    addStyle(toolSettings, "hideElement");
+    lineControl.classList.remove('hideElement');
 })
 
 linia.addEventListener('click', ()=>{
     settings.tool = 'LINIA';
-    removeActiveStyle(toolbarControls)
+    removeStyle(toolbarControls, "active")
     linia.classList.add('active');
+    addStyle(toolSettings, "hideElement");
+    lineControl.classList.remove('hideElement');
+})
+
+prostokat.addEventListener('click', ()=>{
+    settings.tool = 'PROSTOKAT';
+    removeStyle(toolbarControls, "active")
+    prostokat.classList.add('active');
+    addStyle(toolSettings, "hideElement");
+    shapeControl.classList.remove('hideElement');
+})
+
+elipsa.addEventListener('click', ()=>{
+    settings.tool = 'PROSTOKAT';
+    removeStyle(toolbarControls, "active")
+    elipsa.classList.add('active');
+    addStyle(toolSettings, "hideElement");
+    shapeControl.classList.remove('hideElement');
+})
+
+wyczysc.addEventListener('click', ()=>{
+    canvasContent.lines.length = 0;
+    ctx.clearRect(0, 0, canvasDimentions.width, canvasDimentions.height);
+    sendCanvasContentToViewers();
+})
+
+nowaTablica.addEventListener('click', ()=>{
+    canvasContent.lines.length = 0;
+    ctx.clearRect(0, 0, canvasDimentions.width, canvasDimentions.height);
+    sendCanvasContentToViewers();
+})
+
+lineColorPicker.addEventListener('change', ()=>{
+    settings.strokeColor = lineColorPicker.value;
+})
+
+lineWidth.addEventListener('change', ()=>{
+    settings.strokeWidth = lineWidth.value;
 })
 
 czat.addEventListener('click', ()=>{
-    removeActiveStyle(sidePanelControls);
-    czat.classList.add('active');
-})
-
-czat.addEventListener('click', ()=>{
-    removeActiveStyle(sidePanelControls);
+    removeStyle(sidePanelControls, "active");
     czat.classList.add('active');
     boardUsers.classList.add('hideElement');
     boardChat.classList.remove('hideElement');
 })
 
 uczestnicy.addEventListener('click', ()=>{
-    removeActiveStyle(sidePanelControls);
+    removeStyle(sidePanelControls, "active");
     uczestnicy.classList.add('active');
     boardChat.classList.add('hideElement');
     boardUsers.classList.remove('hideElement');
@@ -89,17 +143,25 @@ sendMessageButton.addEventListener('click', ()=>{
 canvas.addEventListener('mousemove', (event)=>{
     mousePos.x = event.offsetX;
     mousePos.y = event.offsetY;
+
+    if(isViewer) return;
+
     if(settings.tool === 'RYSIK' && drawing){
-        lines.push(new Point(mousePos.x, mousePos.y, settings.strokeWidth, settings.strokeColor, true, canvasDimentions, false));
+        canvasContent.lines.push(new Point(mousePos.x, mousePos.y, settings.strokeWidth, settings.strokeColor, true, canvasDimentions, false));
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
         ctx.lineTo(mousePos.x, mousePos.y);
         ctx.stroke();
         sendCanvasContentToViewers();
+        sendCanvasContentToEditors();
     }
 })
 
 canvas.addEventListener('mousedown', ()=>{
+    if(isViewer) return;
+
     if(settings.tool === 'RYSIK'){
-        lines.push(new Point(mousePos.x, mousePos.y, settings.strokeWidth, settings.strokeColor, true, canvasDimentions, true));
+        canvasContent.lines.push(new Point(mousePos.x, mousePos.y, settings.strokeWidth, settings.strokeColor, true, canvasDimentions, true));
         drawing = true;
         ctx.lineWidth = settings.strokeWidth;
         ctx.strokeStyle = settings.strokeColor;
@@ -109,13 +171,19 @@ canvas.addEventListener('mousedown', ()=>{
 })
 
 canvas.addEventListener('mouseup', ()=>{
+    if(isViewer) return;
+
     if(settings.tool === 'RYSIK'){
-        lines.push(new Point(mousePos.x, mousePos.y, settings.strokeWidth, settings.strokeColor, true, canvasDimentions, false));
-        lines.push(new Point(mousePos.x, mousePos.y, settings.strokeWidth, settings.strokeColor, false, canvasDimentions, false));
+        canvasContent.lines.push(new Point(mousePos.x, mousePos.y, settings.strokeWidth, settings.strokeColor, true, canvasDimentions, false));
+        canvasContent.lines.push(new Point(mousePos.x, mousePos.y, settings.strokeWidth, settings.strokeColor, false, canvasDimentions, false));
         drawing = false;
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
         ctx.lineTo(mousePos.x, mousePos.y);
         ctx.stroke();
         ctx.closePath();
+        sendCanvasContentToViewers();
+        sendCanvasContentToEditors();
     }
 })
 
@@ -125,11 +193,22 @@ window.addEventListener('resize', ()=>{
 })
 
 
-resizeCanvas();
+setup();
 
-function removeActiveStyle(toolbarControls){
+function setup(){
+    resizeCanvas();
+    lineWidth.value = "1";
+    lineColorPicker.value = "#000000";
+}
+
+function removeStyle(toolbarControls, klasa){
     for(tool of toolbarControls)
-        tool.classList.remove('active');
+        tool.classList.remove(klasa);
+}
+
+function addStyle(toolbarControls, klasa){
+    for(tool of toolbarControls)
+        tool.classList.add(klasa);
 }
 
 function resizeCanvas(){
@@ -143,21 +222,25 @@ function resizeCanvas(){
     boardUsers.parentNode.setAttribute("style",`height:${height}px`);
     canvasDimentions.width = parentW;
     canvasDimentions.height = height;
-    renderPoints();
+    renderPoints(canvasContent.lines);
 }
 
-function renderPoints(){
-    for(let i = 0; i < lines.length; i++){
-        if(lines[i].isControl){
-            ctx.moveTo(lines[i].x * canvasDimentions.width, lines[i].y * canvasDimentions.height);
+function renderPoints(linesArray){
+    for(let i = 0; i < linesArray.length; i++){
+        if(linesArray[i].isControl){
+            ctx.moveTo(linesArray[i].x * canvasDimentions.width, linesArray[i].y * canvasDimentions.height);
             ctx.beginPath();
-            ctx.lineWidth = lines[i].size;
-            ctx.strokeStyle = lines[i].color;
+            ctx.lineWidth = linesArray[i].size;
+            ctx.strokeStyle = linesArray[i].color;
         }else{
-            if(lines[i].drawable){
-                ctx.lineTo(lines[i].x * canvasDimentions.width, lines[i].y * canvasDimentions.height)
+            if(linesArray[i].drawable){
+                ctx.lineCap = "round";
+                ctx.lineJoin = "round";
+                ctx.lineTo(linesArray[i].x * canvasDimentions.width, linesArray[i].y * canvasDimentions.height)
             }else{
-                ctx.lineTo(lines[i].x * canvasDimentions.width, lines[i].y * canvasDimentions.height)
+                ctx.lineCap = "round";
+                ctx.lineJoin = "round";
+                ctx.lineTo(linesArray[i].x * canvasDimentions.width, linesArray[i].y * canvasDimentions.height)
                 ctx.stroke();
                 ctx.closePath();
             }
