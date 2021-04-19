@@ -221,16 +221,14 @@ app.post('/group/:id/lesson/add', isLoggedIn, async(req, res)=>{
 })
 
 app.get('/group/:id', isLoggedIn, async(req, res)=>{
-    let dummyUsers = [];
-    
-    for(let i = 0; i < 15; i ++){
-        dummyUsers.push(users[Math.floor(Math.random()*users.length)]);
-    }
-	res.render('group', {groupId: req.params.id, users: dummyUsers})
-	
 	try{
+        let dummyUsers = [];
+    
+        for(let i = 0; i < 15; i ++){
+            dummyUsers.push(users[Math.floor(Math.random()*users.length)]);
+        }
         const group = await Group.findOne({_id: req.params.id}).populate('lessons');
-        res.render('group', {groupData: group})
+        res.render('group', {groupData: group, users: dummyUsers})
     }catch(e){
         console.log(e);
         res.redirect('/');
