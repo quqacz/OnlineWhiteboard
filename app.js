@@ -8,6 +8,7 @@ const io = require('socket.io')(http);
 const User = require('./models/user');
 const Group = require('./models/group');
 const Lesson = require('./models/lesson');
+const Message = require('./models/message');
 const users = require('./users');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
@@ -88,11 +89,12 @@ io.on('connection', (socket) => {
         } 
     })
 
-    socket.on('joinBoardGroup', (roomId, name, lastName)=>{
+    socket.on('joinBoardGroup', (roomId, name, lastName, id)=>{
         socket.join(roomId);
         socket.room = roomId;
         socket.name = name;
         socket.lastName = lastName;
+        socket.userId = id;
         if(roomsData[roomId]){
             roomsData[roomId].viewers.push(socket.id);
             socket.emit('joinedViewres');
@@ -104,7 +106,6 @@ io.on('connection', (socket) => {
             roomsData[roomId].editors.push(socket.id);
             roomsData[roomId].canvasDataBase64 = '';
             roomsData[roomId].canvasDataJson = '';
-            console.log(socket.id);
             socket.emit('joinedEditors');
         }
     })
@@ -112,6 +113,17 @@ io.on('connection', (socket) => {
     socket.on('sendMessage', (payload)=>{
         socket.to(socket.room).emit('sendMessage', payload, socket.name, socket.lastName);
         socket.emit('sendMessage', payload, socket.name, socket.lastName);
+        
+        console.log(socket.room)
+        Lesson.findOne({_id: socket.room}, function(err, lesson){
+            if(err)
+                console.log(err);
+            const message = new Message({content: payload, ownerId: socket.userId});
+            lesson.messages.push(message);
+            lesson.save();
+            message.save();
+        });
+        
     })
 
     socket.on('sendCanvasToViewers', (canvasDataURI)=>{
@@ -261,7 +273,7 @@ app.get('/group/:id/lesson/:lessonId', isLoggedIn, (req, res)=>{
     for(let i = 0; i < 15; i ++){
         dummyUsers.push(users[Math.floor(Math.random()*users.length)]);
     }
-	res.render('board', {groupId: req.params.LessonId, users: dummyUsers})
+	res.render('board', {groupId: req.params.lessonId, users: dummyUsers})
 })
 
 http.listen(3000, ()=>{

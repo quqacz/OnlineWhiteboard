@@ -2,8 +2,9 @@ const socket = io();
 
 socket.name = userName;
 socket.lastName = userLastName;
-
-socket.emit('joinBoardGroup', groupId, socket.name, socket.lastName);
+socket._id = currentUserId;
+socket.groupId = groupId;
+socket.emit('joinBoardGroup', socket.groupId, socket.name, socket.lastName, socket._id);
 
 socket.on('sendMessage', (payload, name, lastName)=>{
     const sendMessage = document.createElement('div');
