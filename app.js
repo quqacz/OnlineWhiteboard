@@ -89,23 +89,27 @@ io.on('connection', (socket) => {
         } 
     })
 
-    socket.on('joinBoardGroup', (roomId, name, lastName, id)=>{
+    socket.on('joinBoardGroup', (roomId, name, lastName, userId)=>{
         socket.join(roomId);
         socket.room = roomId;
         socket.name = name;
         socket.lastName = lastName;
-        socket.userId = id;
+        socket.userId = userId;
         if(roomsData[roomId]){
             roomsData[roomId].viewers.push(socket.id);
             socket.emit('joinedViewres');
-            socket.emit('sendCanvasToViewers', roomsData[roomId].canvasDataBase64);
+            socket.emit('sendCanvasToViewers', roomsData[roomId].canvasDataJson ? roomsData[roomId].canvasDataJson : '');
         }else{
             roomsData[roomId] = {};
             roomsData[roomId].editors = [];
             roomsData[roomId].viewers = [];
             roomsData[roomId].editors.push(socket.id);
-            roomsData[roomId].canvasDataBase64 = '';
-            roomsData[roomId].canvasDataJson = '';
+            Lesson.findOne({_id: socket.room}, function(err, lesson){
+                if(err)
+                    console.log(err)
+                roomsData[roomId].canvasDataJson = lesson.camvasContent;
+                socket.emit('sendCanvasToEditors', lesson.canvasContent);
+            })
             socket.emit('joinedEditors');
         }
     })
@@ -114,7 +118,6 @@ io.on('connection', (socket) => {
         socket.to(socket.room).emit('sendMessage', payload, socket.name, socket.lastName);
         socket.emit('sendMessage', payload, socket.name, socket.lastName);
         
-        console.log(socket.room)
         Lesson.findOne({_id: socket.room}, function(err, lesson){
             if(err)
                 console.log(err);
@@ -126,21 +129,23 @@ io.on('connection', (socket) => {
         
     })
 
-    socket.on('sendCanvasToViewers', (canvasDataURI)=>{
-        roomsData[socket.room].canvasDataBase64 = canvasDataURI;
-        let viewer = roomsData[socket.room].viewers;
-        for(let i = 0; i < viewer.length; i++){
-            io.to(viewer[i]).emit('sendCanvasToViewers', canvasDataURI);
-        }
-    })
-
-    socket.on('sendCanvasToEditors', (canvasDataURI)=>{
+    socket.on('sendCanvas', (canvasDataURI)=>{
         roomsData[socket.room].canvasDataJson = canvasDataURI;
         let editors = roomsData[socket.room].editors;
         for(let i = 0; i < editors.length; i++){
             if(editors[i] !== socket.id)
                 io.to(editors[i]).emit('sendCanvasToEditors', canvasDataURI);
         }
+
+        let viewer = roomsData[socket.room].viewers;
+        for(let i = 0; i < viewer.length; i++){
+            io.to(viewer[i]).emit('sendCanvasToViewers', canvasDataURI);
+        }
+
+        Lesson.updateOne({_id: socket.room}, {canvasContent: canvasDataURI}, function(err, doc){
+            if(err)
+                console.log(err);
+        })
     })
 });
 
@@ -187,7 +192,6 @@ app.get('/logout', (req,res)=>{
 app.get('/user/:id', isLoggedIn, async(req, res)=>{
     const user = await User.findOne({_id: req.user._id}).populate('groups');
     const ownedGroups = await Group.find({owner: req.user._id}).populate('students').populate('lessons');
-    console.log(ownedGroups)
     res.render('user', {user, ownedGroups})
 })
 

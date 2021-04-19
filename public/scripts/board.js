@@ -105,13 +105,13 @@ elipsa.addEventListener('click', ()=>{
 wyczysc.addEventListener('click', ()=>{
     canvasContent.lines.length = 0;
     ctx.clearRect(0, 0, canvasDimentions.width, canvasDimentions.height);
-    sendCanvasContentToViewers();
+    sendCanvasContent();
 })
 
 nowaTablica.addEventListener('click', ()=>{
     canvasContent.lines.length = 0;
     ctx.clearRect(0, 0, canvasDimentions.width, canvasDimentions.height);
-    sendCanvasContentToViewers();
+    sendCanvasContent();
 })
 
 lineColorPicker.addEventListener('change', ()=>{
@@ -152,8 +152,7 @@ canvas.addEventListener('mousemove', (event)=>{
         ctx.lineJoin = "round";
         ctx.lineTo(mousePos.x, mousePos.y);
         ctx.stroke();
-        sendCanvasContentToViewers();
-        sendCanvasContentToEditors();
+        sendCanvasContent();
     }
 })
 
@@ -182,8 +181,7 @@ canvas.addEventListener('mouseup', ()=>{
         ctx.lineTo(mousePos.x, mousePos.y);
         ctx.stroke();
         ctx.closePath();
-        sendCanvasContentToViewers();
-        sendCanvasContentToEditors();
+        sendCanvasContent();
     }
 })
 

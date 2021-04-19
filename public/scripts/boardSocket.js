@@ -23,9 +23,12 @@ socket.on('sendMessage', (payload, name, lastName)=>{
 })
 
 
-socket.on('sendCanvasToViewers', (dataURI)=>{
-    drawFromBase64(dataURI);
-    lastCanvasURI = dataURI;
+socket.on('sendCanvasToViewers', (jsonObject)=>{
+    let content ='';
+    if(jsonObject.length !== 0){
+        content = JSON.parse(jsonObject);
+        renderPoints(content.lines);
+    }
 })
 
 socket.on('sendCanvasToEditors', (jsonObject)=>{
@@ -51,16 +54,9 @@ function sendMessage(){
     socket.emit('sendMessage', payload);
 }
 
-function sendCanvasContentToViewers(){
-    let canvasContents = canvas.toDataURL();
-    let data = { image: canvasContents, date: Date.now() };
-    let string = JSON.stringify(data);
-    socket.emit('sendCanvasToViewers', string);
-}
-
-function sendCanvasContentToEditors(){
+function sendCanvasContent(){
     let canvasShapes = JSON.stringify(canvasContent);
-    socket.emit('sendCanvasToEditors', canvasShapes);
+    socket.emit('sendCanvas', canvasShapes);
 }
 
 function drawFromBase64(URI){
