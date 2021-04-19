@@ -7,7 +7,7 @@ const UserSchema = new Schema({
     lastName: String,
     username: String,
     password: String,
-    groups: [{ type: Schema.Types.ObjectId, ref: 'User'}]
+    groups: [{ type: Schema.Types.ObjectId, ref: 'Group'}]
 
 });
 

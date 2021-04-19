@@ -76,17 +76,16 @@ io.on('connection', (socket) => {
 
     socket.on('disconnecting', ()=>{
         let vievID, editID;
-        if(roomsData[socket.roomId] && roomsData[socket.roomId].viewers)
+        if(roomsData[socket.roomId] && roomsData[socket.roomId].viewers){
             vievID = roomsData[socket.roomId].viewers.includes(socket.id) ? roomsData[socket.roomId].viewers.indexOf(socket.id) : undefined;
-
-        if(roomsData[socket.roomId] && roomsData[socket.roomId].editors)
+            if(vievID)
+                roomsData[socket.roomId].viewers.splice(vievID, 1);
+        }
+        if(roomsData[socket.roomId] && roomsData[socket.roomId].editors){
             editID = roomsData[socket.roomId].editors.includes(socket.id) ? roomsData[socket.roomId].editors.indexOf(socket.id) : undefined;
-
-        if(vievID)
-            roomsData[socket.roomId].viewers.splice(vievID, 1);
-
-        if(editID)
-            roomsData[socket.roomId].editors.splice(editID, 1);
+            if(editID)
+                roomsData[socket.roomId].editors.splice(editID, 1);
+        } 
     })
 
     socket.on('joinBoardGroup', (roomId, name, lastName)=>{
@@ -174,8 +173,10 @@ app.get('/logout', (req,res)=>{
 })
 
 app.get('/user/:id', isLoggedIn, async(req, res)=>{
-    const user = User.findOne({_id: req.params.id});
-    res.render('user', {user})
+    const user = await User.findOne({_id: req.user._id}).populate('groups');
+    const ownedGroups = await Group.find({owner: req.user._id}).populate('students').populate('lessons');
+    console.log(ownedGroups)
+    res.render('user', {user, ownedGroups})
 })
 
 app.get('/group/add', isLoggedIn, (req,res)=>{
@@ -187,7 +188,7 @@ app.post('/group/add', isLoggedIn, async(req,res)=>{
         const {groupName, description} = req.body;
         const entryCode = ~~(Math.random()*10000000000);
 
-        const newGroup = new Group({ groupName, description, entryCode })
+        const newGroup = new Group({ groupName, description, entryCode, owner: req.user._id})
 
         const group = await newGroup.save();
         res.redirect('/group/'+group._id);
@@ -229,7 +230,7 @@ app.get('/group/:id', isLoggedIn, async(req, res)=>{
 	
 	try{
         const group = await Group.findOne({_id: req.params.id}).populate('lessons');
-        res.render('group', {groupId: req.params.id, groupData: group})
+        res.render('group', {groupData: group})
     }catch(e){
         console.log(e);
         res.redirect('/');
@@ -240,17 +241,29 @@ app.delete('/group/:id/delete', isLoggedIn, (req, res)=>{
     res.send('strona do usuwania usera z grupy')
 })
 
-app.post('/group/:id/add', isLoggedIn, (req, res)=>{
-    res.send('strona do dodawnia usera do grupy')
+app.post('/user/:id/joinGroup', isLoggedIn, async(req, res)=>{
+    try{
+        const {entryCode} = req.body;
+        const group = await Group.findOne({entryCode: entryCode});
+        const student = await User.findOne({_id: req.user._id});
+        group.students.push(student);
+        group.save();
+        student.groups.push(group);
+        student.save();
+        res.redirect('/user/'+req.user._id);
+    }catch(e){
+        console.log(e);
+        res.redirect('/user/'+req.user._id);
+    }
 })
 
-app.get('/group/:id/board', isLoggedIn, (req, res)=>{
+app.get('/group/:id/lesson/:lessonId', isLoggedIn, (req, res)=>{
     let dummyUsers = [];
     
     for(let i = 0; i < 15; i ++){
         dummyUsers.push(users[Math.floor(Math.random()*users.length)]);
     }
-	res.render('board', {groupId: req.params.id, users: dummyUsers})
+	res.render('board', {groupId: req.params.LessonId, users: dummyUsers})
 })
 
 http.listen(3000, ()=>{

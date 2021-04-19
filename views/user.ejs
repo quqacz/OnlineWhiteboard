@@ -12,13 +12,10 @@
 
 		<div class="d-flex flex-row align-self-baseline flex-fill ">
 
-			<div class="border border-primary p-2 flex-fill" >
-				Dołącz do grupy
-			</div>
-
-			<div class="border border-primary p-2 flex-fill" >
-				Dołącz
-			</div>
+			<form action="/user/<%-currentUser._id%>/joinGroup" method="POST">
+				<input type="text" name="entryCode">
+				<button> Dołącz</button>
+			</form>
 
 		</div> 
 
@@ -39,4 +36,5 @@
 		</div>
 	</span>
 </div>
+
 <%- include ('partials/footer') %>
