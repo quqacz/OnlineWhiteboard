@@ -5,8 +5,9 @@ const GroupSchema = new Schema({
     groupName: { type: String, required: true},
     entryCode: String,
     description: String,
-    ownerId: {type: Schema.Types.ObjectId, ref: 'User'},
-    lessons:[{ type: Schema.Types.ObjectId, ref: 'Lesson' }]
+    owner: {type: Schema.Types.ObjectId, ref: 'User', required: true},
+    lessons:[{ type: Schema.Types.ObjectId, ref: 'Lesson' }],
+    students: [{type: Schema.Types.ObjectId, ref: 'User'}]
 });
 
 module.exports = mongoose.model('Group', GroupSchema);
