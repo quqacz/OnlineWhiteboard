@@ -8,6 +8,7 @@ const io = require('socket.io')(http);
 const User = require('./models/user');
 const Group = require('./models/group');
 const Lesson = require('./models/lesson');
+const Message = require('./models/message');
 const users = require('./users');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
@@ -88,23 +89,27 @@ io.on('connection', (socket) => {
         } 
     })
 
-    socket.on('joinBoardGroup', (roomId, name, lastName)=>{
+    socket.on('joinBoardGroup', (roomId, name, lastName, userId)=>{
         socket.join(roomId);
         socket.room = roomId;
         socket.name = name;
         socket.lastName = lastName;
+        socket.userId = userId;
         if(roomsData[roomId]){
             roomsData[roomId].viewers.push(socket.id);
             socket.emit('joinedViewres');
-            socket.emit('sendCanvasToViewers', roomsData[roomId].canvasDataBase64);
+            socket.emit('sendCanvasToViewers', roomsData[roomId].canvasDataJson ? roomsData[roomId].canvasDataJson : '');
         }else{
             roomsData[roomId] = {};
             roomsData[roomId].editors = [];
             roomsData[roomId].viewers = [];
             roomsData[roomId].editors.push(socket.id);
-            roomsData[roomId].canvasDataBase64 = '';
-            roomsData[roomId].canvasDataJson = '';
-            console.log(socket.id);
+            Lesson.findOne({_id: socket.room}, function(err, lesson){
+                if(err)
+                    console.log(err)
+                roomsData[roomId].canvasDataJson = lesson.camvasContent;
+                socket.emit('sendCanvasToEditors', lesson.canvasContent);
+            })
             socket.emit('joinedEditors');
         }
     })
@@ -112,23 +117,35 @@ io.on('connection', (socket) => {
     socket.on('sendMessage', (payload)=>{
         socket.to(socket.room).emit('sendMessage', payload, socket.name, socket.lastName);
         socket.emit('sendMessage', payload, socket.name, socket.lastName);
+        
+        Lesson.findOne({_id: socket.room}, function(err, lesson){
+            if(err)
+                console.log(err);
+            const message = new Message({content: payload, ownerId: socket.userId});
+            lesson.messages.push(message);
+            lesson.save();
+            message.save();
+        });
+        
     })
 
-    socket.on('sendCanvasToViewers', (canvasDataURI)=>{
-        roomsData[socket.room].canvasDataBase64 = canvasDataURI;
-        let viewer = roomsData[socket.room].viewers;
-        for(let i = 0; i < viewer.length; i++){
-            io.to(viewer[i]).emit('sendCanvasToViewers', canvasDataURI);
-        }
-    })
-
-    socket.on('sendCanvasToEditors', (canvasDataURI)=>{
+    socket.on('sendCanvas', (canvasDataURI)=>{
         roomsData[socket.room].canvasDataJson = canvasDataURI;
         let editors = roomsData[socket.room].editors;
         for(let i = 0; i < editors.length; i++){
             if(editors[i] !== socket.id)
                 io.to(editors[i]).emit('sendCanvasToEditors', canvasDataURI);
         }
+
+        let viewer = roomsData[socket.room].viewers;
+        for(let i = 0; i < viewer.length; i++){
+            io.to(viewer[i]).emit('sendCanvasToViewers', canvasDataURI);
+        }
+
+        Lesson.updateOne({_id: socket.room}, {canvasContent: canvasDataURI}, function(err, doc){
+            if(err)
+                console.log(err);
+        })
     })
 });
 
@@ -175,7 +192,6 @@ app.get('/logout', (req,res)=>{
 app.get('/user/:id', isLoggedIn, async(req, res)=>{
     const user = await User.findOne({_id: req.user._id}).populate('groups');
     const ownedGroups = await Group.find({owner: req.user._id}).populate('students').populate('lessons');
-    console.log(ownedGroups)
     res.render('user', {user, ownedGroups})
 })
 
@@ -261,7 +277,7 @@ app.get('/group/:id/lesson/:lessonId', isLoggedIn, (req, res)=>{
     for(let i = 0; i < 15; i ++){
         dummyUsers.push(users[Math.floor(Math.random()*users.length)]);
     }
-	res.render('board', {groupId: req.params.LessonId, users: dummyUsers})
+	res.render('board', {groupId: req.params.lessonId, users: dummyUsers})
 })
 
 http.listen(3000, ()=>{
