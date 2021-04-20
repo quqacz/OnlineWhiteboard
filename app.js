@@ -98,7 +98,11 @@ io.on('connection', (socket) => {
         if(roomsData[roomId]){
             roomsData[roomId].viewers.push(socket.id);
             socket.emit('joinedViewres');
-            socket.emit('sendCanvasToViewers', roomsData[roomId].canvasDataJson ? roomsData[roomId].canvasDataJson : '');
+            Lesson.findOne({_id: socket.room}, function(err, lesson){
+                if(err)
+                    console.log(err)
+                socket.emit('sendCanvasToViewers', lesson.canvasContent);
+            })
         }else{
             roomsData[roomId] = {};
             roomsData[roomId].editors = [];
@@ -107,7 +111,6 @@ io.on('connection', (socket) => {
             Lesson.findOne({_id: socket.room}, function(err, lesson){
                 if(err)
                     console.log(err)
-                roomsData[roomId].canvasDataJson = lesson.camvasContent;
                 socket.emit('sendCanvasToEditors', lesson.canvasContent);
             })
             socket.emit('joinedEditors');
@@ -130,7 +133,6 @@ io.on('connection', (socket) => {
     })
 
     socket.on('sendCanvas', (canvasDataURI)=>{
-        roomsData[socket.room].canvasDataJson = canvasDataURI;
         let editors = roomsData[socket.room].editors;
         for(let i = 0; i < editors.length; i++){
             if(editors[i] !== socket.id)

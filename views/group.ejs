@@ -10,20 +10,45 @@
 				</div>
 				<div class="col-sm-9">
 					<div class="d-flex flex-column" style="height: 100%">
-						<div class="d-flex" style="height: 25%; align-items: center">Nazwa Grupy</div>
-						<div class="d-flex" style="height: 50%; align-items: center">Opis Grupy</div>
-						<div class="d-flex" style="height: 25%; align-items: center">Kod Dołączenia</div>
+						<div class="d-flex" style="height: 25%; align-items: center"><%= groupData.groupName%></div>
+						<div class="d-flex" style="height: 50%; align-items: center"><%= groupData.description%></div>
+						<div class="d-flex" style="height: 25%; align-items: center"><%= groupData.entryCode%></div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-	<div class="row">
-		<a class="nav-link active" aria-current="page" href="/group/:id/board">
-			<button type="button" class="btn btn-outline-primary col-sm-3" style="margin-top: 10px">Dołącz do tablicy</button>
-		</a>
+	<div class="row justify-content-center p-1" style="margin-top: 10px">
+		<h1>Dodaj Nową Lekcję</h1>
+		<form action="/group/<%= groupData._id%>/lesson/add" method="POST">
+			<label for="topic">Tytuł Lekcji:</label><br>
+			<input type="text" name="topic" class="borderHighlight" required>
+			<button class="btn btn-outline-primary">Dodaj lekcje</button>
+		</form>
 	</div>
-	<div class="row borderMain justify-content-center" style="margin-top: 10px">
+	<div class="row justify-content-center p-1" style="margin-top: 10px">
+		<h1>Lekcje</h1>
+		<%for(let i = 0; i < groupData.lessons.length; i++){%>
+		<div class="row borderHighlight m-2 p-2" style="width: 90%">
+			<div class="col-sm-1">
+				<img src="https://wiki.dave.eu/images/4/47/Placeholder.png" class="img-thumbnail rounded-circle" alt="img_user">
+			</div>
+			<div class="col-sm-9">
+				<div class="d-flex flex-column" style="height: 100%">
+					<div class="d-flex" style="height: 100%; align-items: center"><%= groupData.lessons[i].topic%></div>
+				</div>
+			</div>
+			<div class="col-sm-2">
+				<div class="d-flex flex-column center" style="height: 100%">
+					<a class="nav-link active" aria-current="page" href="/group/<%= groupData._id%>/lesson/<%= groupData.lessons[i]._id%>">
+						<button type="button" class="btn btn-outline-primary">Dołącz do tablicy</button>
+					</a>
+				</div>
+			</div>
+		</div>
+		<%};%>
+	</div>
+	<div class="row justify-content-center p-1" style="margin-top: 10px">
 		<h1>Członkowie Grupy</h1>
 		<%for(let i = 0; i < users.length; i++){%>
 		<div class="row borderHighlight m-2 p-2" style="width: 90%">
