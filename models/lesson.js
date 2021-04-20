@@ -6,7 +6,10 @@ const LessonSchema = new Schema({
         type: String,
         required: true
     },
-    canvasContent: String,
+    canvasContent: {
+        type: String,
+        default: ''
+    },
     messages: [{ type: Schema.Types.ObjectId, ref: 'Message' }]
 });
 
