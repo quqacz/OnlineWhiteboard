@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const users = require('../users');
 const Lesson = require('../models/lesson');
+const Group = require('../models/group');
 const {isLoggedIn} = require('../middleware');
 
 router.get('/add', isLoggedIn, (req,res)=>{
@@ -23,15 +24,6 @@ router.post('/add', isLoggedIn, async(req, res)=>{
         console.log(e)
         res.redirect('/group/'+req.params.id);
     }
-})
-
-router.get('/:lessonId', isLoggedIn, (req, res)=>{
-    let dummyUsers = [];
-    
-    for(let i = 0; i < 15; i ++){
-        dummyUsers.push(users[Math.floor(Math.random()*users.length)]);
-    }
-	res.render('board', {groupId: req.params.lessonId, users: dummyUsers})
 })
 
 module.exports = router;

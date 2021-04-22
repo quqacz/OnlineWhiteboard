@@ -4,7 +4,57 @@ socket.name = userName;
 socket.lastName = userLastName;
 socket._id = currentUserId;
 socket.groupId = groupId;
-socket.emit('joinBoardGroup', socket.groupId, socket.name, socket.lastName, socket._id);
+socket.emit('joinBoardGroup', socket.groupId, socket.name, socket.lastName, socket._id, groupOwner);
+
+socket.on('connectedUsers', (Editors, Viewers)=>{
+    const editors = JSON.parse(Editors);
+    
+    console.log(editors);
+    for(let i = 0; i < editors.length; i++){
+        const userFrame = document.createElement('div');
+        const userData = document.createElement('span');
+
+        userData.textContent = `${editors[i].name} ${editors[i].lastName}`;
+        userFrame.appendChild(userData);
+        if(socket._id === groupOwner && socket._id !== editors.userId){
+            const removeButton = document.createElement('button');
+            removeButton.innerHTML = "Usuń z lekcji";
+            removeButton.addEventListener('click', ()=>{
+                socket.emit('forceRemove', editors[i].userId);
+            })
+            userFrame.appendChild(removeButton);
+        }
+        boardUsers.appendChild(userFrame);
+    }
+    boardUsers.appendChild(document.createElement('hr'));
+
+    console.log('viwer table');
+    const viewers = JSON.parse(Viewers);
+    for(let i = 0; i < viewers.legth; i ++){
+        console.log('viwer table');
+        const userFrame = document.createElement('div');
+        const userData = document.createElement('span');
+
+        userData.textContent = `${viewers[i].name} ${viewers[i].lastName}`;
+        userFrame.appendChild(userData);
+        if(socket._id === groupOwner){
+            const removeButton = document.createElement('button');
+            removeButton.innerHTML = "Usuń z lekcji";
+            removeButton.addEventListener('click', ()=>{
+                socket.emit('forceRemove', viewers[i].id);
+            })
+            userFrame.appendChild(removeButton);
+
+            const giveDrawingPermition = document.createElement('button');
+            giveDrawingPermition.innerHTML = 'Daj rysować';
+            giveDrawingPermition.addEventListener('click', ()=>{
+                socket.emit('givePermition', viewers[i].id);
+            })
+            userFrame.appendChild(giveDrawingPermition);
+        }
+        boardUsers.appendChild(userFrame);
+    }
+})
 
 socket.on('sendMessage', (payload, name, lastName)=>{
     const sendMessage = document.createElement('div');
@@ -43,10 +93,18 @@ socket.on('sendCanvasToEditors', (jsonObject)=>{
 
 socket.on('joinedViewres', ()=>{
     isViewer = true;
+    let controls = document.querySelectorAll('.drawingControls');
+    for(let i = 0; i < controls.length; i++){
+        controls[i].classList.add('biedaHidden');
+    }
 })
 
 socket.on('joinedEditors', ()=>{
     isViewer = false;
+    let controls = document.querySelectorAll('drawingControls');
+    for(let i = 0; i < controls.length; i++){
+        controls[i].classList.remove('biedaHidden');
+    }
 })
 
 function sendMessage(){

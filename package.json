@@ -4,15 +4,13 @@
   "description": "prejekt grupowy na inzynierie oprogramowania",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon app.js",
-    "seedDB": "node seeds.js"
+    "start": "nodemon app.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/quqacz/inzynieriaProjekt.git"
   },
-  "author": "Adrian Kunikowski, Marcin Nowak",
+  "author": "Adrian Kunikowski, Marcin Nowak, Kacper Węgrzynowski",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/quqacz/inzynieriaProjekt/issues"

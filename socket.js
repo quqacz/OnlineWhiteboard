@@ -1,4 +1,5 @@
 const Lesson = require('./models/lesson')
+const Message = require('./models/message');
 const roomsData = {};
 
 exports = module.exports = function(io){
@@ -23,32 +24,53 @@ exports = module.exports = function(io){
             } 
         })
     
-        socket.on('joinBoardGroup', (roomId, name, lastName, userId)=>{
+        socket.on('joinBoardGroup', (roomId, name, lastName, userId, groupOwner)=>{
             socket.join(roomId);
             socket.room = roomId;
             socket.name = name;
             socket.lastName = lastName;
             socket.userId = userId;
             if(roomsData[roomId]){
-                roomsData[roomId].viewers.push(socket.id);
-                socket.emit('joinedViewres');
+
+                if(socket.userId === groupOwner){
+                    roomsData[roomId].editors.push({id: socket.id, name: socket.name, lastName: socket.lastName});
+                    socket.emit('joinedEditors');
+                }else{
+                    roomsData[roomId].viewers.push({id: socket.id, name: socket.name, lastName: socket.lastName});
+                    socket.emit('joinedViewres');
+                }
+                
                 Lesson.findOne({_id: socket.room}, function(err, lesson){
                     if(err)
                         console.log(err)
-                    socket.emit('sendCanvasToViewers', lesson.canvasContent);
+                    if(socket.userId === groupOwner)
+                        socket.emit('sendCanvasToEditors', lesson.canvasContent);
+                    else
+                        socket.emit('sendCanvasToViewers', lesson.canvasContent);
                 })
             }else{
                 roomsData[roomId] = {};
                 roomsData[roomId].editors = [];
                 roomsData[roomId].viewers = [];
-                roomsData[roomId].editors.push(socket.id);
+
+                if(socket.userId === groupOwner){
+                    roomsData[roomId].editors.push({id: socket.id, name: socket.name, lastName: socket.lastName});
+                    socket.emit('joinedEditors');
+                }else{
+                    roomsData[roomId].viewers.push({id: socket.id, name: socket.name, lastName: socket.lastName});
+                    socket.emit('joinedViewres');
+                }
+
                 Lesson.findOne({_id: socket.room}, function(err, lesson){
                     if(err)
                         console.log(err)
-                    socket.emit('sendCanvasToEditors', lesson.canvasContent);
+                    if(socket.userId === groupOwner)
+                        socket.emit('sendCanvasToEditors', lesson.canvasContent);
+                    else
+                        socket.emit('sendCanvasToViewers', lesson.canvasContent);
                 })
-                socket.emit('joinedEditors');
             }
+            socket.emit('connectedUsers', JSON.stringify(roomsData[roomId].editors), JSON.stringify(roomsData[roomId].viewers));
         })
     
         socket.on('sendMessage', (payload)=>{

@@ -4,7 +4,7 @@
 <!-- pasek narzędzi -->
 <div class="container-fluid" >
     <div class="row">
-        <div class="col-5">
+        <div class="col-5 drawingControls">
             <div class="btn-group" role="group" aria-label="Basic example">
                 <button type="button" class="btn btn-danger" id="nowaTablica">Nowa tablica</button>
                 <button type="button" class="btn btn-danger" id="wyczysc">Wyczyść</button>
@@ -15,7 +15,7 @@
                 <button type="button" class="btn btn-secondary" id="elipsa">Elipsa</button>
             </div>
         </div>
-        <div class="col-5">
+        <div class="col-5 drawingControls">
             <div class="container-fluid" id="lineControls">
                 <label for="lineColor">Kolor</label>
                 <input type="color" id="lineColor">
@@ -59,16 +59,16 @@
         </div>
         <div class="col-2 borderHighlight noPaddingAndMargin">
             <div class="container-fluid borderHighlight scrollable" id="connectedUsers">
-                <%for(let i = 0; i < users.length; i++){%>
-                    <img src="<%=users[i].profile_pic%>" alt="">
-                    <p><%= users[i].first_name%> </p>
-                    <p><%= users[i].last_name%> </p>
-                    <hr>
-                <%};%>
+                connected users
             </div>
             <div class="container-fluid borderHighlight hideElement noPaddingAndMargin" id="chatBox">
                 <div class="container-fluid borderHighlight noPaddingAndMargin chatBoxMessagesHeight scrollable" id="chatBoxMessages">
-                    
+                    <%for(let i = 0; i < messages.length; i++){%>
+                        <div>
+                            <span><%- messages[i].ownerId.name%> <%- messages[i].ownerId.lastName%></span>
+                            <p> <%- messages[i].content%></p>
+                        </div>
+                    <%}%>
                 </div>
                 <div class="input-group borderHighlight noPaddingAndMargin chatBoxHeight">
                     <span class="input-group-text" id="sendChatMessage">Wyślij</span>
@@ -86,6 +86,7 @@
     const userName = '<%- currentUser.name%>';
     const userLastName = '<%- currentUser.lastName%>';
     const currentUserId = '<%- currentUser._id%>';
+    const groupOwner = '<%- owner%>';
 </script> 
 <script src="/scripts/board.js"></script>
 <script src="/scripts/boardSocket.js"></script>
