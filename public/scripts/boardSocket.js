@@ -6,9 +6,9 @@ socket._id = currentUserId;
 socket.groupId = groupId;
 socket.emit('joinBoardGroup', socket.groupId, socket.name, socket.lastName, socket._id, groupOwner);
 
-socket.on('connectedUsers', (Editors, Viewers)=>{
-    const editors = JSON.parse(Editors);
-    
+socket.on('connectedUsers', (connectedUsers)=>{
+    const editors = JSON.parse(connectedUsers).editors;
+    const viewers = JSON.parse(connectedUsers).viewers;
     console.log(editors);
     for(let i = 0; i < editors.length; i++){
         const userFrame = document.createElement('div');
@@ -28,8 +28,6 @@ socket.on('connectedUsers', (Editors, Viewers)=>{
     }
     boardUsers.appendChild(document.createElement('hr'));
 
-    console.log('viwer table');
-    const viewers = JSON.parse(Viewers);
     for(let i = 0; i < viewers.legth; i ++){
         console.log('viwer table');
         const userFrame = document.createElement('div');
@@ -77,6 +75,8 @@ socket.on('sendCanvasToViewers', (jsonObject)=>{
     let content ='';
     if(jsonObject.length !== 0){
         content = JSON.parse(jsonObject);
+        canvasContent.lines = content.lines;
+        canvasContent.shapes = content.shapes;
         renderPoints(content.lines);
     }
 })

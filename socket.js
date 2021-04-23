@@ -11,35 +11,20 @@ exports = module.exports = function(io){
         });
     
         socket.on('disconnecting', ()=>{
-            let vievID, editID;
-            if(roomsData[socket.roomId] && roomsData[socket.roomId].viewers){
-                vievID = roomsData[socket.roomId].viewers.includes(socket.id) ? roomsData[socket.roomId].viewers.indexOf(socket.id) : undefined;
-                if(vievID)
-                    roomsData[socket.roomId].viewers.splice(vievID, 1);
-            }
-            if(roomsData[socket.roomId] && roomsData[socket.roomId].editors){
-                editID = roomsData[socket.roomId].editors.includes(socket.id) ? roomsData[socket.roomId].editors.indexOf(socket.id) : undefined;
-                if(editID)
-                    roomsData[socket.roomId].editors.splice(editID, 1);
-            } 
+            console.log(roomsData[socket.room]);
+            if(roomsData[socket.room].viewers)
+                delete roomsData[socket.room].viewers[socket.id];
+            if(roomsData[socket.room].editors)
+                delete roomsData[socket.room].editors[socket.id];
         })
     
         socket.on('joinBoardGroup', (roomId, name, lastName, userId, groupOwner)=>{
             socket.join(roomId);
-            socket.room = roomId;
-            socket.name = name;
-            socket.lastName = lastName;
-            socket.userId = userId;
+            socket.room = roomId; // :lessonId
+            socket.name = name; //User.name
+            socket.lastName = lastName; // User.lastName
+            socket.userId = userId; // User._id
             if(roomsData[roomId]){
-
-                if(socket.userId === groupOwner){
-                    roomsData[roomId].editors.push({id: socket.id, name: socket.name, lastName: socket.lastName});
-                    socket.emit('joinedEditors');
-                }else{
-                    roomsData[roomId].viewers.push({id: socket.id, name: socket.name, lastName: socket.lastName});
-                    socket.emit('joinedViewres');
-                }
-                
                 Lesson.findOne({_id: socket.room}, function(err, lesson){
                     if(err)
                         console.log(err)
@@ -50,17 +35,8 @@ exports = module.exports = function(io){
                 })
             }else{
                 roomsData[roomId] = {};
-                roomsData[roomId].editors = [];
-                roomsData[roomId].viewers = [];
-
-                if(socket.userId === groupOwner){
-                    roomsData[roomId].editors.push({id: socket.id, name: socket.name, lastName: socket.lastName});
-                    socket.emit('joinedEditors');
-                }else{
-                    roomsData[roomId].viewers.push({id: socket.id, name: socket.name, lastName: socket.lastName});
-                    socket.emit('joinedViewres');
-                }
-
+                roomsData[roomId].editors = {};
+                roomsData[roomId].viewers = {};
                 Lesson.findOne({_id: socket.room}, function(err, lesson){
                     if(err)
                         console.log(err)
@@ -70,7 +46,20 @@ exports = module.exports = function(io){
                         socket.emit('sendCanvasToViewers', lesson.canvasContent);
                 })
             }
-            socket.emit('connectedUsers', JSON.stringify(roomsData[roomId].editors), JSON.stringify(roomsData[roomId].viewers));
+
+            if(socket.userId === groupOwner){
+                roomsData[roomId].editors[socket.id] = {name: socket.name, lastName: socket.lastName};
+                socket.emit('joinedEditors');
+            }else{
+                roomsData[roomId].viewers[socket.id] = {name: socket.name, lastName: socket.lastName};
+                socket.emit('joinedViewres');
+            }
+            const usersData = {
+                editors: roomsData[roomId].editors,
+                viewers: roomsData[roomId].viewers
+            }
+            console.log(JSON.stringify(usersData));
+            socket.emit('connectedUsers', JSON.stringify(usersData));
         })
     
         socket.on('sendMessage', (payload)=>{

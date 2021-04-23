@@ -187,7 +187,7 @@ canvas.addEventListener('mouseup', ()=>{
 
 window.addEventListener('resize', ()=>{
     resizeCanvas();
-    drawFromBase64(lastCanvasURI);
+    renderPoints(canvasContent.lines);
 })
 
 
