@@ -11,10 +11,9 @@ exports = module.exports = function(io){
         });
     
         socket.on('disconnecting', ()=>{
-            console.log(roomsData[socket.room]);
-            if(roomsData[socket.room].viewers)
+            if(roomsData[socket.room] && roomsData[socket.room].viewers)
                 delete roomsData[socket.room].viewers[socket.id];
-            if(roomsData[socket.room].editors)
+            if(roomsData[socket.room] && roomsData[socket.room].editors)
                 delete roomsData[socket.room].editors[socket.id];
         })
     
@@ -58,7 +57,8 @@ exports = module.exports = function(io){
                 editors: roomsData[roomId].editors,
                 viewers: roomsData[roomId].viewers
             }
-            console.log(JSON.stringify(usersData));
+            // console.log(JSON.stringify(usersData));
+            socket.to(socket.room).emit('connectedUsers', JSON.stringify(usersData));
             socket.emit('connectedUsers', JSON.stringify(usersData));
         })
     
@@ -78,13 +78,13 @@ exports = module.exports = function(io){
         })
     
         socket.on('sendCanvas', (canvasDataURI)=>{
-            let editors = roomsData[socket.room].editors;
+            let editors = Object.keys(roomsData[socket.room].editors);
             for(let i = 0; i < editors.length; i++){
                 if(editors[i] !== socket.id)
                     io.to(editors[i]).emit('sendCanvasToEditors', canvasDataURI);
             }
     
-            let viewer = roomsData[socket.room].viewers;
+            let viewer = Object.keys(roomsData[socket.room].viewers);
             for(let i = 0; i < viewer.length; i++){
                 io.to(viewer[i]).emit('sendCanvasToViewers', canvasDataURI);
             }
@@ -94,5 +94,33 @@ exports = module.exports = function(io){
                     console.log(err);
             })
         })
+
+        socket.on('giveDrawingPer', (id, name, lastName)=>{
+            roomsData[socket.room].editors[id] = {name: name, lastName: lastName};
+            delete roomsData[socket.room].viewers[id];
+            io.to(id).emit('joinedEditors');
+
+            const usersData = {
+                editors: roomsData[socket.room].editors,
+                viewers: roomsData[socket.room].viewers
+            }
+            socket.to(socket.room).emit('connectedUsers', JSON.stringify(usersData));
+            socket.emit('connectedUsers', JSON.stringify(usersData));
+
+        })
+
+        socket.on('removeDrawingPer', (id, name, lastName)=>{
+            roomsData[socket.room].viewers[id] = {name: name, lastName: lastName};
+            delete roomsData[socket.room].editors[id];
+            io.to(id).emit('joinedViewres');
+            const usersData = {
+                editors: roomsData[socket.room].editors,
+                viewers: roomsData[socket.room].viewers
+            }
+            socket.to(socket.room).emit('connectedUsers', JSON.stringify(usersData));
+            socket.emit('connectedUsers', JSON.stringify(usersData));
+        })
+
+        
     });
 }
