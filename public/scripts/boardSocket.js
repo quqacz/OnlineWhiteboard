@@ -45,8 +45,15 @@ socket.on('sendCanvasToViewers', (jsonObject)=>{
     if(jsonObject.length !== 0){
         content = JSON.parse(jsonObject);
         canvasContent.lines = content.lines;
-        canvasContent.shapes = content.shapes;
-        renderPoints(content.lines);
+        canvasContent.Lines = content.Lines;
+        redrawCanvas(content);
+        // renderPoints(content.lines);
+        // renderLines(content.Lines);
+        // renderRects(content.rects);
+        // renderEllipese(content.ellipses);
+        // showTmpLine(content.tmpLine);
+        // showTmpRect(content.tmpRect);
+        // showTmpEllipse(content.tmpEllipse);
     }
 })
 
@@ -56,8 +63,11 @@ socket.on('sendCanvasToEditors', (jsonObject)=>{
     if(jsonObject.length !== 0){
         content = JSON.parse(jsonObject);
         canvasContent.lines = content.lines;
-        canvasContent.shapes = content.shapes;
-        renderPoints(content.lines);
+        canvasContent.Lines = content.Lines;
+        redrawCanvas(content);
+        // renderLines(content.Lines);
+        // renderRects(content.rects);
+        // renderEllipese(content.ellipses);
     }
 })
 
