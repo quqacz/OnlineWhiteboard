@@ -147,7 +147,7 @@ canvas.addEventListener('mousemove', (event)=>{
     if(isViewer) return;
 
     if(settings.tool === 'RYSIK' && drawing){
-        canvasContent.lines.push(new Point(mousePos.x, mousePos.y, settings.strokeWidth, settings.strokeColor, true, canvasDimentions));
+        canvasContent.lines.push(new Point(mousePos.x, mousePos.y, settings.strokeWidth, settings.strokeColor, true, canvasDimentions, false));
         ctx.lineCap = "round";
         ctx.lineJoin = "round";
         ctx.lineTo(mousePos.x, mousePos.y);
@@ -160,7 +160,7 @@ canvas.addEventListener('mousedown', ()=>{
     if(isViewer) return;
 
     if(settings.tool === 'RYSIK'){
-        canvasContent.lines.push(new ControlPoint(mousePos.x, mousePos.y, settings.strokeWidth, settings.strokeColor, true, canvasDimentions));
+        canvasContent.lines.push(new Point(mousePos.x, mousePos.y, settings.strokeWidth, settings.strokeColor, true, canvasDimentions, true));
         drawing = true;
         ctx.lineWidth = settings.strokeWidth;
         ctx.strokeStyle = settings.strokeColor;
@@ -173,7 +173,8 @@ canvas.addEventListener('mouseup', ()=>{
     if(isViewer) return;
 
     if(settings.tool === 'RYSIK'){
-        canvasContent.lines.push(new ControlPoint(mousePos.x, mousePos.y, settings.strokeWidth, settings.strokeColor, false, canvasDimentions));
+        canvasContent.lines.push(new Point(mousePos.x, mousePos.y, settings.strokeWidth, settings.strokeColor, true, canvasDimentions, false));
+        canvasContent.lines.push(new Point(mousePos.x, mousePos.y, settings.strokeWidth, settings.strokeColor, false, canvasDimentions, false));
         drawing = false;
         ctx.lineCap = "round";
         ctx.lineJoin = "round";
@@ -223,40 +224,39 @@ function resizeCanvas(){
 }
 
 function renderPoints(linesArray){
+    ctx.clearRect(0,0, canvas.width, canvas.height);
+    ctx.beginPath();
     for(let i = 0; i < linesArray.length; i++){
-        if(linesArray[i] instanceof ControlPoint){
+        if(linesArray[i].isControl){
+            ctx.moveTo(linesArray[i].x * canvasDimentions.width, linesArray[i].y * canvasDimentions.height);
+            ctx.beginPath();
+            ctx.lineWidth = linesArray[i].size;
+            ctx.strokeStyle = linesArray[i].color;
+        }else{
             if(linesArray[i].drawable){
-                ctx.moveTo(linesArray[i].x * canvasDimentions.width, linesArray[i].y * canvasDimentions.height);
-                ctx.beginPath();
-                ctx.lineWidth = linesArray[i].size;
-                ctx.strokeStyle = linesArray[i].color;
+                ctx.lineCap = "round";
+                ctx.lineJoin = "round";
+                ctx.lineTo(linesArray[i].x * canvasDimentions.width, linesArray[i].y * canvasDimentions.height)
             }else{
                 ctx.lineCap = "round";
                 ctx.lineJoin = "round";
                 ctx.lineTo(linesArray[i].x * canvasDimentions.width, linesArray[i].y * canvasDimentions.height)
                 ctx.stroke();
-                ctx.closePath();
             }
-        }else{
-            ctx.lineCap = "round";
-            ctx.lineJoin = "round";
-            ctx.lineTo(linesArray[i].x * canvasDimentions.width, linesArray[i].y * canvasDimentions.height)
         }
     }
+    ctx.stroke();
+    ctx.beginPath();
+    
 }
 
 class Point{
-	constructor(x, y, dimentions = {}){
+	constructor(x, y, size, color, drawable, dimentions = {}, isControl){
 		this.x = x / dimentions.width;
 		this.y = y / dimentions.height;
-	}
-}
-class ControlPoint extends Point{
-    constructor(x, y, size, color, drawable, dimentions = {}){
-        super(x, y, dimentions);
+        this.isControl = isControl;
 		this.size = size;
 		this.color = color;
         this.drawable = drawable;
-    }
+	}
 }
-
