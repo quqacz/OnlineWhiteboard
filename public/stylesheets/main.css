@@ -11,6 +11,10 @@
 	justify-content: center;
 }
 
+.bigfont{
+	font-size: 40px;
+}
+
 .hideElement{
     display: none;
 }
