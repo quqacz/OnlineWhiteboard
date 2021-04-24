@@ -7,7 +7,8 @@ const {isLoggedIn} = require('../middleware');
 router.get('/:id', isLoggedIn, async(req, res)=>{
     const user = await User.findOne({_id: req.user._id}).populate('groups');
     const ownedGroups = await Group.find({owner: req.user._id}).populate('students').populate('lessons');
-    res.render('user', {user, ownedGroups})
+	const groupsBelongedTo = await Group.find({students: req.user._id});
+    res.render('user', {user, ownedGroups, groupsBelongedTo})
 })
 
 router.post('/:id/joinGroup', isLoggedIn, async(req, res)=>{
