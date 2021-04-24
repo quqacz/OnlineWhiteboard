@@ -36,20 +36,20 @@
 	</div>
 	<div class="row justify-content-center p-1" style="margin-top: 10px">
 		<h1>Grupy do których należysz:</h1>
-		<%for(let i = 0; i < groupsBelongedTo.length; i++){%>
+		<%for(let i = 0; i < user.groups.length; i++){%>
 		<div class="row borderHighlight m-2 p-2" style="width: 90%">
 			<div class="col-sm-1">
 				<img src="https://wiki.dave.eu/images/4/47/Placeholder.png" class="img-thumbnail rounded-circle" alt="img_user">
 			</div>
 			<div class="col-sm-9">
 				<div class="d-flex flex-column" style="height: 100%">
-					<div class="d-flex" style="height: 100%; align-items: center"><%= groupsBelongedTo[i].groupName%></div>
+					<div class="d-flex" style="height: 100%; align-items: center"><%= user.groups[i].groupName%></div>
 				</div>
 			</div>
 			<div class="col-sm-2">
 				<div class="d-flex flex-column center" style="height: 100%">
-					<a class="nav-link active" aria-current="page" href="/group/<%= groupsBelongedTo[i]._id%>">
-						<button type="button" class="btn btn-outline-primary">Dołącz do spotkania</button>
+					<a class="nav-link active" aria-current="page" href="/group/<%= user.groups[i]._id%>">
+						<button type="button" class="btn btn-outline-primary">Wyświetl grupę</button>
 					</a>
 				</div>
 			</div>
@@ -71,7 +71,7 @@
 			<div class="col-sm-2">
 				<div class="d-flex flex-column center" style="height: 100%">
 					<a class="nav-link active" aria-current="page" href="/group/<%= ownedGroups[i]._id%>">
-						<button type="button" class="btn btn-outline-primary">Modyfikuj grupę</button>
+						<button type="button" class="btn btn-outline-primary">Wyświetl grupę</button>
 					</a>
 				</div>
 			</div>
