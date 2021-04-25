@@ -41,33 +41,31 @@ socket.on('sendMessage', (payload, name, lastName)=>{
 
 socket.on('sendCanvasToViewers', (jsonObject)=>{
     let content ='';
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
     if(jsonObject.length !== 0){
         content = JSON.parse(jsonObject);
         canvasContent.lines = content.lines;
         canvasContent.Lines = content.Lines;
+        canvasContent.rects = content.rects;
+        canvasContent.ellipses = content.ellipses;
+        canvasContent.tmpLine = content.tmpLine;
+        canvasContent.tmpRect = content.tmpRect;
+        canvasContent.tmpEllipse = content.tmpEllipse;
         redrawCanvas(content);
-        // renderPoints(content.lines);
-        // renderLines(content.Lines);
-        // renderRects(content.rects);
-        // renderEllipese(content.ellipses);
-        // showTmpLine(content.tmpLine);
-        // showTmpRect(content.tmpRect);
-        // showTmpEllipse(content.tmpEllipse);
     }
 })
 
 socket.on('sendCanvasToEditors', (jsonObject)=>{
     let content ='';
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
     if(jsonObject.length !== 0){
         content = JSON.parse(jsonObject);
         canvasContent.lines = content.lines;
         canvasContent.Lines = content.Lines;
+        canvasContent.rects = content.rects;
+        canvasContent.ellipses = content.ellipses;
+        canvasContent.tmpLine = content.tmpLine;
+        canvasContent.tmpRect = content.tmpRect;
+        canvasContent.tmpEllipse = content.tmpEllipse;
         redrawCanvas(content);
-        // renderLines(content.Lines);
-        // renderRects(content.rects);
-        // renderEllipese(content.ellipses);
     }
 })
 

@@ -1,7 +1,6 @@
 const canvas = document.querySelector('#canvas');
 const ctx = canvas.getContext('2d');
 
-const nowaTablica = document.querySelector('#nowaTablica');
 const wyczysc = document.querySelector('#wyczysc');
 
 const gumka = document.querySelector('#gumka');
@@ -100,7 +99,7 @@ prostokat.addEventListener('click', ()=>{
 })
 
 elipsa.addEventListener('click', ()=>{
-    settings.tool = 'PROSTOKAT';
+    settings.tool = 'ELIPSA';
     removeStyle(toolbarControls, "active")
     elipsa.classList.add('active');
     addStyle(toolSettings, "hideElement");
@@ -150,20 +149,27 @@ canvas.addEventListener('mousemove', (event)=>{
     mousePos.y = event.offsetY;
 
     if(isViewer) return;
+    if(!drawing) return;
 
-    if(settings.tool === 'RYSIK' && drawing){
+    if(settings.tool === 'RYSIK'){
         canvasContent.lines.push(new Point(mousePos.x, mousePos.y, settings.strokeWidth, settings.strokeColor, true, canvasDimentions, false));
         ctx.lineCap = "round";
         ctx.lineJoin = "round";
         ctx.lineTo(mousePos.x, mousePos.y);
         ctx.stroke();
-        sendCanvasContent();
-    }else if(settings.tool === 'LINIA' && drawing){
+    }else if(settings.tool === 'LINIA'){
         canvasContent.tmpLine.x = (mousePos.x / canvasDimentions.width);
         canvasContent.tmpLine.y = (mousePos.y / canvasDimentions.height);
         redrawCanvas(canvasContent);
-        sendCanvasContent();
+    }else if(settings.tool === 'PROSTOKAT'){
+        canvasContent.tmpRect.x = (mousePos.x / canvasDimentions.width);
+        canvasContent.tmpRect.y = (mousePos.y / canvasDimentions.height);
+        redrawCanvas(canvasContent);
+    }else if(settings.tool === 'ELIPSA'){
+        canvasContent.tmpEllipse.calculateR(mousePos.x / canvasDimentions.width, mousePos.y / canvasDimentions.height);
+        redrawCanvas(canvasContent);
     }
+    sendCanvasContent();
 })
 
 canvas.addEventListener('mousedown', ()=>{
@@ -178,6 +184,12 @@ canvas.addEventListener('mousedown', ()=>{
         ctx.beginPath();
     }else if(settings.tool === 'LINIA'){
         canvasContent.tmpLine = new Line(mousePos.x, mousePos.y, mousePos.x, mousePos.y, settings.strokeWidth, settings.strokeColor, canvasDimentions);
+        drawing = true;
+    }else if(settings.tool === 'PROSTOKAT'){
+        canvasContent.tmpRect = new Rect(mousePos.x, mousePos.y, mousePos.x, mousePos.y, settings.strokeWidth, settings.strokeColor, canvasDimentions);
+        drawing = true;
+    }else if(settings.tool === 'ELIPSA'){
+        canvasContent.tmpEllipse = new Elipse(mousePos.x, mousePos.y, settings.strokeWidth, settings.strokeColor, canvasDimentions);
         drawing = true;
     }
 })
@@ -198,6 +210,18 @@ canvas.addEventListener('mouseup', ()=>{
     }else if(settings.tool === 'LINIA'){
         canvasContent.Lines.push(canvasContent.tmpLine);
         canvasContent.tmpLine = null;
+        drawing = false;
+        redrawCanvas(canvasContent);
+        sendCanvasContent();
+    }else if(settings.tool === 'PROSTOKAT'){
+        canvasContent.rects.push(canvasContent.tmpRect);
+        canvasContent.tmpRine = null;
+        drawing = false;
+        redrawCanvas(canvasContent);
+        sendCanvasContent();
+    }else if(settings.tool === 'ELIPSA'){
+        canvasContent.ellipses.push(canvasContent.tmpEllipse);
+        canvasContent.tmpEllipse = null;
         drawing = false;
         redrawCanvas(canvasContent);
         sendCanvasContent();
@@ -275,22 +299,55 @@ function renderLines(lines){
 }
 
 function renderLine(line){
-    console.log('line render');
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
+    ctx.beginPath();
     ctx.moveTo(line.baseX * canvasDimentions.width, line.baseY * canvasDimentions.height);
     ctx.lineWidth = line.size;
     ctx.strokeStyle = line.color;
     ctx.lineTo(line.x * canvasDimentions.width, line.y * canvasDimentions.height);
+    ctx.closePath();
     ctx.stroke();
+}
+
+function renderRects(rects){
+    for(let i = 0; i < rects.length; i++)
+        renderRect(rects[i]);
+}
+
+function renderRect(rect){
+    ctx.lineWidth = rect.size;
+    ctx.strokeStyle = rect.color;
+    ctx.strokeRect(rect.baseX * canvasDimentions.width, rect.baseY * canvasDimentions.height, (rect.x - rect.baseX) * canvasDimentions.width, (rect.y - rect.baseY) * canvasDimentions.height);
+}
+
+function renderEllipses(ellipses){
+    for(let i = 0; i < ellipses.length; i++){
+        renderEllipse(ellipses[i]);
+    }
+}
+
+function renderEllipse(ellipse){
+    ctx.lineWidth = ellipse.size;
+    ctx.strokeStyle = ellipse.color;
+    ctx.beginPath();
+    ctx.arc(ellipse.baseX * canvasDimentions.width, ellipse.baseY * canvasDimentions.height, ellipse.r * canvasDimentions.width, 0, Math.PI * 2, false);
+    ctx.stroke();
+    ctx.closePath();
 }
 
 function redrawCanvas(content){
     ctx.clearRect(0,0, canvas.width, canvas.height);
     renderPoints(content.lines);
     renderLines(content.Lines);
+    renderRects(content.rects);
+    renderEllipses(content.ellipses);
     if(content.tmpLine)
         renderLine(content.tmpLine);
+    if(content.tmpRect)
+        renderRect(content.tmpRect);
+    if(content.tmpEllipse)
+        renderEllipse(content.tmpEllipse);
 }
 
 class Point{
@@ -312,5 +369,31 @@ class Line{
 		this.y = y / dimentions.height;
         this.size = size;
         this.color = color;
+    }
+}
+
+class Rect{
+    constructor(baseX, baseY, x, y, size, color, dimentions = {}){
+        this.baseX = baseX / dimentions.width;
+        this.baseY = baseY / dimentions.height;
+		this.x = x / dimentions.width;
+		this.y = y / dimentions.height;
+        this.size = size;
+        this.color = color;
+    }
+}
+
+class Elipse{
+    constructor(baseX, baseY, size, color, dimentions = {}){
+        this.baseX = baseX / dimentions.width;
+        this.baseY = baseY / dimentions.height;
+        this.r = 0;
+        this.size = size;
+        this.color = color;
+        this.w = dimentions.width;
+    }
+    calculateR = function(x, y){
+        let dist = Math.sqrt((x-this.baseX)**2 + (y-this.baseY)**2);
+        this.r = dist;
     }
 }

@@ -5,10 +5,6 @@ const Group = require('../models/group');
 const Lesson = require('../models/lesson');
 const users = require('../users');
 
-router.get('/add', isLoggedIn, (req,res)=>{
-    res.render('newGroup');
-})
-
 router.post('/add', isLoggedIn, async(req,res)=>{
     try{
         const {groupName, description} = req.body;
