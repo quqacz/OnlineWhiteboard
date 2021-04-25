@@ -48,3 +48,7 @@
 .chatBoxHeight{
     height: 10%;
 }
+
+.biedaHidden{
+    visibility: hidden;
+}

@@ -1,4 +1,5 @@
 const Lesson = require('./models/lesson')
+const Message = require('./models/message');
 const roomsData = {};
 
 exports = module.exports = function(io){
@@ -10,45 +11,55 @@ exports = module.exports = function(io){
         });
     
         socket.on('disconnecting', ()=>{
-            let vievID, editID;
-            if(roomsData[socket.roomId] && roomsData[socket.roomId].viewers){
-                vievID = roomsData[socket.roomId].viewers.includes(socket.id) ? roomsData[socket.roomId].viewers.indexOf(socket.id) : undefined;
-                if(vievID)
-                    roomsData[socket.roomId].viewers.splice(vievID, 1);
-            }
-            if(roomsData[socket.roomId] && roomsData[socket.roomId].editors){
-                editID = roomsData[socket.roomId].editors.includes(socket.id) ? roomsData[socket.roomId].editors.indexOf(socket.id) : undefined;
-                if(editID)
-                    roomsData[socket.roomId].editors.splice(editID, 1);
-            } 
+            if(roomsData[socket.room] && roomsData[socket.room].viewers)
+                delete roomsData[socket.room].viewers[socket.id];
+            if(roomsData[socket.room] && roomsData[socket.room].editors)
+                delete roomsData[socket.room].editors[socket.id];
         })
     
-        socket.on('joinBoardGroup', (roomId, name, lastName, userId)=>{
+        socket.on('joinBoardGroup', (roomId, name, lastName, userId, groupOwner)=>{
             socket.join(roomId);
-            socket.room = roomId;
-            socket.name = name;
-            socket.lastName = lastName;
-            socket.userId = userId;
+            socket.room = roomId; // :lessonId
+            socket.name = name; //User.name
+            socket.lastName = lastName; // User.lastName
+            socket.userId = userId; // User._id
             if(roomsData[roomId]){
-                roomsData[roomId].viewers.push(socket.id);
-                socket.emit('joinedViewres');
                 Lesson.findOne({_id: socket.room}, function(err, lesson){
                     if(err)
                         console.log(err)
-                    socket.emit('sendCanvasToViewers', lesson.canvasContent);
+                    if(socket.userId === groupOwner)
+                        socket.emit('sendCanvasToEditors', lesson.canvasContent);
+                    else
+                        socket.emit('sendCanvasToViewers', lesson.canvasContent);
                 })
             }else{
                 roomsData[roomId] = {};
-                roomsData[roomId].editors = [];
-                roomsData[roomId].viewers = [];
-                roomsData[roomId].editors.push(socket.id);
+                roomsData[roomId].editors = {};
+                roomsData[roomId].viewers = {};
                 Lesson.findOne({_id: socket.room}, function(err, lesson){
                     if(err)
                         console.log(err)
-                    socket.emit('sendCanvasToEditors', lesson.canvasContent);
+                    if(socket.userId === groupOwner)
+                        socket.emit('sendCanvasToEditors', lesson.canvasContent);
+                    else
+                        socket.emit('sendCanvasToViewers', lesson.canvasContent);
                 })
-                socket.emit('joinedEditors');
             }
+
+            if(socket.userId === groupOwner){
+                roomsData[roomId].editors[socket.id] = {name: socket.name, lastName: socket.lastName};
+                socket.emit('joinedEditors');
+            }else{
+                roomsData[roomId].viewers[socket.id] = {name: socket.name, lastName: socket.lastName};
+                socket.emit('joinedViewres');
+            }
+            const usersData = {
+                editors: roomsData[roomId].editors,
+                viewers: roomsData[roomId].viewers
+            }
+            // console.log(JSON.stringify(usersData));
+            socket.to(socket.room).emit('connectedUsers', JSON.stringify(usersData));
+            socket.emit('connectedUsers', JSON.stringify(usersData));
         })
     
         socket.on('sendMessage', (payload)=>{
@@ -67,13 +78,13 @@ exports = module.exports = function(io){
         })
     
         socket.on('sendCanvas', (canvasDataURI)=>{
-            let editors = roomsData[socket.room].editors;
+            let editors = Object.keys(roomsData[socket.room].editors);
             for(let i = 0; i < editors.length; i++){
                 if(editors[i] !== socket.id)
                     io.to(editors[i]).emit('sendCanvasToEditors', canvasDataURI);
             }
     
-            let viewer = roomsData[socket.room].viewers;
+            let viewer = Object.keys(roomsData[socket.room].viewers);
             for(let i = 0; i < viewer.length; i++){
                 io.to(viewer[i]).emit('sendCanvasToViewers', canvasDataURI);
             }
@@ -83,5 +94,33 @@ exports = module.exports = function(io){
                     console.log(err);
             })
         })
+
+        socket.on('giveDrawingPer', (id, name, lastName)=>{
+            roomsData[socket.room].editors[id] = {name: name, lastName: lastName};
+            delete roomsData[socket.room].viewers[id];
+            io.to(id).emit('joinedEditors');
+
+            const usersData = {
+                editors: roomsData[socket.room].editors,
+                viewers: roomsData[socket.room].viewers
+            }
+            socket.to(socket.room).emit('connectedUsers', JSON.stringify(usersData));
+            socket.emit('connectedUsers', JSON.stringify(usersData));
+
+        })
+
+        socket.on('removeDrawingPer', (id, name, lastName)=>{
+            roomsData[socket.room].viewers[id] = {name: name, lastName: lastName};
+            delete roomsData[socket.room].editors[id];
+            io.to(id).emit('joinedViewres');
+            const usersData = {
+                editors: roomsData[socket.room].editors,
+                viewers: roomsData[socket.room].viewers
+            }
+            socket.to(socket.room).emit('connectedUsers', JSON.stringify(usersData));
+            socket.emit('connectedUsers', JSON.stringify(usersData));
+        })
+
+        
     });
 }

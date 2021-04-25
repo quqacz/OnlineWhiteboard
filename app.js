@@ -14,7 +14,6 @@ const methodOverride = require('method-override');
 const Auth = require('./routes/auth');
 const Users = require('./routes/user');
 const Groups = require('./routes/group');
-const Lessons = require('./routes/lesson');
 
 //express setup
 app.set('view engine', 'ejs');
@@ -73,7 +72,6 @@ const socketConnetions = require('./socket')(io);
 app.use('', Auth);
 app.use('/user', Users);
 app.use('/group', Groups);
-app.use('/group/:id/lesson', Lessons);
 
 http.listen(3000, ()=>{
     console.log("app runs on port 3000");
