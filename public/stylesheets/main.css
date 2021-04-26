@@ -6,12 +6,25 @@
     height: 100vh;
 } */
 
+.center {
+	display: flex;
+	justify-content: center;
+}
+
+.bigfont{
+	font-size: 40px;
+}
+
 .hideElement{
     display: none;
 }
 
 .borderHighlight{
     border: 1px solid silver;
+}
+
+.borderMain{
+	border: 5px solid black;
 }
 
 .noPaddingAndMargin{
@@ -34,4 +47,8 @@
 
 .chatBoxHeight{
     height: 10%;
+}
+
+.biedaHidden{
+    visibility: hidden;
 }
