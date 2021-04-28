@@ -28,7 +28,7 @@ router.get('/:id', isLoggedIn, isInTheGroup, async(req, res)=>{
         for(let i = 0; i < 15; i ++){
             dummyUsers.push(users[Math.floor(Math.random()*users.length)]);
         }
-        const group = await Group.findOne({_id: req.params.id}).populate('lessons');
+        const group = await Group.findOne({_id: req.params.id}).populate('lessons').populate('students').populate('owner');
         res.render('group', {groupData: group, users: dummyUsers})
     }catch(e){
         console.log(e);
