@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {isLoggedIn} = require('../middleware');
+const {isLoggedIn, isGroupOwner, isInTheGroup} = require('../middleware');
 const Group = require('../models/group');
 const Lesson = require('../models/lesson');
 const users = require('../users');
@@ -21,7 +21,7 @@ router.post('/add', isLoggedIn, async(req,res)=>{
     }
 })
 
-router.get('/:id', isLoggedIn, async(req, res)=>{
+router.get('/:id', isLoggedIn, isInTheGroup, async(req, res)=>{
 	try{
         let dummyUsers = [];
     
@@ -36,11 +36,11 @@ router.get('/:id', isLoggedIn, async(req, res)=>{
     }
 })
 
-router.delete('/:id/delete', isLoggedIn, (req, res)=>{
+router.delete('/:id/delete', isLoggedIn, isGroupOwner, (req, res)=>{
     res.send('strona do usuwania usera z grupy')
 })
 
-router.get('/:id/lesson/:lessonId', isLoggedIn, async(req, res)=>{
+router.get('/:id/lesson/:lessonId', isLoggedIn, isInTheGroup, async(req, res)=>{
     const messages = await Lesson.findOne({_id: req.params.lessonId})
         .populate({
             path: 'messages', 
@@ -52,7 +52,7 @@ router.get('/:id/lesson/:lessonId', isLoggedIn, async(req, res)=>{
 	res.render('board', {groupId: req.params.lessonId, owner: groupOwner.owner._id, messages: messages.messages})
 })
 
-router.post('/:id/lesson/add', isLoggedIn, async(req, res)=>{
+router.post('/:id/lesson/add', isLoggedIn, isGroupOwner, async(req, res)=>{
     try{
         const { topic } = req.body;
         const newLesson = new Lesson({
