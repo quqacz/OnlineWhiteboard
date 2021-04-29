@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const {isLoggedIn, isGroupOwner, isInTheGroup} = require('../middleware');
 const Group = require('../models/group');
+const User = require('../models/user');
 const Lesson = require('../models/lesson');
 const users = require('../users');
 
@@ -23,21 +24,12 @@ router.post('/add', isLoggedIn, async(req,res)=>{
 
 router.get('/:id', isLoggedIn, isInTheGroup, async(req, res)=>{
 	try{
-        let dummyUsers = [];
-    
-        for(let i = 0; i < 15; i ++){
-            dummyUsers.push(users[Math.floor(Math.random()*users.length)]);
-        }
         const group = await Group.findOne({_id: req.params.id}).populate('lessons').populate('students').populate('owner');
-        res.render('group', {groupData: group, users: dummyUsers})
+        res.render('group', {groupData: group})
     }catch(e){
         console.log(e);
         res.redirect('/');
     }
-})
-
-router.delete('/:id/delete', isLoggedIn, isGroupOwner, (req, res)=>{
-    res.send('strona do usuwania usera z grupy')
 })
 
 router.get('/:id/lesson/:lessonId', isLoggedIn, isInTheGroup, async(req, res)=>{
@@ -58,10 +50,10 @@ router.post('/:id/lesson/add', isLoggedIn, isGroupOwner, async(req, res)=>{
         const newLesson = new Lesson({
             topic
         })
-        newLesson.save();
+        const lesson = await newLesson.save();
         const group = await Group.findOne({_id: req.params.id});
         group.lessons.push(newLesson);
-        const updatedGroup = await group.save();
+        const updatetGroup = await group.save();
         res.redirect('/group/'+req.params.id);
     }catch (e){
         console.log(e)
@@ -69,4 +61,18 @@ router.post('/:id/lesson/add', isLoggedIn, isGroupOwner, async(req, res)=>{
     }
 })
 
+router.delete('/:id/user/:userId', isLoggedIn, isGroupOwner, async(req, res)=>{
+    try{
+        const group = await Group.findOne({_id: req.params.id});
+        const user = await User.findOne({_id: req.params.userId});
+        group.students.pull({_id: req.params.userId});
+        user.groups.pull({_id: req.params.id});
+        group.save();
+        user.save();
+        res.redirect('/group/'+req.params.id);
+    }catch(e){
+        console.log(e);
+        res.redirect('/group/'+req.params.id);
+    }
+})
 module.exports = router;

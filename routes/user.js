@@ -16,13 +16,13 @@ router.post('/:id/joinGroup', isLoggedIn, isNotInTheGroup, async(req, res)=>{
         const group = await Group.findOne({entryCode: entryCode});
         const student = await User.findOne({_id: req.user._id});
         group.students.push(student);
-        group.save();
+        const updatetGroup = await group.save();
         student.groups.push(group);
-        student.save();
+        const updatedStudent = await student.save();
         res.redirect('/user/'+req.user._id);
     }catch(e){
         console.log(e);
-        res.redirect('/user/'+req.user._id);
+        res.redirect('/');
     }
 })
 
