@@ -15,6 +15,12 @@ exports = module.exports = function(io){
                 delete roomsData[socket.room].viewers[socket.id];
             if(roomsData[socket.room] && roomsData[socket.room].editors)
                 delete roomsData[socket.room].editors[socket.id];
+            const usersData = {
+                editors: roomsData[socket.room].editors ? roomsData[socket.room].editors : '',
+                viewers: roomsData[socket.room].viewers ? roomsData[socket.room].viewers : ''
+            }
+            socket.to(socket.room).emit('connectedUsers', JSON.stringify(usersData));
+            socket.emit('connectedUsers', JSON.stringify(usersData));
         })
     
         socket.on('joinBoardGroup', (roomId, name, lastName, userId, groupOwner)=>{
@@ -57,7 +63,6 @@ exports = module.exports = function(io){
                 editors: roomsData[roomId].editors,
                 viewers: roomsData[roomId].viewers
             }
-            // console.log(JSON.stringify(usersData));
             socket.to(socket.room).emit('connectedUsers', JSON.stringify(usersData));
             socket.emit('connectedUsers', JSON.stringify(usersData));
         })
@@ -121,6 +126,9 @@ exports = module.exports = function(io){
             socket.emit('connectedUsers', JSON.stringify(usersData));
         })
 
+        socket.on('forceRemove', (id)=>{
+            io.to(id).emit('forceRemove');
+        })
         
     });
 }

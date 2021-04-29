@@ -31,7 +31,6 @@ module.exports.isNotInTheGroup = async(req, res, next)=>{
 module.exports.isInTheGroup = async(req, res, next)=>{
     const group = await Group.findOne({_id: req.params.id}).populate('owner');
     if(group.owner._id.toString() === req.user._id.toString() || group.students.includes(req.user._id)){
-        console.log('wgrupie siła');
         next();
     }else{
         return res.redirect('/user/'+req.user._id);

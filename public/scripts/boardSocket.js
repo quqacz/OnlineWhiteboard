@@ -85,6 +85,12 @@ socket.on('joinedEditors', ()=>{
     }
 })
 
+socket.on('forceRemove', ()=>{
+    const redirect = document.createElement('a');
+    redirect.href = '/user/'+socket._id;
+    redirect.click();
+})
+
 function sendMessage(){
     const payload = textMessageContent.value;
     socket.emit('sendMessage', payload);
