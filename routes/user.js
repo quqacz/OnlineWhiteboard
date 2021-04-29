@@ -19,7 +19,7 @@ router.post('/:id/joinGroup', isLoggedIn, isNotInTheGroup, async(req, res)=>{
         const updatetGroup = await group.save();
         student.groups.push(group);
         const updatedStudent = await student.save();
-        res.redirect('/user/'+req.user._id);
+        res.redirect('/user/'+student._id);
     }catch(e){
         console.log(e);
         res.redirect('/');

@@ -18,14 +18,16 @@
 			</div>
 		</div>
 	</div>
-	<div class="row justify-content-center p-1" style="margin-top: 10px">
-		<h1>Dodaj Nową Lekcję</h1>
-		<form action="/group/<%= groupData._id%>/lesson/add" method="POST">
-			<label for="topic">Tytuł Lekcji:</label><br>
-			<input type="text" name="topic" class="borderHighlight" required>
-			<button class="btn btn-outline-primary">Dodaj lekcje</button>
-		</form>
-	</div>
+	<%if(groupData.owner._id.toString() === currentUser._id.toString()){%>
+		<div class="row justify-content-center p-1" style="margin-top: 10px">
+			<h1>Dodaj Nową Lekcję</h1>
+			<form action="/group/<%= groupData._id%>/lesson/add" method="POST">
+				<label for="topic">Tytuł Lekcji:</label><br>
+				<input type="text" name="topic" class="borderHighlight" required>
+				<button class="btn btn-outline-primary">Dodaj lekcje</button>
+			</form>
+		</div>
+	<%}%>
 	<div class="row justify-content-center p-1" style="margin-top: 10px">
 		<h1>Lekcje</h1>
 		<%for(let i = 0; i < groupData.lessons.length; i++){%>

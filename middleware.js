@@ -29,7 +29,7 @@ module.exports.isNotInTheGroup = async(req, res, next)=>{
 }
 
 module.exports.isInTheGroup = async(req, res, next)=>{
-    const group = await Group.findOne({_id: req.params.id}).populate('owner');
+    const group = await Group.findOne({_id: req.params.id});
     if(group.owner._id.toString() === req.user._id.toString() || group.students.includes(req.user._id)){
         next();
     }else{
