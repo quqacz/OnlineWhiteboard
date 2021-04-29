@@ -12,7 +12,7 @@ router.get('/login', (req, res)=>{
 })
 
 router.post('/login', passport.authenticate('local', {failureRedirect: '/login'}), (req, res)=>{
-    res.redirect(req.session.returnTo ? req.session.returnTo : '/login');
+    res.redirect(req.session.returnTo ? req.session.returnTo : '/user/'+req.user._id);
 })
 
 router.get('/register', (req, res)=>{

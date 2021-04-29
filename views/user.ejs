@@ -28,7 +28,7 @@
 	</div>
 	<div class="row justify-content-center p-1" style="margin-top: 20px">
 		<h1>Dołącz do grupy</h1>
-		<form action="/user/<%-currentUser._id%>/joinGroup" method="POST">
+		<form action="/user/<%-user._id%>/joinGroup" method="POST">
 			<label for="entryCode">Podaj kod grupy:</label><br>
 			<input type="text" name="entryCode" class="borderHighlight" required>
 			<button class="btn btn-outline-primary">Dołącz</button>

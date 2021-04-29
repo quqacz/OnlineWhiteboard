@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
 const Group = require('../models/group');
-const {isLoggedIn} = require('../middleware');
+const {isLoggedIn, isNotInTheGroup} = require('../middleware');
 
 router.get('/:id', isLoggedIn, async(req, res)=>{
     const user = await User.findOne({_id: req.user._id}).populate('groups');
@@ -10,19 +10,19 @@ router.get('/:id', isLoggedIn, async(req, res)=>{
     res.render('user', {user, ownedGroups})
 })
 
-router.post('/:id/joinGroup', isLoggedIn, async(req, res)=>{
+router.post('/:id/joinGroup', isLoggedIn, isNotInTheGroup, async(req, res)=>{
     try{
         const {entryCode} = req.body;
         const group = await Group.findOne({entryCode: entryCode});
         const student = await User.findOne({_id: req.user._id});
         group.students.push(student);
-        group.save();
+        const updatetGroup = await group.save();
         student.groups.push(group);
-        student.save();
-        res.redirect('/user/'+req.user._id);
+        const updatedStudent = await student.save();
+        res.redirect('/user/'+student._id);
     }catch(e){
         console.log(e);
-        res.redirect('/user/'+req.user._id);
+        res.redirect('/');
     }
 })
 
