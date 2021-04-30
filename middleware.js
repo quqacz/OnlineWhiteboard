@@ -17,17 +17,6 @@ module.exports.isGroupOwner = async(req, res, next) =>{
     }
 }
 
-module.exports.isNotInTheGroup = async(req, res, next)=>{
-    const {entryCode} = req.body;
-    const group = await Group.findOne({entryCode: entryCode});
-    if(group.owner._id.toString() !== req.user._id.toString() && !group.students.includes(req.user._id)){
-        next();
-    }else{
-        return res.redirect('/group/'+group._id);
-    }
-    next();
-}
-
 module.exports.isInTheGroup = async(req, res, next)=>{
     const group = await Group.findOne({_id: req.params.id});
     if(group.owner._id.toString() === req.user._id.toString() || group.students.includes(req.user._id)){
