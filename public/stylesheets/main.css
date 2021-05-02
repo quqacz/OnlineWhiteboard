@@ -15,6 +15,18 @@
 	font-size: 40px;
 }
 
+.midfont{
+	font-size: 20px;
+}
+
+.silverfont{
+	color: silver;
+}
+
+.grad{
+	background-image: linear-gradient(to right, silver, white);
+}
+
 .hideElement{
     display: none;
 }
@@ -23,8 +35,14 @@
     border: 1px solid silver;
 }
 
-.borderMain{
-	border: 5px solid black;
+.borderHighlightRound{
+    border: 1px solid silver;
+	border-radius: 8px;
+}
+
+.borderList{
+	border: 5px ridge silver;
+	border-radius: 8px;
 }
 
 .noPaddingAndMargin{
@@ -34,6 +52,15 @@
 
 .noPaddingRight{
     padding-right: 0;
+}
+
+.noPaddingLeft{
+    padding-left: 0;
+}
+
+.noPaddingHorizontal{
+	padding-right: 0;
+    padding-left: 0;
 }
 
 .scrollable{

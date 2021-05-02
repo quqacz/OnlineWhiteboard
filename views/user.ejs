@@ -16,28 +16,37 @@
 			</div>
 		</div>
 	</div>
-	<div class="row justify-content-center p-1" style="margin-top: 20px">
-		<h1>Utwórz nową grupę</h1>
-		<form action="/group/add" method="POST">
-			<label for="groupName">Nazwa nowej grupy:</label><br>
-			<input type="text" name="groupName" class="borderHighlight" required><br>
-			<label for="description">Opis nowej grupy:</label><br>
-			<input type="text" name="description" class="borderHighlight" required>
-			<button class="btn btn-outline-primary">Utwórz</button>
+	<div class="row col-sm-4 justify-content-center p-1" style="margin-top: 20px">
+		<button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#nowagrupa" aria-expanded="false" aria-controls="nowagrupa"><h1>Utwórz nową grupę</h1></button>
+		<form class="collapse" id="nowagrupa" action="/group/add" method="POST">
+			<div class="row" style="margin-top: 10px">
+				<div class="col noPaddingLeft">
+					<input type="text" class="form-control borderHighlight" name="groupName" placeholder="Nazwa nowej grupy" required>
+				</div>
+				<div class="col noPaddingRight">
+					<input type="text" class="form-control borderHighlight" name="description" placeholder="Opis nowej grupy" required>
+				</div>
+			</div>
+			<div class="row" style="margin-top: 10px">
+				<button class="btn btn-outline-secondary">Utwórz</button>
+			</div>
 		</form>
 	</div>
-	<div class="row justify-content-center p-1" style="margin-top: 20px">
-		<h1>Dołącz do grupy</h1>
-		<form action="/user/<%-user._id%>/joinGroup" method="POST">
-			<label for="entryCode">Podaj kod grupy:</label><br>
-			<input type="text" name="entryCode" class="borderHighlight" required>
-			<button class="btn btn-outline-primary">Dołącz</button>
+	<div class="row col-sm-4 justify-content-center p-1">
+		<button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#dolaczdo" aria-expanded="false" aria-controls="dolaczdo"><h1>Dołącz do grupy</h1></button>
+		<form class="collapse" id="dolaczdo" action="/user/<%-user._id%>/joinGroup" method="POST">
+			<div class="row" style="margin-top: 10px">
+				<input type="text" class="form-control borderHighlight" name="entryCode" placeholder="Podaj kod grupy" required>
+			</div>
+			<div class="row" style="margin-top: 10px">
+				<button class="btn btn-outline-secondary">Dołącz</button>
+			</div>
 		</form>
 	</div>
-	<div class="row justify-content-center p-1" style="margin-top: 10px">
-		<h1>Grupy do których należysz:</h1>
+	<div class="row borderList justify-content-center p-1" style="margin-top: 10px">
+		<h1>Grupy do których należysz</h1>
 		<%for(let i = 0; i < user.groups.length; i++){%>
-		<div class="row borderHighlight m-2 p-2" style="width: 90%">
+		<div class="row grad borderHighlightRound m-2 p-2" style="width: 90%">
 			<div class="col-sm-1">
 				<img src="https://wiki.dave.eu/images/4/47/Placeholder.png" class="img-thumbnail rounded-circle" alt="img_user">
 			</div>
@@ -49,17 +58,17 @@
 			<div class="col-sm-2">
 				<div class="d-flex flex-column center" style="height: 100%">
 					<a class="nav-link active" aria-current="page" href="/group/<%= user.groups[i]._id%>">
-						<button type="button" class="btn btn-outline-primary">Wyświetl grupę</button>
+						<button type="button" class="btn btn-outline-secondary">Wyświetl grupę</button>
 					</a>
 				</div>
 			</div>
 		</div>
 		<%};%>
 	</div>
-	<div class="row justify-content-center p-1" style="margin-top: 10px">
-		<h1>Grupy które posiadasz:</h1>
+	<div class="row borderList justify-content-center p-1" style="margin-top: 10px">
+		<h1>Grupy które posiadasz</h1>
 		<%for(let i = 0; i < ownedGroups.length; i++){%>
-		<div class="row borderHighlight m-2 p-2" style="width: 90%">
+		<div class="row grad borderHighlightRound m-2 p-2" style="width: 90%">
 			<div class="col-sm-1">
 				<img src="https://wiki.dave.eu/images/4/47/Placeholder.png" class="img-thumbnail rounded-circle" alt="img_user">
 			</div>
@@ -71,7 +80,7 @@
 			<div class="col-sm-2">
 				<div class="d-flex flex-column center" style="height: 100%">
 					<a class="nav-link active" aria-current="page" href="/group/<%= ownedGroups[i]._id%>">
-						<button type="button" class="btn btn-outline-primary">Wyświetl grupę</button>
+						<button type="button" class="btn btn-outline-secondary">Wyświetl grupę</button>
 					</a>
 				</div>
 			</div>
