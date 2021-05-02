@@ -24,7 +24,7 @@
 }
 
 .grad{
-	background-image: linear-gradient(to right, silver, white);
+	background-image: linear-gradient(to right, #d9d9d9, white);
 }
 
 .hideElement{

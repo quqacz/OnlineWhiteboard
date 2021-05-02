@@ -17,7 +17,7 @@
 		</div>
 	</div>
 	<div class="row col-sm-4 justify-content-center p-1" style="margin-top: 20px">
-		<button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#nowagrupa" aria-expanded="false" aria-controls="nowagrupa"><h1>Utwórz nową grupę</h1></button>
+		<button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#nowagrupa" aria-expanded="false" aria-controls="nowagrupa"><h2>Utwórz nową grupę</h2></button>
 		<form class="collapse" id="nowagrupa" action="/group/add" method="POST">
 			<div class="row" style="margin-top: 10px">
 				<div class="col noPaddingLeft">
@@ -33,7 +33,7 @@
 		</form>
 	</div>
 	<div class="row col-sm-4 justify-content-center p-1">
-		<button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#dolaczdo" aria-expanded="false" aria-controls="dolaczdo"><h1>Dołącz do grupy</h1></button>
+		<button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#dolaczdo" aria-expanded="false" aria-controls="dolaczdo"><h2>Dołącz do grupy</h2></button>
 		<form class="collapse" id="dolaczdo" action="/user/<%-user._id%>/joinGroup" method="POST">
 			<div class="row" style="margin-top: 10px">
 				<input type="text" class="form-control borderHighlight" name="entryCode" placeholder="Podaj kod grupy" required>
