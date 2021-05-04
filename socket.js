@@ -16,8 +16,8 @@ exports = module.exports = function(io){
             if(roomsData[socket.room] && roomsData[socket.room].editors)
                 delete roomsData[socket.room].editors[socket.id];
             const usersData = {
-                editors: roomsData[socket.room].editors ? roomsData[socket.room].editors : '',
-                viewers: roomsData[socket.room].viewers ? roomsData[socket.room].viewers : ''
+                editors: roomsData[socket.room] ? (roomsData[socket.room].editors ? roomsData[socket.room].editors : '') : '',
+                viewers: roomsData[socket.room] ? (roomsData[socket.room].viewers ? roomsData[socket.room].viewers : '') : ''
             }
             socket.to(socket.room).emit('connectedUsers', JSON.stringify(usersData));
             socket.emit('connectedUsers', JSON.stringify(usersData));

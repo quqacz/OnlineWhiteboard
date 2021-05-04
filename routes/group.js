@@ -56,7 +56,7 @@ router.post('/:id/lesson/add', isLoggedIn, isGroupOwner, async(req, res)=>{
         const updatetGroup = await group.save();
         res.redirect('/group/'+req.params.id);
     }catch (e){
-        console.log(e)
+        console.log(e);
         res.redirect('/group/'+req.params.id);
     }
 })
