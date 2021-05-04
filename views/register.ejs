@@ -1,15 +1,15 @@
 <%- include ('partials/header') %>
 <%- include ('partials/navbar') %>
 
-<div class="d-flex align-items-center min-vh-100">
+<div class="d-flex align-items-center min-vh-100 grad-anim">
 	<div class="container">
 	  <div class="row justify-content-md-center">
 		<div class="col-lg-3">
 		  
 		</div>
-		<div class="col-lg-4">
-			<span class="border border-white">
-				<div class="bg-light" >	
+		<div class="col-lg-6">
+			<span>
+				<div class="bg-light borderList" style="padding: 40px">	
 					<form action="/register" onsubmit="return validate()" method="POST" id="reg-form">					
 						<center><span id="informacja"></span></center>
 						<div class="form-floating mb-3" aria-describedby="ImieInfo"> <!-- w-25 -->
@@ -50,7 +50,7 @@
 						</div>
 
 						<center>
-							<button class="btn btn-primary" type="submit">Zarejestruj się</button>
+							<button class="btn btn-outline-secondary" type="submit">Zarejestruj się</button>
 						</center>
 						<br>
 					</form>
