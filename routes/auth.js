@@ -25,10 +25,14 @@ router.post('/register', async(req, res)=>{
         const user = new User({ name, lastName, username});
         const regUser = await User.register(user, password);
         req.login(regUser, err=>{
-            if(err)
+            if(err){
+                req.flash('error', 'Błąd rejestracji użytkownika')
                 res.redirect('/register')
-            else
+            }
+            else{
+                req.flash('success', `Pomyślnie zarejestrowano`)
                 res.redirect('/user/'+regUser._id);
+            }
         });
     }catch (e){
         console.log(e);

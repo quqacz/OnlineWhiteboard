@@ -9,6 +9,7 @@ const User = require('./models/user');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const methodOverride = require('method-override');
+const flash = require('connect-flash');
 
 
 const Auth = require('./routes/auth');
@@ -44,9 +45,13 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+// flash setup
+app.use(flash());
 
 // setting objects avaiable globally on the server
 app.use((req, res, next) => {
+    res.locals.success = req.flash('success');
+    res.locals.error = req.flash('error');
     res.locals.currentUser = req.user;
     next();
 })
