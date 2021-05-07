@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
 const passport = require('passport');
+const mutler = require('multer');
+const { storage } = require('../cloudinary');
+const upload = mutler({ storage });
 
 router.get('/', (req,res)=>{
     res.render("mainPage");
@@ -19,10 +22,12 @@ router.get('/register', (req, res)=>{
 	 res.render("register");
 })
 
-router.post('/register', async(req, res)=>{
+router.post('/register', upload.single('profilePic'), async(req, res)=>{
     try{
         const {name, lastName, username, password} = req.body;
-        const user = new User({ name, lastName, username});
+        const user = new User({ name, lastName, username,
+            imageUrl: req.file ? req.file.path : 'https://wiki.dave.eu/images/4/47/Placeholder.png', 
+            imageFileName: req.file ? req.file.filename : ''});
         const regUser = await User.register(user, password);
         req.login(regUser, err=>{
             if(err){

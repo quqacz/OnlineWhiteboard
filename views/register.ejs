@@ -10,7 +10,7 @@
 		<div class="col-lg-6">
 			<span>
 				<div class="bg-light borderList" style="padding: 40px">	
-					<form action="/register" onsubmit="return validate()" method="POST" id="reg-form">					
+					<form action="/register" onsubmit="return validate()" method="POST" id="reg-form" enctype="multipart/form-data">					
 						<center><span id="informacja"></span></center>
 						<div class="form-floating mb-3" aria-describedby="ImieInfo"> <!-- w-25 -->
 							<input type="text" name="name"  class="form-control" id="imie" placeholder="Imie" required>
@@ -47,6 +47,10 @@
 						<div class="form-floating mb-3">
 							<input type="password" class="form-control" id="haslo2" placeholder="Confirm password" minlength="8" maxlength="32" required>
 							<label for="haslo2">Zatwierdź Hasło</label>
+						</div>
+
+						<div>
+							<input type="file" name="profilePic">
 						</div>
 
 						<center>
