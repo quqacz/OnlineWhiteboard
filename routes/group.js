@@ -5,13 +5,20 @@ const Group = require('../models/group');
 const User = require('../models/user');
 const Lesson = require('../models/lesson');
 const users = require('../users');
+const mutler = require('multer');
+const { storage } = require('../cloudinary');
+const upload = mutler({ storage });
+const sh = require('shorthash');
 
-router.post('/add', isLoggedIn, async(req,res)=>{
+
+router.post('/add', isLoggedIn, upload.single('groupPic'), async(req,res)=>{
     try{
         const {groupName, description} = req.body;
-        const entryCode = ~~(Math.random()*10000000000);
+        const entryCode = sh.unique(groupName+description);
 
-        const newGroup = new Group({ groupName, description, entryCode, owner: req.user._id})
+        const newGroup = new Group({ groupName, description, entryCode, owner: req.user._id, 
+            imageUrl: req.file ? req.file.path : 'https://wiki.dave.eu/images/4/47/Placeholder.png', 
+            imageFileName: req.file ? req.file.filename : ''})
 
         const group = await newGroup.save();
         res.redirect('/group/'+group._id);

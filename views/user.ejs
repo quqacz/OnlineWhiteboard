@@ -21,7 +21,7 @@
 	</div>
 	<div class="row col-sm-4 justify-content-center p-1" style="margin-top: 20px">
 		<button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#nowagrupa" aria-expanded="false" aria-controls="nowagrupa"><h2>Utwórz nową grupę</h2></button>
-		<form class="collapse" id="nowagrupa" action="/group/add" method="POST">
+		<form class="collapse" id="nowagrupa" action="/group/add" method="POST" enctype="multipart/form-data">
 			<div class="row" style="margin-top: 10px">
 				<div class="col noPaddingLeft">
 					<input type="text" class="form-control borderHighlight" name="groupName" placeholder="Nazwa nowej grupy" required>
@@ -29,6 +29,11 @@
 				<div class="col noPaddingRight">
 					<input type="text" class="form-control borderHighlight" name="description" placeholder="Opis nowej grupy" required>
 				</div>
+
+				<div>
+					<input type="file" name="groupPic">
+				</div>
+
 			</div>
 			<div class="row" style="margin-top: 10px">
 				<button class="btn btn-outline-secondary">Utwórz</button>
