@@ -4,7 +4,6 @@ const {isLoggedIn, isGroupOwner, isInTheGroup} = require('../middleware');
 const Group = require('../models/group');
 const User = require('../models/user');
 const Lesson = require('../models/lesson');
-const users = require('../users');
 const mutler = require('multer');
 const { storage } = require('../cloudinary');
 const upload = mutler({ storage });

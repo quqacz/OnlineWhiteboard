@@ -57,15 +57,14 @@
             </canvas>
         </div>
         <div class="col-2 borderHighlight noPaddingAndMargin">
-            <div class="container-fluid borderHighlight noPaddingAndMargin scrollable" id="connectedUsers">
-                connected users
+            <div class="container-fluid borderHighlight scrollable" id="connectedUsers">
             </div>
             <div class="container-fluid borderHighlight hideElement noPaddingAndMargin" id="chatBox">
                 <div class="container-fluid noPaddingAndMargin chatBoxMessagesHeight scrollable" id="chatBoxMessages">
                     <%for(let i = 0; i < messages.length; i++){%>
 						<div class="row p-2">
 							<div class="col-sm-3">
-								<img src="https://wiki.dave.eu/images/4/47/Placeholder.png" class="img-thumbnail rounded-circle" alt="img_user">
+								<img src="<%= messages[i].ownerId.imageUrl%>" class="img-thumbnail rounded-circle" alt="img_user">
 							</div>
 							<div class="col-sm-8 grad borderHighlightRound">
 								<div class="d-flex flex-column" style="height: 100%">
@@ -92,6 +91,7 @@
     const userName = '<%- currentUser.name%>';
     const userLastName = '<%- currentUser.lastName%>';
     const currentUserId = '<%- currentUser._id%>';
+    const profilePic = '<%- currentUser.imageUrl%>'
     const groupOwner = '<%- owner%>';
 </script> 
 <script src="/scripts/board.js"></script>

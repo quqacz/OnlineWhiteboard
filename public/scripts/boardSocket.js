@@ -4,7 +4,8 @@ socket.name = userName;
 socket.lastName = userLastName;
 socket._id = currentUserId;
 socket.groupId = groupId;
-socket.emit('joinBoardGroup', socket.groupId, socket.name, socket.lastName, socket._id, groupOwner);
+socket.profilePic = profilePic;
+socket.emit('joinBoardGroup', socket.groupId, socket.name, socket.lastName, socket._id, groupOwner, socket.profilePic);
 let viewers;
 let viewresKeys;
 let editors;
@@ -22,8 +23,9 @@ socket.on('connectedUsers', (connectedUsers)=>{
     fillActiveUserData();
 })
 
-socket.on('sendMessage', (payload, name, lastName)=>{
-	const sendMessage = document.createElement('div');
+
+socket.on('sendMessage', (payload, name, lastName, profilePic)=>{
+  const sendMessage = document.createElement('div');
 	sendMessage.classList.add('row');
 	sendMessage.classList.add('p-2');
 		
@@ -36,7 +38,7 @@ socket.on('sendMessage', (payload, name, lastName)=>{
 	userImage.classList.add('col-sm-3');
 		
 	const theImage = document.createElement('img');
-	theImage.setAttribute('src','https://wiki.dave.eu/images/4/47/Placeholder.png');
+	theImage.setAttribute('src', profilePic);
 	theImage.classList.add('img-thumbnail');
 	theImage.classList.add('rounded-circle');
 		
@@ -120,6 +122,7 @@ socket.on('forceRemove', ()=>{
 
 function sendMessage(){
     const payload = textMessageContent.value;
+    textMessageContent.value = '';
     socket.emit('sendMessage', payload);
 }
 
@@ -161,7 +164,7 @@ function fillEditorsData(){
 		userImage.classList.add('col-sm-3');
 		
 		const theImage = document.createElement('img');
-		theImage.setAttribute('src','https://wiki.dave.eu/images/4/47/Placeholder.png');
+		theImage.setAttribute('src', editors[i].profilePic);
 		theImage.classList.add('img-thumbnail');
 		theImage.classList.add('rounded-circle');
 		
@@ -226,7 +229,7 @@ function fillViewersData(){
 		userImage.classList.add('col-sm-3');
 		
 		const theImage = document.createElement('img');
-		theImage.setAttribute('src','https://wiki.dave.eu/images/4/47/Placeholder.png');
+		theImage.setAttribute('src',viewers[i].profilePic);
 		theImage.classList.add('img-thumbnail');
 		theImage.classList.add('rounded-circle');
 		

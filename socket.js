@@ -23,12 +23,13 @@ exports = module.exports = function(io){
             socket.emit('connectedUsers', JSON.stringify(usersData));
         })
     
-        socket.on('joinBoardGroup', (roomId, name, lastName, userId, groupOwner)=>{
+        socket.on('joinBoardGroup', (roomId, name, lastName, userId, groupOwner, profilePic)=>{
             socket.join(roomId);
             socket.room = roomId; // :lessonId
             socket.name = name; //User.name
             socket.lastName = lastName; // User.lastName
             socket.userId = userId; // User._id
+            socket.profilePic = profilePic; 
             if(roomsData[roomId]){
                 Lesson.findOne({_id: socket.room}, function(err, lesson){
                     if(err)
@@ -53,10 +54,10 @@ exports = module.exports = function(io){
             }
 
             if(socket.userId === groupOwner){
-                roomsData[roomId].editors[socket.id] = {name: socket.name, lastName: socket.lastName};
+                roomsData[roomId].editors[socket.id] = {name: socket.name, lastName: socket.lastName, profilePic: socket.profilePic};
                 socket.emit('joinedEditors');
             }else{
-                roomsData[roomId].viewers[socket.id] = {name: socket.name, lastName: socket.lastName};
+                roomsData[roomId].viewers[socket.id] = {name: socket.name, lastName: socket.lastName, profilePic: socket.profilePic};
                 socket.emit('joinedViewres');
             }
             const usersData = {
@@ -68,8 +69,8 @@ exports = module.exports = function(io){
         })
     
         socket.on('sendMessage', (payload)=>{
-            socket.to(socket.room).emit('sendMessage', payload, socket.name, socket.lastName);
-            socket.emit('sendMessage', payload, socket.name, socket.lastName);
+            socket.to(socket.room).emit('sendMessage', payload, socket.name, socket.lastName, socket.profilePic);
+            socket.emit('sendMessage', payload, socket.name, socket.lastName, socket.profilePic);
             
             Lesson.findOne({_id: socket.room}, function(err, lesson){
                 if(err)
