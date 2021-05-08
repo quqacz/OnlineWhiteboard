@@ -23,19 +23,46 @@ socket.on('connectedUsers', (connectedUsers)=>{
 })
 
 socket.on('sendMessage', (payload, name, lastName)=>{
-    const sendMessage = document.createElement('div');
-    const sender = document.createElement('p');
-    const message = document.createElement('p');
-    const hr = document.createElement('hr');
+	const sendMessage = document.createElement('div');
+	sendMessage.classList.add('row');
+	sendMessage.classList.add('p-2');
+		
+	const userData = document.createElement('span');
+	userData.classList.add('col-sm-8');
+	userData.classList.add('grad');
+	userData.classList.add('borderHighlightRound');
+		
+	const userImage = document.createElement('div');
+	userImage.classList.add('col-sm-3');
+		
+	const theImage = document.createElement('img');
+	theImage.setAttribute('src','https://wiki.dave.eu/images/4/47/Placeholder.png');
+	theImage.classList.add('img-thumbnail');
+	theImage.classList.add('rounded-circle');
+		
+	const dataContent = document.createElement('div');
+	dataContent.classList.add('d-flex');
+	dataContent.classList.add('flex-column');
+	dataContent.style.height = "100%";
+		
+	const sender = document.createElement('div');
+	sender.classList.add('d-flex');
+	sender.style.height = "50%";
+	sender.textContent = `${name} ${lastName}`;
 
-    sender.textContent = `${name} ${lastName}`;
-    message.textContent = payload;
+	const message = document.createElement('div');
+	message.classList.add('d-flex');
+	message.style.height = "50%";
+	message.textContent = payload;
+		
+	dataContent.appendChild(sender);
+	dataContent.appendChild(message);
+	userData.appendChild(dataContent);
+	userImage.appendChild(theImage);
+	sendMessage.appendChild(userImage);
+	sendMessage.appendChild(userData);
 
-    sendMessage.appendChild(sender);
-    sendMessage.appendChild(message);
-    sendMessage.appendChild(hr);
-
-    chatBoxMessages.appendChild(sendMessage);
+	chatBoxMessages.appendChild(sendMessage);
 })
 
 
@@ -121,11 +148,48 @@ function fillActiveUserData(){
 
 function fillEditorsData(){
     for(let i = 0; i < editors.length; i++){
-        const userFrame = document.createElement('div');
-        const userData = document.createElement('span');
+		const userFrame = document.createElement('div');
+		userFrame.classList.add('row');
+		userFrame.classList.add('p-2');
+		
+		const userData = document.createElement('span');
+		userData.classList.add('col-sm-8');
+		userData.classList.add('grad');
+		userData.classList.add('borderHighlightRound');
+		
+		const userImage = document.createElement('div');
+		userImage.classList.add('col-sm-3');
+		
+		const theImage = document.createElement('img');
+		theImage.setAttribute('src','https://wiki.dave.eu/images/4/47/Placeholder.png');
+		theImage.classList.add('img-thumbnail');
+		theImage.classList.add('rounded-circle');
+		
+		const dataContent = document.createElement('div');
+		dataContent.classList.add('d-flex');
+		dataContent.classList.add('flex-column');
+		dataContent.style.height = "100%";
+		
+		const userInfo = document.createElement('div');
+		userInfo.classList.add('d-flex');
+		userInfo.style.height = "50%";
+		userInfo.textContent = `${editors[i].name} ${editors[i].lastName}`;
 
-        userData.textContent = `${editors[i].name} ${editors[i].lastName}`;
-        userFrame.appendChild(userData);
+		const userRole = document.createElement('div');
+		userRole.classList.add('d-flex');
+		userRole.style.height = "50%";
+		if(groupOwner === socket._id){
+			userRole.textContent = `Właściciel`;
+		} else {
+			userRole.textContent = `Edytor`;
+		}
+		
+		dataContent.appendChild(userInfo);
+		dataContent.appendChild(userRole);
+		userData.appendChild(dataContent);
+		userImage.appendChild(theImage);
+		userFrame.appendChild(userImage);
+		userFrame.appendChild(userData);
 
         if(socket._id === groupOwner && socket.id !== editorsKeys[i]){
             const removeButton = document.createElement('button');
@@ -149,11 +213,44 @@ function fillEditorsData(){
 
 function fillViewersData(){
     for(let i = 0; i < viewers.length; i++){
-        const userFrame = document.createElement('div');
-        const userData = document.createElement('span');
+		const userFrame = document.createElement('div');
+		userFrame.classList.add('row');
+		userFrame.classList.add('p-2');
+		
+		const userData = document.createElement('span');
+		userData.classList.add('col-sm-8');
+		userData.classList.add('grad');
+		userData.classList.add('borderHighlightRound');
+		
+		const userImage = document.createElement('div');
+		userImage.classList.add('col-sm-3');
+		
+		const theImage = document.createElement('img');
+		theImage.setAttribute('src','https://wiki.dave.eu/images/4/47/Placeholder.png');
+		theImage.classList.add('img-thumbnail');
+		theImage.classList.add('rounded-circle');
+		
+		const dataContent = document.createElement('div');
+		dataContent.classList.add('d-flex');
+		dataContent.classList.add('flex-column');
+		dataContent.style.height = "100%";
+		
+		const userInfo = document.createElement('div');
+		userInfo.classList.add('d-flex');
+		userInfo.style.height = "50%";
+		userInfo.textContent = `${viewers[i].name} ${viewers[i].lastName}`;
 
-        userData.textContent = `${viewers[i].name} ${viewers[i].lastName}`;
-        userFrame.appendChild(userData);
+		const userRole = document.createElement('div');
+		userRole.classList.add('d-flex');
+		userRole.style.height = "50%";
+		userRole.textContent = `Widz`;
+		
+		dataContent.appendChild(userInfo);
+		dataContent.appendChild(userRole);
+		userData.appendChild(dataContent);
+		userImage.appendChild(theImage);
+		userFrame.appendChild(userImage);
+		userFrame.appendChild(userData);
 
         if(socket._id === groupOwner){
             const removeButton = document.createElement('button');
