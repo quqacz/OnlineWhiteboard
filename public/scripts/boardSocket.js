@@ -23,8 +23,9 @@ socket.on('connectedUsers', (connectedUsers)=>{
     fillActiveUserData();
 })
 
+
 socket.on('sendMessage', (payload, name, lastName, profilePic)=>{
-    const sendMessage = document.createElement('div');
+  const sendMessage = document.createElement('div');
 	sendMessage.classList.add('row');
 	sendMessage.classList.add('p-2');
 		

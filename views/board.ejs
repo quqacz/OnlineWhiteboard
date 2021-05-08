@@ -60,7 +60,7 @@
             <div class="container-fluid borderHighlight scrollable" id="connectedUsers">
             </div>
             <div class="container-fluid borderHighlight hideElement noPaddingAndMargin" id="chatBox">
-                <div class="container-fluid borderHighlight noPaddingAndMargin chatBoxMessagesHeight scrollable" id="chatBoxMessages">
+                <div class="container-fluid noPaddingAndMargin chatBoxMessagesHeight scrollable" id="chatBoxMessages">
                     <%for(let i = 0; i < messages.length; i++){%>
 						<div class="row p-2">
 							<div class="col-sm-3">
@@ -75,7 +75,7 @@
 						</div>
                     <%}%>
                 </div>
-                <div class="input-group borderHighlight noPaddingAndMargin chatBoxHeight">
+                <div class="input-group noPaddingAndMargin chatBoxHeight">
                     <span class="input-group-text" id="sendChatMessage">Wyślij</span>
                     <textarea class="form-control" aria-label="Wyślij" id="textMessageContent"></textarea>
                 </div>
