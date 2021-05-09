@@ -67,7 +67,7 @@
 					<div class="modal-body">
 						<form id="nowaNazwaGrupa" action="/group/<%= groupData._id%>/newNameGroup" method="POST">
 							<div class="row">
-								<input type="text" class="form-control borderHighlight" name="newGroupName" placeholder="Nowa Nazwa" required>
+								<input type="text" class="form-control borderHighlight" name="newGroupName" placeholder="Nowa Nazwa" value="<%= groupData.groupName%>" required>
 							</div>
 							<div class="row" style="margin-top: 10px">
 								<button class="btn btn-outline-secondary">Zmień</button>
@@ -91,7 +91,7 @@
 					<div class="modal-body">
 						<form id="nowyOpisGrupa" action="/group/<%= groupData._id%>/newDescriptionGroup" method="POST">
 							<div class="row">
-								<input type="text" class="form-control borderHighlight" name="newGroupDescription" placeholder="Nowy Opis" required>
+								<input type="text" class="form-control borderHighlight" name="newGroupDescription" placeholder="Nowy Opis" value="<%= groupData.description%>" required>
 							</div>
 							<div class="row" style="margin-top: 10px">
 								<button class="btn btn-outline-secondary">Zapisz</button>

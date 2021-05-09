@@ -69,13 +69,13 @@
 					<div class="modal-body">
 						<form id="noweDane" action="/user/<%-user._id%>/newData" method="POST">
 							<div class="row">
-								<input type="text" class="form-control borderHighlight" name="newName" placeholder="Nowe imię">
+								<input type="text" class="form-control borderHighlight" name="newName" placeholder="Nowe imię" value="<%= user.name%>">
 							</div>
 							<div class="row" style="margin-top: 10px">
-								<input type="text" class="form-control borderHighlight" name="NewLastname" placeholder="Nowe nazwisko">
+								<input type="text" class="form-control borderHighlight" name="NewLastname" placeholder="Nowe nazwisko" value="<%= user.lastName%>">
 							</div>
 							<div class="row" style="margin-top: 10px">
-								<input type="text" class="form-control borderHighlight" name="NewUsername" placeholder="Nowa nazwa użytkownika">
+								<input type="text" class="form-control borderHighlight" name="NewUsername" placeholder="Nowa nazwa użytkownika" value="<%= user.username%>">
 							</div>
 							<div class="row" style="margin-top: 10px">
 								<button class="btn btn-outline-secondary">Zapisz</button>
@@ -124,12 +124,14 @@
 						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
 					<div class="modal-body">
-						<form id="nowyMotyw" action="/user/<%-user._id%>/newTheme" method="POST">
-							<div class="row">
-								<button class="col btn btn-outline-secondary" name="lightMode">Jasny</button>
-								<button class="col btn btn-secondary" name="darkMode">Ciemny</button>
-							</div>
-						</form>
+						<div class="row">
+							<form class="col" id="MotywJasny" action="/user/<%-user._id%>/lightTheme" method="POST">
+								<button class="btn btn-outline-secondary fullwidth" name="lightMode">Jasny</button>
+							</form>
+							<form class="col" id="MotywCiemny" action="/user/<%-user._id%>/blackTheme" method="POST">
+								<button class="btn btn-secondary fullwidth" name="darkMode">Ciemny</button>
+							</form>
+						</div>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
