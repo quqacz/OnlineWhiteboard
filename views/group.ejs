@@ -21,7 +21,7 @@
 	</div>
 	
 	<div class="row col-sm-4 justify-content-center p-1" style="margin-top: 20px">
-		<button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#opcje" aria-expanded="false" aria-controls="opcje"><h2>Ustawienia Użytkownika</h2></button>
+		<button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#opcje" aria-expanded="false" aria-controls="opcje"><h2>Ustawienia Grupy</h2></button>
 	</div>
 	<div class="row borderList bg-light justify-content-center p-1 collapse" id="opcje">
 		<div class="row">
@@ -91,10 +91,10 @@
 					<div class="modal-body">
 						<form id="nowyOpisGrupa" action="/group/<%= groupData._id%>/newDescriptionGroup" method="POST">
 							<div class="row">
-								<input type="text" class="form-control borderHighlight" name="newGroupDescription" placeholder="Podaj stare hasło" required>
+								<input type="text" class="form-control borderHighlight" name="newGroupDescription" placeholder="Nowy Opis" required>
 							</div>
 							<div class="row" style="margin-top: 10px">
-								<button class="btn btn-outline-secondary">Dołącz</button>
+								<button class="btn btn-outline-secondary">Zapisz</button>
 							</div>
 						</form>
 					</div>
