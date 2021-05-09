@@ -20,6 +20,126 @@
 		</div>
 	</div>
 	<div class="row col-sm-4 justify-content-center p-1" style="margin-top: 20px">
+		<button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#opcje" aria-expanded="false" aria-controls="opcje"><h2>Ustawienia Użytkownika</h2></button>
+	</div>
+	<div class="row borderList bg-light justify-content-center p-1 collapse" id="opcje">
+		<div class="row">
+			<div class="col-sm-3 center">
+				<button class="btn btn-secondary fullwidth" type="button" data-bs-toggle="modal" data-bs-target="#one" aria-expanded="false" aria-controls="one"><h4>Zmień Awatar</h4></button>
+			</div>
+			<div class="col-sm-3 center">
+				<button class="btn btn-secondary fullwidth" type="button" data-bs-toggle="modal" data-bs-target="#two" aria-expanded="false" aria-controls="two"><h4>Zmień Dane</h4></button>
+			</div>
+			<div class="col-sm-3 center">
+				<button class="btn btn-secondary fullwidth" type="button" data-bs-toggle="modal" data-bs-target="#three" aria-expanded="false" aria-controls="three"><h4>Zmień Hasło</h4></button>
+			</div>
+			<div class="col-sm-3 center">
+				<button class="btn btn-secondary fullwidth" type="button" data-bs-toggle="modal" data-bs-target="#four" aria-expanded="false" aria-controls="four"><h4>Zmień Motyw</h4></button>
+			</div>
+		</div>
+		
+		<div class="modal fade" id="one" tabindex="-1" aria-labelledby="oneLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="oneLabel">Zmiana Awataru</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<form id="nowyAwatar" action="/user/<%-user._id%>/newAwatar" method="POST">
+							<div class="row">
+								<input type="file" name="newUserPic">
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="modal fade" id="two" tabindex="-1" aria-labelledby="twoLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="twoLabel">Zmiana Danych</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<form id="noweDane" action="/user/<%-user._id%>/newData" method="POST">
+							<div class="row">
+								<input type="text" class="form-control borderHighlight" name="newName" placeholder="Nowe imię">
+							</div>
+							<div class="row" style="margin-top: 10px">
+								<input type="text" class="form-control borderHighlight" name="NewLastname" placeholder="Nowe nazwisko">
+							</div>
+							<div class="row" style="margin-top: 10px">
+								<input type="text" class="form-control borderHighlight" name="NewUsername" placeholder="Nowa nazwa użytkownika">
+							</div>
+							<div class="row" style="margin-top: 10px">
+								<button class="btn btn-outline-secondary">Zmień</button>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="modal fade" id="three" tabindex="-1" aria-labelledby="threeLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="threeLabel">Zmiana Hasła</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<form id="noweHaslo" action="/user/<%-user._id%>/newPassword" method="POST">
+							<div class="row">
+								<input type="text" class="form-control borderHighlight" name="oldPassword" placeholder="Podaj stare hasło" required>
+							</div>
+							<div class="row" style="margin-top: 10px">
+								<input type="text" class="form-control borderHighlight" name="newPassword" placeholder="Podaj nowe hasło" required>
+							</div>
+							<div class="row" style="margin-top: 10px">
+								<button class="btn btn-outline-secondary">Dołącz</button>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="modal fade" id="four" tabindex="-1" aria-labelledby="fourLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="fourLabel">Zmiana Motywu</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<form id="nowyMotyw" action="/user/<%-user._id%>/newTheme" method="POST">
+							<div class="row">
+								<button class="col btn btn-outline-secondary" name="lightMode">Jasny</button>
+								<button class="col btn btn-secondary" name="darkMode">Ciemny</button>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+	</div>
+	<div class="row col-sm-4 justify-content-center p-1">
 		<button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#nowagrupa" aria-expanded="false" aria-controls="nowagrupa"><h2>Utwórz nową grupę</h2></button>
 		<form class="collapse" id="nowagrupa" action="/group/add" method="POST" enctype="multipart/form-data">
 			<div class="row" style="margin-top: 10px">

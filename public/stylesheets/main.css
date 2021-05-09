@@ -6,6 +6,10 @@
     height: 100vh;
 } */
 
+.fullwidth{
+	width: 100%;
+}
+
 .center {
 	display: flex;
 	justify-content: center;
