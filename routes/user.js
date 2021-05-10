@@ -20,9 +20,11 @@ router.post('/:id/joinGroup', isLoggedIn, async(req, res)=>{
             const updatetGroup = await group.save();
             student.groups.push(group);
             const updatedStudent = await student.save();
+			      req.flash('success', 'Pomyślnie dołączono do grupy')
         }
     }catch(e){
         console.log(e);
+		    req.flash('error', 'Nie udało się dołączyć do grupy')
     }
     res.redirect('/user/'+req.user._id.toString());
 })

@@ -15,6 +15,7 @@ router.get('/login', (req, res)=>{
 })
 
 router.post('/login', passport.authenticate('local', {failureRedirect: '/login'}), (req, res)=>{
+    req.flash('success', 'Pomyślnie zalogowano')
     res.redirect(req.session.returnTo ? req.session.returnTo : '/user/'+req.user._id);
 })
 
@@ -44,9 +45,9 @@ router.post('/register', upload.single('profilePic'), async(req, res)=>{
         res.redirect('/register');
     }
 })
-
 router.get('/logout', (req,res)=>{
     req.logOut();
+	req.flash('success', 'Wylogowanie przebiegło pomyślnie');
     res.redirect('/');
 })
 

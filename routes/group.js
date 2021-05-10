@@ -20,10 +20,13 @@ router.post('/add', isLoggedIn, upload.single('groupPic'), async(req,res)=>{
             imageFileName: req.file ? req.file.filename : ''})
 
         const group = await newGroup.save();
+		req.flash('success', 'Pomyślnie utworzono nową grupę')
         res.redirect('/group/'+group._id);
+
     }
     catch(e){
         console.log(e);
+		req.flash('error', 'Nie udało się utworzyć nowej grupy')
         res.redirect('/group/add');
     }
 })
@@ -60,9 +63,11 @@ router.post('/:id/lesson/add', isLoggedIn, isGroupOwner, async(req, res)=>{
         const group = await Group.findOne({_id: req.params.id});
         group.lessons.push(newLesson);
         const updatetGroup = await group.save();
+	    	req.flash('success', 'Pomyślnie dodano nową lekcję') 
         res.redirect('/group/'+req.params.id);
     }catch (e){
         console.log(e);
+	    	req.flash('error', 'Wystąpił błąd przy tworzeniu lekcji')
         res.redirect('/group/'+req.params.id);
     }
 })
@@ -75,9 +80,11 @@ router.delete('/:id/user/:userId', isLoggedIn, isGroupOwner, async(req, res)=>{
         user.groups.pull({_id: req.params.id});
         group.save();
         user.save();
+		    req.flash('success', 'Użytkownik został usunięty pomyślnie') 
         res.redirect('/group/'+req.params.id);
     }catch(e){
         console.log(e);
+	    	req.flash('error', 'Wystąpił błąd przy usuwaniu użytkownika')
         res.redirect('/group/'+req.params.id);
     }
 })
