@@ -1,12 +1,15 @@
 <%- include ('partials/header') %>
 <%- include ('partials/navbar') %>
 
-<div class="container" style="margin-top:50px">
+<div class="grad-anim min-vh-100">
+<div class="container" style="padding-top:50px">
+<%- include ('partials/success') %>
+<%- include ('partials/error') %>
 	<div class="row">
 		<div class="col-sm-8">
 			<div class="row">
 				<div class="col-sm-3">
-					<img src="https://wiki.dave.eu/images/4/47/Placeholder.png" class="img-thumbnail rounded-circle" alt="img_group">
+					<img src="<%= user.imageUrl%>" class="img-thumbnail rounded-circle" alt="img_group">
 				</div>
 				<div class="col-sm-9">
 					<div class="d-flex flex-column" style="height: 100%">
@@ -16,28 +19,164 @@
 			</div>
 		</div>
 	</div>
-	<div class="row justify-content-center p-1" style="margin-top: 20px">
-		<h1>Utwórz nową grupę</h1>
-		<form action="/group/add" method="POST">
-			<label for="groupName">Nazwa nowej grupy:</label><br>
-			<input type="text" name="groupName" class="borderHighlight" required><br>
-			<label for="description">Opis nowej grupy:</label><br>
-			<input type="text" name="description" class="borderHighlight" required>
-			<button class="btn btn-outline-primary">Utwórz</button>
+	<div class="row col-sm-4 justify-content-center p-1" style="margin-top: 20px">
+		<button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#opcje" aria-expanded="false" aria-controls="opcje"><h2>Ustawienia Użytkownika</h2></button>
+	</div>
+	<div class="row borderList bg-light justify-content-center p-1 collapse" id="opcje">
+		<div class="row">
+			<div class="col-sm-3 center">
+				<button class="btn btn-secondary fullwidth" type="button" data-bs-toggle="modal" data-bs-target="#one" aria-expanded="false" aria-controls="one"><h4>Zmień Awatar</h4></button>
+			</div>
+			<div class="col-sm-3 center">
+				<button class="btn btn-secondary fullwidth" type="button" data-bs-toggle="modal" data-bs-target="#two" aria-expanded="false" aria-controls="two"><h4>Zmień Dane</h4></button>
+			</div>
+			<div class="col-sm-3 center">
+				<button class="btn btn-secondary fullwidth" type="button" data-bs-toggle="modal" data-bs-target="#three" aria-expanded="false" aria-controls="three"><h4>Zmień Hasło</h4></button>
+			</div>
+			<div class="col-sm-3 center">
+				<button class="btn btn-secondary fullwidth" type="button" data-bs-toggle="modal" data-bs-target="#four" aria-expanded="false" aria-controls="four"><h4>Zmień Motyw</h4></button>
+			</div>
+		</div>
+		
+		<div class="modal fade" id="one" tabindex="-1" aria-labelledby="oneLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="oneLabel">Zmiana Awataru</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<form id="nowyAwatar" action="/user/<%-user._id%>/newAwatar" method="POST">
+							<div class="row">
+								<input type="file" name="newUserPic">
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="modal fade" id="two" tabindex="-1" aria-labelledby="twoLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="twoLabel">Zmiana Danych</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<form id="noweDane" action="/user/<%-user._id%>/newData" method="POST">
+							<div class="row">
+								<input type="text" class="form-control borderHighlight" name="newName" placeholder="Nowe imię" value="<%= user.name%>">
+							</div>
+							<div class="row" style="margin-top: 10px">
+								<input type="text" class="form-control borderHighlight" name="NewLastname" placeholder="Nowe nazwisko" value="<%= user.lastName%>">
+							</div>
+							<div class="row" style="margin-top: 10px">
+								<input type="text" class="form-control borderHighlight" name="NewUsername" placeholder="Nowa nazwa użytkownika" value="<%= user.username%>">
+							</div>
+							<div class="row" style="margin-top: 10px">
+								<button class="btn btn-outline-secondary">Zapisz</button>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="modal fade" id="three" tabindex="-1" aria-labelledby="threeLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="threeLabel">Zmiana Hasła</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<form id="noweHaslo" action="/user/<%-user._id%>/newPassword" method="POST">
+							<div class="row">
+								<input type="text" class="form-control borderHighlight" name="oldPassword" placeholder="Podaj stare hasło" required>
+							</div>
+							<div class="row" style="margin-top: 10px">
+								<input type="text" class="form-control borderHighlight" name="newPassword" placeholder="Podaj nowe hasło" required>
+							</div>
+							<div class="row" style="margin-top: 10px">
+								<button class="btn btn-outline-secondary">Zapisz</button>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="modal fade" id="four" tabindex="-1" aria-labelledby="fourLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="fourLabel">Zmiana Motywu</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<div class="row">
+							<form class="col" id="MotywJasny" action="/user/<%-user._id%>/lightTheme" method="POST">
+								<button class="btn btn-outline-secondary fullwidth" name="lightMode">Jasny</button>
+							</form>
+							<form class="col" id="MotywCiemny" action="/user/<%-user._id%>/blackTheme" method="POST">
+								<button class="btn btn-secondary fullwidth" name="darkMode">Ciemny</button>
+							</form>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+	</div>
+	<div class="row col-sm-4 justify-content-center p-1">
+		<button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#nowagrupa" aria-expanded="false" aria-controls="nowagrupa"><h2>Utwórz nową grupę</h2></button>
+		<form class="collapse" id="nowagrupa" action="/group/add" method="POST" enctype="multipart/form-data">
+			<div class="row" style="margin-top: 10px">
+				<div class="col noPaddingLeft">
+					<input type="text" class="form-control borderHighlight" name="groupName" placeholder="Nazwa nowej grupy" required>
+				</div>
+				<div class="col noPaddingRight">
+					<input type="text" class="form-control borderHighlight" name="description" placeholder="Opis nowej grupy" required>
+				</div>
+
+				<div>
+					<input type="file" name="groupPic">
+				</div>
+
+			</div>
+			<div class="row" style="margin-top: 10px">
+				<button class="btn btn-outline-secondary">Utwórz</button>
+			</div>
 		</form>
 	</div>
-	<div class="row justify-content-center p-1" style="margin-top: 20px">
-		<h1>Dołącz do grupy</h1>
-		<form action="/user/<%-currentUser._id%>/joinGroup" method="POST">
-			<label for="entryCode">Podaj kod grupy:</label><br>
-			<input type="text" name="entryCode" class="borderHighlight" required>
-			<button class="btn btn-outline-primary">Dołącz</button>
+	<div class="row col-sm-4 justify-content-center p-1">
+		<button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#dolaczdo" aria-expanded="false" aria-controls="dolaczdo"><h2>Dołącz do grupy</h2></button>
+		<form class="collapse" id="dolaczdo" action="/user/<%-user._id%>/joinGroup" method="POST">
+			<div class="row" style="margin-top: 10px">
+				<input type="text" class="form-control borderHighlight" name="entryCode" placeholder="Podaj kod grupy" required>
+			</div>
+			<div class="row" style="margin-top: 10px">
+				<button class="btn btn-outline-secondary">Dołącz</button>
+			</div>
 		</form>
 	</div>
-	<div class="row justify-content-center p-1" style="margin-top: 10px">
-		<h1>Grupy do których należysz:</h1>
+	<div class="row borderList justify-content-center p-1 bg-light" style="margin-top: 10px">
+		<h1>Grupy do których należysz</h1>
 		<%for(let i = 0; i < user.groups.length; i++){%>
-		<div class="row borderHighlight m-2 p-2" style="width: 90%">
+		<div class="row grad borderHighlightRound m-2 p-2" style="width: 90%">
 			<div class="col-sm-1">
 				<img src="https://wiki.dave.eu/images/4/47/Placeholder.png" class="img-thumbnail rounded-circle" alt="img_user">
 			</div>
@@ -49,17 +188,17 @@
 			<div class="col-sm-2">
 				<div class="d-flex flex-column center" style="height: 100%">
 					<a class="nav-link active" aria-current="page" href="/group/<%= user.groups[i]._id%>">
-						<button type="button" class="btn btn-outline-primary">Wyświetl grupę</button>
+						<button type="button" class="btn btn-outline-secondary">Wyświetl grupę</button>
 					</a>
 				</div>
 			</div>
 		</div>
 		<%};%>
 	</div>
-	<div class="row justify-content-center p-1" style="margin-top: 10px">
-		<h1>Grupy które posiadasz:</h1>
+	<div class="row borderList justify-content-center p-1 bg-light" style="margin-top: 10px">
+		<h1>Grupy które posiadasz</h1>
 		<%for(let i = 0; i < ownedGroups.length; i++){%>
-		<div class="row borderHighlight m-2 p-2" style="width: 90%">
+		<div class="row grad borderHighlightRound m-2 p-2" style="width: 90%">
 			<div class="col-sm-1">
 				<img src="https://wiki.dave.eu/images/4/47/Placeholder.png" class="img-thumbnail rounded-circle" alt="img_user">
 			</div>
@@ -71,13 +210,14 @@
 			<div class="col-sm-2">
 				<div class="d-flex flex-column center" style="height: 100%">
 					<a class="nav-link active" aria-current="page" href="/group/<%= ownedGroups[i]._id%>">
-						<button type="button" class="btn btn-outline-primary">Wyświetl grupę</button>
+						<button type="button" class="btn btn-outline-secondary">Wyświetl grupę</button>
 					</a>
 				</div>
 			</div>
 		</div>
 		<%};%>
 	</div>
+</div>
 </div>
 
 <%- include ('partials/footer') %>

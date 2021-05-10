@@ -1,5 +1,5 @@
 <%- include ('partials/header') %>
-<%- include ('partials/boardNavbar') %>
+<%- include ('partials/navbar') %>
 
 <!-- pasek narzędzi -->
 <div class="container-fluid" >
@@ -58,18 +58,24 @@
         </div>
         <div class="col-2 borderHighlight noPaddingAndMargin">
             <div class="container-fluid borderHighlight scrollable" id="connectedUsers">
-                connected users
             </div>
             <div class="container-fluid borderHighlight hideElement noPaddingAndMargin" id="chatBox">
-                <div class="container-fluid borderHighlight noPaddingAndMargin chatBoxMessagesHeight scrollable" id="chatBoxMessages">
+                <div class="container-fluid noPaddingAndMargin chatBoxMessagesHeight scrollable" id="chatBoxMessages">
                     <%for(let i = 0; i < messages.length; i++){%>
-                        <div>
-                            <span><%- messages[i].ownerId.name%> <%- messages[i].ownerId.lastName%></span>
-                            <p> <%- messages[i].content%></p>
-                        </div>
+						<div class="row p-2">
+							<div class="col-sm-3">
+								<img src="<%= messages[i].ownerId.imageUrl%>" class="img-thumbnail rounded-circle" alt="img_user">
+							</div>
+							<div class="col-sm-8 grad borderHighlightRound">
+								<div class="d-flex flex-column" style="height: 100%">
+									<div class="d-flex"><%= messages[i].ownerId.name%> <%= messages[i].ownerId.lastName%></div>
+									<div class="d-flex text-break"><%= messages[i].content%></div>
+								</div>
+							</div>
+						</div>
                     <%}%>
                 </div>
-                <div class="input-group borderHighlight noPaddingAndMargin chatBoxHeight">
+                <div class="input-group noPaddingAndMargin chatBoxHeight">
                     <span class="input-group-text" id="sendChatMessage">Wyślij</span>
                     <textarea class="form-control" aria-label="Wyślij" id="textMessageContent"></textarea>
                 </div>
@@ -85,6 +91,7 @@
     const userName = '<%- currentUser.name%>';
     const userLastName = '<%- currentUser.lastName%>';
     const currentUserId = '<%- currentUser._id%>';
+    const profilePic = '<%- currentUser.imageUrl%>'
     const groupOwner = '<%- owner%>';
 </script> 
 <script src="/scripts/board.js"></script>

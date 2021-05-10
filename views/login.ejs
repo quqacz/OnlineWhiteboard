@@ -1,33 +1,45 @@
 <%- include ('partials/header') %>
 <%- include ('partials/navbar') %>
+<%- include ('partials/success') %>
+<%- include ('partials/error') %>
 
-<div class="d-flex align-items-center min-vh-100 justify-content-center">
-	<span class="border border-white">
-		<div class="bg-light">
-			<form action="/login" method="POST">
-				
-				<div class="form-floating mb-3"> <!-- w-25 -->
-					<input type="text" class="form-control" id="floatingInput" placeholder="Login" name='username'>
-					<label for="floatingInput">Login</label>
-				</div>
-
-				<div class="form-floating mb-3">
-					<input type="password" class="form-control" id="floatingPassword" placeholder="Password" name='password'>
-					<label for="floatingPassword">Hasło</label>
-				</div>
-
-				<center>
-					<button class="btn btn-primary ZalogujSubmit" type="submit">Zaloguj się</button>
-				</center>
-
-			</form>
-				
-			<center>
-				<a class="nav-link active" aria-current="page" href="/register">Nie masz konta?</a>
-			</center>
+<div class="d-flex align-items-center min-vh-100 grad-anim">
+	<div class="container">
+	  <div class="row justify-content-md-center">
+		<div class="col-lg-3">
+		  
 		</div>
-	</span>	
-</div>
-	
+		<div class="col-lg-5">
+			<span>
+				<div class="bg-light borderList" style="padding: 40px">
+					<form action="/login" method="POST">
+						
+						<div class="form-floating mb-3"> <!-- w-25 -->
+							<input type="text" class="form-control" id="floatingInput" placeholder="Login" name='username'>
+							<label for="floatingInput">Login</label>
+						</div>
+
+						<div class="form-floating mb-3">
+							<input type="password" class="form-control" id="floatingPassword" placeholder="Password" name='password'>
+							<label for="floatingPassword">Hasło</label>
+						</div>
+
+						<center>
+							<button class="btn btn-outline-secondary ZalogujSubmit" type="submit">Zaloguj się</button>
+						</center>
+
+					</form>
+				
+					<center>
+						<a class="nav-link active" aria-current="page" href="/register">Nie masz konta?</a>
+					</center>
+				</div>
+			</span>	
+		</div>
+		<div class="col-lg-3">
+		</div>
+	 </div>
+	</div>
+</div>	
 	
 <%- include ('partials/footer') %>

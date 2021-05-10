@@ -15,15 +15,18 @@ router.post('/:id/joinGroup', isLoggedIn, async(req, res)=>{
         const {entryCode} = req.body;
         const group = await Group.findOne({entryCode: entryCode});
         const student = await User.findOne({_id: req.user._id});
-        group.students.push(student);
-        group.save();
-        student.groups.push(group);
-        student.save();
-        res.redirect('/user/'+req.user._id);
+        if(!group.students.includes(req.user._id) && group.owner._id.toString() !== req.user._id.toString()){
+            group.students.push(student);
+            const updatetGroup = await group.save();
+            student.groups.push(group);
+            const updatedStudent = await student.save();
+			req.flash('success', 'Pomyślnie dołączono do grupy')
+        }
     }catch(e){
         console.log(e);
-        res.redirect('/user/'+req.user._id);
+		req.flash('error', 'Nie udało się dołączyć do grupy')
     }
+    res.redirect('/user/'+req.user._id.toString());
 })
 
 module.exports = router;
