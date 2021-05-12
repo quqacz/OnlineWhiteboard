@@ -21,97 +21,96 @@
 			</div>
 		</div>
 	</div>
-	
-	<div class="row col-sm-4 justify-content-center p-1" style="margin-top: 20px">
-		<button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#opcje" aria-expanded="false" aria-controls="opcje"><h2>Ustawienia Grupy</h2></button>
-	</div>
-	<div class="row borderList bg-light justify-content-center p-1 collapse" id="opcje">
-		<div class="row">
-			<div class="col-sm-4 center">
-				<button class="btn btn-secondary fullwidth" type="button" data-bs-toggle="modal" data-bs-target="#one" aria-expanded="false" aria-controls="one"><h4>Zmień Awatar</h4></button>
-			</div>
-			<div class="col-sm-4 center">
-				<button class="btn btn-secondary fullwidth" type="button" data-bs-toggle="modal" data-bs-target="#two" aria-expanded="false" aria-controls="two"><h4>Zmień Nazwę</h4></button>
-			</div>
-			<div class="col-sm-4 center">
-				<button class="btn btn-secondary fullwidth" type="button" data-bs-toggle="modal" data-bs-target="#three" aria-expanded="false" aria-controls="three"><h4>Zmień Opis</h4></button>
-			</div>
-		</div>
-		
-		<div class="modal fade" id="one" tabindex="-1" aria-labelledby="oneLabel" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="oneLabel">Zmiana Awataru Grupy</h5>
-						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-					</div>
-					<div class="modal-body">
-						<form id="nowyAwatarGrupa" action="/group/<%= groupData._id%>/newAvatarGroup" method="POST">
-							<div class="row">
-								<input type="file" name="newGroupPic">
-							</div>
-							<div class="row" style="margin-top: 10px">
-								<button class="btn btn-outline-secondary">Zapisz</button>
-							</div>
-						</form>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
-					</div>
-				</div>
-			</div>
-		</div>
-		
-		<div class="modal fade" id="two" tabindex="-1" aria-labelledby="twoLabel" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="twoLabel">Zmiana Nazwy Grupy</h5>
-						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-					</div>
-					<div class="modal-body">
-						<form id="nowaNazwaGrupa" action="/group/<%= groupData._id%>/newNameGroup" method="POST">
-							<div class="row">
-								<input type="text" class="form-control borderHighlight" name="newGroupName" placeholder="Nowa Nazwa" value="<%= groupData.groupName%>" required>
-							</div>
-							<div class="row" style="margin-top: 10px">
-								<button class="btn btn-outline-secondary">Zmień</button>
-							</div>
-						</form>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
-					</div>
-				</div>
-			</div>
-		</div>
-		
-		<div class="modal fade" id="three" tabindex="-1" aria-labelledby="threeLabel" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="threeLabel">Zmiana Opisu Grupy</h5>
-						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-					</div>
-					<div class="modal-body">
-						<form id="nowyOpisGrupa" action="/group/<%= groupData._id%>/newDescriptionGroup" method="POST">
-							<div class="row">
-								<input type="text" class="form-control borderHighlight" name="newGroupDescription" placeholder="Nowy Opis" value="<%= groupData.description%>" required>
-							</div>
-							<div class="row" style="margin-top: 10px">
-								<button class="btn btn-outline-secondary">Zapisz</button>
-							</div>
-						</form>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
-					</div>
-				</div>
-			</div>
-		</div>
-		
-	</div>
 	<%if(groupData.owner._id.toString() === currentUser._id.toString()){%>
+		<div class="row col-sm-4 justify-content-center p-1" style="margin-top: 20px">
+			<button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#opcje" aria-expanded="false" aria-controls="opcje"><h2>Ustawienia Grupy</h2></button>
+		</div>
+		<div class="row borderList bg-light justify-content-center p-1 collapse" id="opcje">
+			<div class="row">
+				<div class="col-sm-4 center">
+					<button class="btn btn-secondary fullwidth" type="button" data-bs-toggle="modal" data-bs-target="#one" aria-expanded="false" aria-controls="one"><h4>Zmień Awatar</h4></button>
+				</div>
+				<div class="col-sm-4 center">
+					<button class="btn btn-secondary fullwidth" type="button" data-bs-toggle="modal" data-bs-target="#two" aria-expanded="false" aria-controls="two"><h4>Zmień Nazwę</h4></button>
+				</div>
+				<div class="col-sm-4 center">
+					<button class="btn btn-secondary fullwidth" type="button" data-bs-toggle="modal" data-bs-target="#three" aria-expanded="false" aria-controls="three"><h4>Zmień Opis</h4></button>
+				</div>
+			</div>
+			
+			<div class="modal fade" id="one" tabindex="-1" aria-labelledby="oneLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="oneLabel">Zmiana Awataru Grupy</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+							<form id="nowyAwatarGrupa" action="/group/<%= groupData._id%>/update/avatar?_method=PUT" method="POST" enctype="multipart/form-data">
+								<div class="row">
+									<input type="file" name="newGroupPic">
+								</div>
+								<div class="row" style="margin-top: 10px">
+									<button class="btn btn-outline-secondary">Zapisz</button>
+								</div>
+							</form>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="modal fade" id="two" tabindex="-1" aria-labelledby="twoLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="twoLabel">Zmiana Nazwy Grupy</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+							<form id="nowaNazwaGrupa" action="/group/<%= groupData._id%>/update/groupName?_method=PUT" method="POST">
+								<div class="row">
+									<input type="text" class="form-control borderHighlight" name="newGroupName" placeholder="Nowa Nazwa" value="<%= groupData.groupName%>" required>
+								</div>
+								<div class="row" style="margin-top: 10px">
+									<button class="btn btn-outline-secondary">Zmień</button>
+								</div>
+							</form>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="modal fade" id="three" tabindex="-1" aria-labelledby="threeLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="threeLabel">Zmiana Opisu Grupy</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+							<form id="nowyOpisGrupa" action="/group/<%= groupData._id%>/update/description?_method=PUT" method="POST">
+								<div class="row">
+									<input type="text" class="form-control borderHighlight" name="newGroupDescription" placeholder="Nowy Opis" value="<%= groupData.description%>" required>
+								</div>
+								<div class="row" style="margin-top: 10px">
+									<button class="btn btn-outline-secondary">Zapisz</button>
+								</div>
+							</form>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+		</div>
 		<div class="row col-sm-4 justify-content-center p-1" style="margin-top: 10px">
 			<button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#nowalekcja" aria-expanded="false" aria-controls="nowalekcja"><h2>Dodaj Nową Lekcję</h2></button>
 			<form class="collapse" id="nowalekcja" action="/group/<%= groupData._id%>/lesson/add" method="POST">
@@ -148,7 +147,7 @@
 		<%for(let i = 0; i < groupData.students.length; i++){%>
 		<div class="row grad borderHighlightRound m-2 p-2" style="width: 90%">
 			<div class="col-sm-1">
-				<img src="https://wiki.dave.eu/images/4/47/Placeholder.png" class="img-thumbnail rounded-circle" alt="img_user">
+				<img src="<%= groupData.students[i].imageUrl%>" class="img-thumbnail rounded-circle" alt="img_user">
 			</div>
 			<div class="col-sm-9">
 				<div class="d-flex flex-column" style="height: 100%">
