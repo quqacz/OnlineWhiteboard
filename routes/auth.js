@@ -42,6 +42,7 @@ router.post('/register', upload.single('profilePic'), async(req, res)=>{
         });
     }catch (e){
         console.log(e);
+        req.flash('error', 'Błąd rejestracji użytkownika');
         res.redirect('/register');
     }
 })

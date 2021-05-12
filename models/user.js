@@ -9,8 +9,8 @@ const UserSchema = new Schema({
     imageUrl: {type: String},
     imageFileName: {type: String},
     password: String,
-    groups: [{ type: Schema.Types.ObjectId, ref: 'Group'}]
-
+    groups: [{ type: Schema.Types.ObjectId, ref: 'Group'}],
+    lightTheme: {type: Boolean, default: true}
 });
 
 UserSchema.plugin(passportLocalMongoose);

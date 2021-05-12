@@ -80,12 +80,57 @@ router.delete('/:id/user/:userId', isLoggedIn, isGroupOwner, async(req, res)=>{
         user.groups.pull({_id: req.params.id});
         group.save();
         user.save();
-		    req.flash('success', 'Użytkownik został usunięty pomyślnie') 
+		req.flash('success', 'Użytkownik został usunięty pomyślnie') 
         res.redirect('/group/'+req.params.id);
     }catch(e){
         console.log(e);
-	    	req.flash('error', 'Wystąpił błąd przy usuwaniu użytkownika')
+	    req.flash('error', 'Wystąpił błąd przy usuwaniu użytkownika')
         res.redirect('/group/'+req.params.id);
     }
+})
+
+router.put('/:id/update/avatar', isLoggedIn, isGroupOwner, upload.single('newGroupPic'), async(req, res)=>{
+    try{
+        const group = await Group.findOne({_id: req.params.id});
+        if(req.file){
+            group.imageUrl = req.file.path;
+            group.imageFileName = req.file.filename;
+            await group.save();
+            req.flash('success', 'Zmieniono awatar grupy');
+        }else{
+            req.flash('error', 'Błąd przesłanego pliku');
+        }
+        
+    }catch(e){
+        console.log(e);
+        req.flash('error', 'Błąd przy zmianie awatara');
+    }
+    res.redirect('/group/'+req.params.id);
+})
+
+router.put('/:id/update/groupName', isLoggedIn, isGroupOwner, async(req, res)=>{
+    try{
+        const group = await Group.findOne({_id: req.params.id});
+        group.groupName = req.body.newGroupName;
+        await group.save();
+        req.flash('success', 'Zmieniono nazwę grupy');
+    }catch(e){
+        console.log(e);
+        req.flash('error', 'Błąd przy zmianie nazwy grupy');
+    }
+    res.redirect('/group/'+req.params.id);
+})
+
+router.put('/:id/update/description', isLoggedIn, isGroupOwner, async(req, res)=>{
+    try{
+        const group = await Group.findOne({_id: req.params.id});
+        group.description = req.body.newGroupDescription;
+        await group.save();
+        req.flash('success', 'Zmieniono opis grupy');
+    }catch(e){
+        console.log(e);
+        req.flash('error', 'Błąd przy zmianie opisu grupy');
+    }
+    res.redirect('/group/'+req.params.id);
 })
 module.exports = router;
