@@ -92,10 +92,15 @@ router.delete('/:id/user/:userId', isLoggedIn, isGroupOwner, async(req, res)=>{
 router.put('/:id/update/avatar', isLoggedIn, isGroupOwner, upload.single('newGroupPic'), async(req, res)=>{
     try{
         const group = await Group.findOne({_id: req.params.id});
-        group.imageUrl = req.file ? req.file.path : 'https://wiki.dave.eu/images/4/47/Placeholder.png';
-        group.imageFileName = req.file ? req.file.filename : '';
-        await group.save();
-        req.flash('success', 'Zmieniono awatar grupy');
+        if(req.file){
+            group.imageUrl = req.file.path;
+            group.imageFileName = req.file.filename;
+            await group.save();
+            req.flash('success', 'Zmieniono awatar grupy');
+        }else{
+            req.flash('error', 'Błąd przesłanego pliku');
+        }
+        
     }catch(e){
         console.log(e);
         req.flash('error', 'Błąd przy zmianie awatara');

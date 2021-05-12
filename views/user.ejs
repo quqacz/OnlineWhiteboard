@@ -46,7 +46,7 @@
 						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
 					<div class="modal-body">
-						<form id="nowyAwatar" action="/user/<%-user._id%>/newAwatar" method="POST">
+						<form id="nowyAwatar" action="/user/<%-user._id%>/update/avatar?_method=PUT" method="POST" enctype="multipart/form-data">
 							<div class="row">
 								<input type="file" name="newUserPic">
 							</div>
@@ -70,15 +70,12 @@
 						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
 					<div class="modal-body">
-						<form id="noweDane" action="/user/<%-user._id%>/newData" method="POST">
+						<form id="noweDane" action="/user/<%-user._id%>/update/data?_method=PUT" method="POST">
 							<div class="row">
 								<input type="text" class="form-control borderHighlight" name="newName" placeholder="Nowe imię" value="<%= user.name%>">
 							</div>
 							<div class="row" style="margin-top: 10px">
-								<input type="text" class="form-control borderHighlight" name="NewLastname" placeholder="Nowe nazwisko" value="<%= user.lastName%>">
-							</div>
-							<div class="row" style="margin-top: 10px">
-								<input type="text" class="form-control borderHighlight" name="NewUsername" placeholder="Nowa nazwa użytkownika" value="<%= user.username%>">
+								<input type="text" class="form-control borderHighlight" name="newLastName" placeholder="Nowe nazwisko" value="<%= user.lastName%>">
 							</div>
 							<div class="row" style="margin-top: 10px">
 								<button class="btn btn-outline-secondary">Zapisz</button>
@@ -100,12 +97,12 @@
 						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
 					<div class="modal-body">
-						<form id="noweHaslo" action="/user/<%-user._id%>/newPassword" method="POST">
+						<form id="noweHaslo" action="/user/<%-user._id%>/update/password?_method=PUT" method="POST">
 							<div class="row">
-								<input type="text" class="form-control borderHighlight" name="oldPassword" placeholder="Podaj stare hasło" required>
+								<input type="text" class="form-control borderHighlight" name="oldPassword" placeholder="Podaj nowe hasło" required>
 							</div>
 							<div class="row" style="margin-top: 10px">
-								<input type="text" class="form-control borderHighlight" name="newPassword" placeholder="Podaj nowe hasło" required>
+								<input type="text" class="form-control borderHighlight" name="newPassword" placeholder="Powtórz nowe hasło" required>
 							</div>
 							<div class="row" style="margin-top: 10px">
 								<button class="btn btn-outline-secondary">Zapisz</button>
@@ -128,10 +125,10 @@
 					</div>
 					<div class="modal-body">
 						<div class="row">
-							<form class="col" id="MotywJasny" action="/user/<%-user._id%>/lightTheme" method="POST">
+							<form class="col" id="MotywJasny" action="/user/<%-user._id%>/theme/light?_method=PUT" method="POST">
 								<button class="btn btn-outline-secondary fullwidth" name="lightMode">Jasny</button>
 							</form>
-							<form class="col" id="MotywCiemny" action="/user/<%-user._id%>/blackTheme" method="POST">
+							<form class="col" id="MotywCiemny" action="/user/<%-user._id%>/theme/dark?_method=PUT" method="POST">
 								<button class="btn btn-secondary fullwidth" name="darkMode">Ciemny</button>
 							</form>
 						</div>
@@ -181,7 +178,7 @@
 		<%for(let i = 0; i < user.groups.length; i++){%>
 		<div class="row grad borderHighlightRound m-2 p-2" style="width: 90%">
 			<div class="col-sm-1">
-				<img src="https://wiki.dave.eu/images/4/47/Placeholder.png" class="img-thumbnail rounded-circle" alt="img_user">
+				<img src="<%= user.groups[i].imageUrl%>" class="img-thumbnail rounded-circle" alt="img_user">
 			</div>
 			<div class="col-sm-9">
 				<div class="d-flex flex-column" style="height: 100%">
@@ -203,7 +200,7 @@
 		<%for(let i = 0; i < ownedGroups.length; i++){%>
 		<div class="row grad borderHighlightRound m-2 p-2" style="width: 90%">
 			<div class="col-sm-1">
-				<img src="https://wiki.dave.eu/images/4/47/Placeholder.png" class="img-thumbnail rounded-circle" alt="img_user">
+				<img src="<%= ownedGroups[i].imageUrl%>" class="img-thumbnail rounded-circle" alt="img_user">
 			</div>
 			<div class="col-sm-9">
 				<div class="d-flex flex-column" style="height: 100%">
