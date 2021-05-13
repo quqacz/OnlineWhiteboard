@@ -31,7 +31,11 @@ socket.on('sendMessage', (payload, name, lastName, profilePic)=>{
 		
 	const userData = document.createElement('span');
 	userData.classList.add('col-sm-8');
-	userData.classList.add('grad');
+	if(socket.lightTheme){
+		userData.classList.add('grad');
+	} else {
+		userData.classList.add('grad-dark');
+	}
 	userData.classList.add('borderHighlightRound');
 		
 	const userImage = document.createElement('div');
@@ -157,7 +161,11 @@ function fillEditorsData(){
 		
 		const userData = document.createElement('span');
 		userData.classList.add('col-sm-8');
-		userData.classList.add('grad');
+		if(socket.lightTheme === true){
+			userData.classList.add('grad');
+		} else {
+			userData.classList.add('grad-dark');
+		}
 		userData.classList.add('borderHighlightRound');
 		
 		const userImage = document.createElement('div');
@@ -222,7 +230,11 @@ function fillViewersData(){
 		
 		const userData = document.createElement('span');
 		userData.classList.add('col-sm-8');
-		userData.classList.add('grad');
+		if(socket.lightTheme === true){
+			userData.classList.add('grad');
+		} else {
+			userData.classList.add('grad-dark');
+		}
 		userData.classList.add('borderHighlightRound');
 		
 		const userImage = document.createElement('div');
