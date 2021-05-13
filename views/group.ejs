@@ -56,7 +56,7 @@
 									<input type="file" name="newGroupPic">
 								</div>
 								<div class="row" style="margin-top: 10px">
-									<button class="btn btn-outline-secondary">Zapisz</button>
+									<button class="btn btn-secondary">Zapisz</button>
 								</div>
 							</form>
 						</div>
@@ -80,7 +80,7 @@
 									<input type="text" class="form-control borderHighlight" name="newGroupName" placeholder="Nowa Nazwa" value="<%= groupData.groupName%>" required>
 								</div>
 								<div class="row" style="margin-top: 10px">
-									<button class="btn btn-outline-secondary">Zmień</button>
+									<button class="btn btn-secondary">Zmień</button>
 								</div>
 							</form>
 						</div>
@@ -104,7 +104,7 @@
 									<input type="text" class="form-control borderHighlight" name="newGroupDescription" placeholder="Nowy Opis" value="<%= groupData.description%>" required>
 								</div>
 								<div class="row" style="margin-top: 10px">
-									<button class="btn btn-outline-secondary">Zapisz</button>
+									<button class="btn btn-secondary">Zapisz</button>
 								</div>
 							</form>
 						</div>
@@ -131,7 +131,7 @@
 									<input type="text" class="form-control borderHighlight" name="topic" placeholder="Tytuł Lekcji" required>
 								</div>
 								<div class="row" style="margin-top: 10px">
-									<button class="btn btn-outline-secondary">Dodaj lekcje</button>
+									<button class="btn btn-secondary">Dodaj lekcje</button>
 								</div>
 							</form>
 						</div>
@@ -155,7 +155,7 @@
 			<div class="col-sm-2">
 				<div class="d-flex flex-column center" style="height: 100%">
 					<a class="nav-link active" aria-current="page" href="/group/<%= groupData._id%>/lesson/<%= groupData.lessons[i]._id%>">
-						<button type="button" class="btn btn-outline-secondary">Dołącz do tablicy</button>
+						<button type="button" class="btn btn-secondary">Dołącz do tablicy</button>
 					</a>
 				</div>
 			</div>
@@ -179,7 +179,7 @@
 				<div class="col-sm-2">
 					<div class="d-flex flex-column center" style="height: 100%">
 						<form action="/group/<%- groupData._id%>/user/<%-groupData.students[i]._id%>?_method=DELETE" method="POST">
-							<button type="submit" class="btn btn-outline-secondary">Usuń z grupy</button>
+							<button type="submit" class="btn btn-secondary">Usuń z grupy</button>
 						</form>
 					</div>
 				</div>
