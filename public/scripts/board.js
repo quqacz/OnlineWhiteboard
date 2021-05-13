@@ -25,12 +25,9 @@ const chatBoxMessages = document.querySelector('#chatBoxMessages');
 
 
 const lineControl = document.querySelector('#lineControls');
-const rubberControl = document.querySelector('#rubberControls');
-const shapeControl = document.querySelector('#shapeControls');
 
 const toolbarControls = [gumka, rysik, linia, prostokat, elipsa];
 const sidePanelControls = [uczestnicy, czat];
-const toolSettings = [lineControl, rubberControl, shapeControl];
 
 let canvasDimentions = {
     width: canvas.width,
@@ -70,40 +67,30 @@ gumka.addEventListener('click', ()=>{
     settings.tool = 'GUMKA';
     removeStyle(toolbarControls, "active")
     gumka.classList.add('active');
-    addStyle(toolSettings, "hideElement");
-    rubberControl.classList.remove('hideElement');
 })
 
 rysik.addEventListener('click', ()=>{
     settings.tool = 'RYSIK';
     removeStyle(toolbarControls, "active")
     rysik.classList.add('active');
-    addStyle(toolSettings, "hideElement");
-    lineControl.classList.remove('hideElement');
 })
 
 linia.addEventListener('click', ()=>{
     settings.tool = 'LINIA';
     removeStyle(toolbarControls, "active")
     linia.classList.add('active');
-    addStyle(toolSettings, "hideElement");
-    lineControl.classList.remove('hideElement');
 })
 
 prostokat.addEventListener('click', ()=>{
     settings.tool = 'PROSTOKAT';
     removeStyle(toolbarControls, "active")
     prostokat.classList.add('active');
-    addStyle(toolSettings, "hideElement");
-    shapeControl.classList.remove('hideElement');
 })
 
 elipsa.addEventListener('click', ()=>{
     settings.tool = 'ELIPSA';
     removeStyle(toolbarControls, "active")
     elipsa.classList.add('active');
-    addStyle(toolSettings, "hideElement");
-    shapeControl.classList.remove('hideElement');
 })
 
 wyczysc.addEventListener('click', ()=>{

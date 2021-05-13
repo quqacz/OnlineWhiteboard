@@ -31,7 +31,11 @@ socket.on('sendMessage', (payload, name, lastName, profilePic)=>{
 		
 	const userData = document.createElement('span');
 	userData.classList.add('col-sm-8');
-	userData.classList.add('grad');
+	if(lightTheme === 'true'){
+		userData.classList.add('grad');
+	} else {
+		userData.classList.add('grad-dark');
+	}
 	userData.classList.add('borderHighlightRound');
 		
 	const userImage = document.createElement('div');
@@ -122,8 +126,10 @@ socket.on('forceRemove', ()=>{
 
 function sendMessage(){
     const payload = textMessageContent.value;
-    textMessageContent.value = '';
-    socket.emit('sendMessage', payload);
+	if(payload.length > 0){
+		textMessageContent.value = '';
+		socket.emit('sendMessage', payload);
+	}
 }
 
 function sendCanvasContent(){
@@ -157,7 +163,11 @@ function fillEditorsData(){
 		
 		const userData = document.createElement('span');
 		userData.classList.add('col-sm-8');
-		userData.classList.add('grad');
+		if(lightTheme === 'true'){
+			userData.classList.add('grad');
+		} else {
+			userData.classList.add('grad-dark');
+		}
 		userData.classList.add('borderHighlightRound');
 		
 		const userImage = document.createElement('div');
@@ -222,7 +232,11 @@ function fillViewersData(){
 		
 		const userData = document.createElement('span');
 		userData.classList.add('col-sm-8');
-		userData.classList.add('grad');
+		if(lightTheme === 'true'){
+			userData.classList.add('grad');
+		} else {
+			userData.classList.add('grad-dark');
+		}
 		userData.classList.add('borderHighlightRound');
 		
 		const userImage = document.createElement('div');

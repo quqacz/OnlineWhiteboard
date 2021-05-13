@@ -38,6 +38,17 @@
     animation: anim 15s ease infinite;
 }
 
+.grad-dark{
+	background: linear-gradient(to right, #808080, black);
+}
+
+.grad-anim-dark {
+    background: linear-gradient(270deg, #000000, #808080);
+	background-size: 400% 400%;
+
+    animation: anim 15s ease infinite;
+}
+
 @keyframes anim {
     0%{background-position:0% 50%}
     50%{background-position:100% 50%}
@@ -59,6 +70,11 @@
 
 .borderList{
 	border: 5px ridge silver;
+	border-radius: 8px;
+}
+
+.borderList-black{
+	border: 5px ridge black;
 	border-radius: 8px;
 }
 

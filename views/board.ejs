@@ -2,6 +2,11 @@
 <%- include ('partials/navbar') %>
 
 <!-- pasek narzędzi -->
+<%if(currentUser.lightTheme){%>
+<div class="grad-anim" id="bod">
+<%} else {%>
+<div class="grad-anim-dark" id="bod2">
+<%};%>
 <div class="container-fluid" >
     <div class="row">
         <div class="col-5 drawingControls">
@@ -33,12 +38,6 @@
                     <option value="10">10</option>
                 </select>
             </div>
-            <div class="container-fluid hideElement" id="rubberControls">
-                rubberControls
-            </div>
-            <div class="container-fluid hideElement" id="shapeControls">
-                shapeControls
-            </div>
         </div>
         <div class="col-2 noPaddingAndMargin">
             <div class="btn-group" role="group" aria-label="Basic example">
@@ -52,7 +51,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-10 noPaddingRight">
-            <canvas id="canvas" class="borderHighlight">
+            <canvas id="canvas" class="borderHighlight bg-white">
 
             </canvas>
         </div>
@@ -83,9 +82,54 @@
         </div>
     </div>
 </div>
+</div>
 
 
 <script src="https://cdn.socket.io/3.1.3/socket.io.min.js" integrity="sha384-cPwlPLvBTa3sKAgddT6krw0cJat7egBga3DJepJyrLl4Q9/5WLra3rrnMcyTyOnh" crossorigin="anonymous"></script>
+<script>
+const element = document.getElementById("bod2");
+if(typeof(element) != undefined && element != null){
+	document.addEventListener("load", darkSwitch());
+}
+
+function darkSwitch() {
+  document.body.style.color = "white";
+  
+  document.getElementById("sendChatMessage").classList.add("bg-secondary")
+  document.getElementById("sendChatMessage").style.color = "white";
+  
+  document.getElementById("textMessageContent").classList.add("bg-dark")
+  document.getElementById("textMessageContent").style.color = "white";
+  
+  const linki = document.getElementsByClassName("nav-link");
+  for(let i = 0; i < linki.length; i++){
+	linki[i].style.color = "white";
+  }
+  
+  const linki2 = document.getElementsByClassName("navbar-brand");
+  for(let i = 0; i < linki2.length; i++){
+	linki2[i].style.color = "white";
+  }
+
+  const borderList_switch = document.getElementsByClassName("borderList");
+  while(borderList_switch.length > 0) {
+    borderList_switch[0].classList.add("borderList-black");
+	borderList_switch[0].classList.remove("borderList");
+  }
+  
+  const bg_switch = document.getElementsByClassName("bg-light");
+  while(bg_switch.length > 0) {
+    bg_switch[0].classList.add("bg-dark");
+	bg_switch[0].classList.remove("bg-light");
+  }
+  
+  const grad_switch = document.getElementsByClassName("grad");
+  while(grad_switch.length > 0) {
+    grad_switch[0].classList.add("grad-dark");
+	grad_switch[0].classList.remove("grad");
+  }
+}
+</script>
 <script> 
     const groupId = '<%-groupId%>'; 
     const userName = '<%- currentUser.name%>';
@@ -93,6 +137,7 @@
     const currentUserId = '<%- currentUser._id%>';
     const profilePic = '<%- currentUser.imageUrl%>'
     const groupOwner = '<%- owner%>';
+    const lightTheme = '<%- currentUser.lightTheme%>'
 </script> 
 <script src="/scripts/board.js"></script>
 <script src="/scripts/boardSocket.js"></script>
