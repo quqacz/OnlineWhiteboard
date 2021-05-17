@@ -75,12 +75,12 @@
 						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
 					<div class="modal-body">
-						<form id="noweDane" action="/user/<%-user._id%>/update/data?_method=PUT" method="POST">
+						<form id="noweDane" onsubmit="return validate()" action="/user/<%-user._id%>/update/data?_method=PUT" method="POST">
 							<div class="row">
-								<input type="text" class="form-control borderHighlight" name="newName" placeholder="Nowe imię" value="<%= user.name%>">
+								<input type="text" class="form-control borderHighlight" name="newName" id="newName" placeholder="Nowe imię" value="<%= user.name%>">
 							</div>
 							<div class="row" style="margin-top: 10px">
-								<input type="text" class="form-control borderHighlight" name="newLastName" placeholder="Nowe nazwisko" value="<%= user.lastName%>">
+								<input type="text" class="form-control borderHighlight" name="newLastName" id="newLastName" placeholder="Nowe nazwisko" value="<%= user.lastName%>">
 							</div>
 							<div class="row" style="margin-top: 10px">
 								<button class="btn btn-secondary">Zapisz</button>
@@ -94,6 +94,26 @@
 			</div>
 		</div>
 		
+		<script>
+			function validate() {
+				const imie = document.getElementById('newName').value
+				const nazwisko = document.getElementById('newLastName').value
+				var RegImie = /^[A-ZĄĆĘŁŃÓŚŹŻ]{1}[a-ząćęłńóśźż]+$/;
+				var RegNazw = /^([A-ZĄĆĘŁŃÓŚŹŻ]{1}[a-ząćęłńóśźż]+){1}(-{1}[A-ZĄĆĘŁŃÓŚŹŻ]{1}[a-ząćęłńóśźż]+){0,1}$/;
+				if(!RegImie.test(imie))
+				{
+					alert("W imieniu występuje błąd. Upewnij się, że zaczyna się ono z dużej litery i nie ma żadnych spacji");
+					return false;
+				}
+				else if(!RegNazw.test(nazwisko))
+				{
+					alert("W nazwisku występuje błąd. Upewnij sie, że zaczyna się ono z dużej litery, a jeśli jest podwójne, to sprawdź czy jest oddzielone myślnikiem (np. Kowalski-Kmicic)");
+					return false;
+				}
+				return true;
+			}
+		</script>
+		
 		<div class="modal fade" id="three" tabindex="-1" aria-labelledby="threeLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content bg-light">
@@ -104,10 +124,10 @@
 					<div class="modal-body">
 						<form id="noweHaslo" action="/user/<%-user._id%>/update/password?_method=PUT" method="POST">
 							<div class="row">
-								<input type="text" class="form-control borderHighlight" name="oldPassword" placeholder="Podaj nowe hasło" required>
+								<input type="password" class="form-control borderHighlight" name="oldPassword" placeholder="Podaj nowe hasło" required>
 							</div>
 							<div class="row" style="margin-top: 10px">
-								<input type="text" class="form-control borderHighlight" name="newPassword" placeholder="Powtórz nowe hasło" required>
+								<input type="password" class="form-control borderHighlight" name="newPassword" placeholder="Powtórz nowe hasło" required>
 							</div>
 							<div class="row" style="margin-top: 10px">
 								<button class="btn btn-secondary">Zapisz</button>
