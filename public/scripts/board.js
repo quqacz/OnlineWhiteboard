@@ -40,7 +40,7 @@ const settings = {
     tool: 'RYSIK',
     strokeWidth: 1,
     strokeColor: 'black',
-    rubberSize: 10,
+    rubberSize: 20,
     backgroundFill: 'white'
 }
 
@@ -136,10 +136,10 @@ canvas.addEventListener('mousemove', (event)=>{
     mousePos.y = event.offsetY;
 
     if(isViewer) return;
-    if(!drawing) return;
+    if(!drawing && settings.tool!=='GUMKA') return;
 
     if(settings.tool === 'RYSIK'){
-        canvasContent.lines.push(new Point(mousePos.x, mousePos.y, settings.strokeWidth, settings.strokeColor, true, canvasDimentions, false));
+        canvasContent.lines[canvasContent.lines.length-1].push(new Point(mousePos.x, mousePos.y, settings.strokeWidth, settings.strokeColor, canvasDimentions));
         ctx.lineCap = "round";
         ctx.lineJoin = "round";
         ctx.lineTo(mousePos.x, mousePos.y);
@@ -155,15 +155,21 @@ canvas.addEventListener('mousemove', (event)=>{
     }else if(settings.tool === 'ELIPSA'){
         canvasContent.tmpEllipse.calculateR(mousePos.x / canvasDimentions.width, mousePos.y / canvasDimentions.height);
         redrawCanvas(canvasContent);
+    }else if(settings.tool === 'GUMKA'){
+        redrawCanvas(canvasContent);
+        drawRubber();
     }
-    sendCanvasContent();
+
+    if(settings.tool !== 'GUMKA')
+        sendCanvasContent();
 })
 
 canvas.addEventListener('mousedown', ()=>{
     if(isViewer) return;
 
     if(settings.tool === 'RYSIK'){
-        canvasContent.lines.push(new Point(mousePos.x, mousePos.y, settings.strokeWidth, settings.strokeColor, true, canvasDimentions, true));
+        canvasContent.lines.push([]);
+        canvasContent.lines[canvasContent.lines.length-1].push(new Point(mousePos.x, mousePos.y, settings.strokeWidth, settings.strokeColor, canvasDimentions));
         drawing = true;
         ctx.lineWidth = settings.strokeWidth;
         ctx.strokeStyle = settings.strokeColor;
@@ -178,6 +184,10 @@ canvas.addEventListener('mousedown', ()=>{
     }else if(settings.tool === 'ELIPSA'){
         canvasContent.tmpEllipse = new Elipse(mousePos.x, mousePos.y, settings.strokeWidth, settings.strokeColor, canvasDimentions);
         drawing = true;
+    }else if(settings.tool === 'GUMKA'){
+        if(removePoints(mousePos.x, mousePos.y, canvasDimentions) || removeLines(mousePos.x, mousePos.y, canvasDimentions)){
+            sendCanvasContent();
+        }
     }
 })
 
@@ -185,14 +195,8 @@ canvas.addEventListener('mouseup', ()=>{
     if(isViewer) return;
 
     if(settings.tool === 'RYSIK'){
-        canvasContent.lines.push(new Point(mousePos.x, mousePos.y, settings.strokeWidth, settings.strokeColor, true, canvasDimentions, false));
-        canvasContent.lines.push(new Point(mousePos.x, mousePos.y, settings.strokeWidth, settings.strokeColor, false, canvasDimentions, false));
+        canvasContent.lines[canvasContent.lines.length-1].push(new Point(mousePos.x, mousePos.y, settings.strokeWidth, settings.strokeColor, canvasDimentions));
         drawing = false;
-        ctx.lineCap = "round";
-        ctx.lineJoin = "round";
-        ctx.lineTo(mousePos.x, mousePos.y);
-        ctx.stroke();
-        ctx.closePath();
         sendCanvasContent();
     }else if(settings.tool === 'LINIA'){
         canvasContent.Lines.push(canvasContent.tmpLine);
@@ -256,27 +260,17 @@ function resizeCanvas(){
 function renderPoints(linesArray){
     ctx.beginPath();
     for(let i = 0; i < linesArray.length; i++){
-        if(linesArray[i].isControl){
-            ctx.moveTo(linesArray[i].x * canvasDimentions.width, linesArray[i].y * canvasDimentions.height);
+            ctx.moveTo(linesArray[i][0].x * canvasDimentions.width, linesArray[i][0].y * canvasDimentions.height);
             ctx.beginPath();
-            ctx.lineWidth = linesArray[i].size;
-            ctx.strokeStyle = linesArray[i].color;
-        }else{
-            if(linesArray[i].drawable){
-                ctx.lineCap = "round";
-                ctx.lineJoin = "round";
-                ctx.lineTo(linesArray[i].x * canvasDimentions.width, linesArray[i].y * canvasDimentions.height)
-            }else{
-                ctx.lineCap = "round";
-                ctx.lineJoin = "round";
-                ctx.lineTo(linesArray[i].x * canvasDimentions.width, linesArray[i].y * canvasDimentions.height)
-                ctx.stroke();
-            }
+            ctx.lineWidth = linesArray[i][0].size;
+            ctx.strokeStyle = linesArray[i][0].color;
+        for(let j = 1; j < linesArray[i].length; j++){
+            ctx.lineCap = "round";
+            ctx.lineJoin = "round";
+            ctx.lineTo(linesArray[i][j].x * canvasDimentions.width, linesArray[i][j].y * canvasDimentions.height);
+            ctx.stroke();
         }
     }
-    ctx.stroke();
-    ctx.beginPath();
-    
 }
 
 function renderLines(lines){
@@ -337,14 +331,46 @@ function redrawCanvas(content){
         renderEllipse(content.tmpEllipse);
 }
 
+function drawRubber(){
+    ctx.strokeStyle = 'black';
+    ctx.lineWidth = .5;
+    ctx.beginPath();
+    ctx.arc(mousePos.x, mousePos.y, settings.rubberSize/2, 0, Math.PI * 2, false);
+    ctx.stroke();
+}
+
+function removePoints(x, y, dimentions){
+    for(let i = 0; i < canvasContent.lines.length; i++){
+        let points = canvasContent.lines[i].filter((e)=> {return isInRange(e, settings.rubberSize/dimentions.width, x/dimentions.width, y/dimentions.height)})
+        if(points.length){
+            canvasContent.lines.splice(i,1);
+            redrawCanvas(canvasContent);
+            return true;
+        }
+    }
+}
+
+function removeLines(x, y, dimentions){
+    
+}
+
+function isInRange(point, r, x, y){
+    const dx = x - point.x;
+    const dy = y - point.y;
+    console.log(dx, dy);
+    const dist = dx**2 + dy**2;
+    console.log(dist, r);
+    if(dist < r**2)
+        return true;
+    return false;
+}
+
 class Point{
-	constructor(x, y, size, color, drawable, dimentions = {}, isControl){
+	constructor(x, y, size, color, dimentions = {}){
 		this.x = x / dimentions.width;
 		this.y = y / dimentions.height;
-        this.isControl = isControl;
 		this.size = size;
 		this.color = color;
-        this.drawable = drawable;
 	}
 }
 
