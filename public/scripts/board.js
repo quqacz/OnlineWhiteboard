@@ -185,9 +185,11 @@ canvas.addEventListener('mousedown', ()=>{
         canvasContent.tmpEllipse = new Elipse(mousePos.x, mousePos.y, settings.strokeWidth, settings.strokeColor, canvasDimentions);
         drawing = true;
     }else if(settings.tool === 'GUMKA'){
+        clearTmps();
         if(removePoints(mousePos.x, mousePos.y, canvasDimentions) || 
         removeLines(mousePos.x, mousePos.y, settings.rubberSize, canvasDimentions) || 
-        removeRects(mousePos.x, mousePos.y, canvasDimentions)){
+        removeRects(mousePos.x, mousePos.y, canvasDimentions) ||
+        removeEllipses(mousePos.x, mousePos.y, canvasDimentions)){
             sendCanvasContent();
         }
     }
@@ -219,6 +221,8 @@ canvas.addEventListener('mouseup', ()=>{
         redrawCanvas(canvasContent);
         sendCanvasContent();
     }
+
+    clearTmps();
 })
 
 window.addEventListener('resize', ()=>{
@@ -357,7 +361,6 @@ function removeLines(x, y, r, dimentions){
     for(let i = 0; i < canvasContent.Lines.length; i++){
         if(checkLineCircleHitbox(x, y, r, canvasContent.Lines[i], dimentions)){
             canvasContent.Lines.splice(i,1);
-            console.log('KUTAS');
             redrawCanvas(canvasContent);
             return true;
         }
@@ -372,7 +375,6 @@ function checkLineCircleHitbox(x, y, r, line, dimentions){
     
     if(!(x >= Math.min(coordinats.x, coordinats.x1) && x <= Math.max(coordinats.x, coordinats.x1) &&
         y >= Math.min(coordinats.y, coordinats.y1) && y <= Math.max(coordinats.y, coordinats.y1))){
-            console.log('KUtaS')
             return false;
         }
 
@@ -401,11 +403,9 @@ function calculateDimentions(line, dimentions){
 }
 
 function removeRects(x, y, dim){
-    canvasContent.tmpRect = null;
     for(let i = 0; i < canvasContent.rects.length; i++){
         if(checkRectHitbox(x, y, canvasContent.rects[i], dim)){
-            console.log('hit kurwa')
-            console.log( canvasContent.rects.splice(i, 1) );
+            canvasContent.rects.splice(i, 1);
             redrawCanvas(canvasContent);
             return true;
         }
@@ -425,13 +425,34 @@ function checkRectHitbox(x, y, rect, dim){
     }
 }
 
-function isInRange(point, r, x, y){
+function removeEllipses(x, y, dimentions){
+    for(let i = 0; i < canvasContent.ellipses.length; i++){
+        if(checkElipseHitbox(x, y, canvasContent.ellipses[i], dimentions)){
+            canvasContent.ellipses.splice(i, 1);
+            redrawCanvas(canvasContent);
+            return true;
+        }
+    }
+    return false;
+}
+
+function checkElipseHitbox(x, y, ellipse, dimentions){
+    return isInRange({x: ellipse.baseX * dimentions.width, y: ellipse.baseY * dimentions.height}, ellipse.r * dimentions.width, x, y, settings.rubberSize);
+}
+
+function isInRange(point, r, x, y, range = 0){
     const dx = x - point.x;
     const dy = y - point.y;
     const dist = dx**2 + dy**2;
-    if(dist < r**2)
+    if(dist < r**2 + range)
         return true;
     return false;
+}
+
+function clearTmps(){
+    canvasContent.tmpRect = null;
+    canvasContent.tmpLine = null;
+    canvasContent.tmpEllipse = null;
 }
 
 class Point{
