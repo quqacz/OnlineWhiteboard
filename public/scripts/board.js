@@ -357,6 +357,7 @@ function removeLines(x, y, r, dimentions){
     for(let i = 0; i < canvasContent.Lines.length; i++){
         if(checkLineCircleHitbox(x, y, r, canvasContent.Lines[i], dimentions)){
             canvasContent.Lines.splice(i,1);
+            console.log('KUTAS');
             redrawCanvas(canvasContent);
             return true;
         }
@@ -366,7 +367,33 @@ function removeLines(x, y, r, dimentions){
 
 function checkLineCircleHitbox(x, y, r, line, dimentions){
     let coordinats = calculateDimentions(line, dimentions);
-    let m = (line.baseY - line.y)/(line.baseX - line.x);
+    let m = (coordinats.y - coordinats.y1) / (coordinats.x - coordinats.x1);
+    let n = coordinats.y - m * coordinats.x;
+    
+    if(!(x >= Math.min(coordinats.x, coordinats.x1) && x <= Math.max(coordinats.x, coordinats.x1) &&
+        y >= Math.min(coordinats.y, coordinats.y1) && y <= Math.max(coordinats.y, coordinats.y1))){
+            console.log('KUtaS')
+            return false;
+        }
+
+    // circle: (X - x)^2 + (Y - y)^2 = r^2
+    // line: y = m * x + c
+    // r: circle radius
+    // x: x value of circle centre
+    // y: y value of circle centre
+    // m: slope
+    // n: y-intercept
+    
+    let a = 1 + m**2;
+    let b = -x * 2 + (m * (n - y)) * 2;
+    let c = x**2 + (n-y)**2 - r**2;
+
+    let d = b**2 - 4 * a * c;
+    if(d >= 0){
+        return true;
+    }else{
+        return false;
+    }
 }
 
 function calculateDimentions(line, dimentions){
