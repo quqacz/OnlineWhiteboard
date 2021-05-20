@@ -185,7 +185,9 @@ canvas.addEventListener('mousedown', ()=>{
         canvasContent.tmpEllipse = new Elipse(mousePos.x, mousePos.y, settings.strokeWidth, settings.strokeColor, canvasDimentions);
         drawing = true;
     }else if(settings.tool === 'GUMKA'){
-        if(removePoints(mousePos.x, mousePos.y, canvasDimentions) || removeLines(mousePos.x, mousePos.y, canvasDimentions)){
+        if(removePoints(mousePos.x, mousePos.y, canvasDimentions) || 
+        removeLines(mousePos.x, mousePos.y, settings.rubberSize, canvasDimentions) || 
+        removeRects(mousePos.x, mousePos.y, canvasDimentions)){
             sendCanvasContent();
         }
     }
@@ -348,18 +350,58 @@ function removePoints(x, y, dimentions){
             return true;
         }
     }
+    return false;
 }
 
-function removeLines(x, y, dimentions){
-    
+function removeLines(x, y, r, dimentions){
+    for(let i = 0; i < canvasContent.Lines.length; i++){
+        if(checkLineCircleHitbox(x, y, r, canvasContent.Lines[i], dimentions)){
+            canvasContent.Lines.splice(i,1);
+            redrawCanvas(canvasContent);
+            return true;
+        }
+    }
+    return false;
+}
+
+function checkLineCircleHitbox(x, y, r, line, dimentions){
+    let coordinats = calculateDimentions(line, dimentions);
+    let m = (line.baseY - line.y)/(line.baseX - line.x);
+}
+
+function calculateDimentions(line, dimentions){
+    return {x: line.x * dimentions.width, y: line.y * dimentions.height, x1: line.baseX * dimentions.width, y1: line.baseY * dimentions.height};
+}
+
+function removeRects(x, y, dim){
+    canvasContent.tmpRect = null;
+    for(let i = 0; i < canvasContent.rects.length; i++){
+        if(checkRectHitbox(x, y, canvasContent.rects[i], dim)){
+            console.log('hit kurwa')
+            console.log( canvasContent.rects.splice(i, 1) );
+            redrawCanvas(canvasContent);
+            return true;
+        }
+    }
+}
+
+function checkRectHitbox(x, y, rect, dim){
+    let coordinats = calculateDimentions(rect, dim);
+    if( (x <= coordinats.x + settings.rubberSize/2 && x >= coordinats.x - settings.rubberSize/2 && y <= Math.max(coordinats.y, coordinats.y1) && y>= Math.min(coordinats.y, coordinats.y1))||
+    (y <= coordinats.y + settings.rubberSize/2 && y >= coordinats.y - settings.rubberSize/2 && x >= Math.min(coordinats.x, coordinats.x1) && x <= Math.max(coordinats.x, coordinats.x1)) ||
+    (x <= coordinats.x1 + settings.rubberSize/2 && x >= coordinats.x1 - settings.rubberSize/2 && y <= Math.max(coordinats.y, coordinats.y1) && y>= Math.min(coordinats.y, coordinats.y1)) ||
+    (y <= coordinats.y1 + settings.rubberSize/2 && y >= coordinats.y1 - settings.rubberSize/2 && x >= Math.min(coordinats.x, coordinats.x1) && x <= Math.max(coordinats.x, coordinats.x1))
+    ){
+        return true;
+    }else{
+        return false;
+    }
 }
 
 function isInRange(point, r, x, y){
     const dx = x - point.x;
     const dy = y - point.y;
-    console.log(dx, dy);
     const dist = dx**2 + dy**2;
-    console.log(dist, r);
     if(dist < r**2)
         return true;
     return false;
