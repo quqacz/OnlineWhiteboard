@@ -72,10 +72,11 @@ router.put('/:id/update/password', isLoggedIn, async(req,res)=>{
                     console.log(err);
                     req.flash('error', 'Błąd zmiany hasła');
                     res.redirect('/user/'+req.params.id);
+                }else{
+                    sanitizedUser.save();
+                    req.flash('success', 'Pomyślnie zmieniono hasło');
+                    res.redirect('/user/'+req.params.id);
                 }
-                sanitizedUser.save();
-                req.flash('success', 'Pomyślnie zmieniono hasło');
-                res.redirect('/user/'+req.params.id);
             });
         } else {
             req.flash('error', 'Błąd zmiany hasła');
