@@ -357,7 +357,7 @@ function drawRubber(){
 }
 
 function removePoints(x, y, dimentions){
-    for(let i = canvasContent.lines.length - 1; i > 0; i--){
+    for(let i = canvasContent.lines.length - 1; i >= 0; i--){
         let points = canvasContent.lines[i].filter((e)=> {return isInRange(e, settings.rubberSize/dimentions.width, x/dimentions.width, y/dimentions.height)})
         if(points.length){
             canvasContent.lines.splice(i,1);
@@ -384,8 +384,7 @@ function checkLineCircleHitbox(x, y, r, line, dimentions){
     let m = (coordinats.y - coordinats.y1) / (coordinats.x - coordinats.x1);
     let n = coordinats.y - m * coordinats.x;
     
-    if(!(x >= Math.min(coordinats.x, coordinats.x1) && x <= Math.max(coordinats.x, coordinats.x1) &&
-        y >= Math.min(coordinats.y, coordinats.y1) && y <= Math.max(coordinats.y, coordinats.y1))){
+    if(!(x >= Math.min(coordinats.x, coordinats.x1) && x <= Math.max(coordinats.x, coordinats.x1))){
             return false;
         }
 
@@ -448,14 +447,23 @@ function removeEllipses(x, y, dimentions){
 }
 
 function checkElipseHitbox(x, y, ellipse, dimentions){
-    return isInRange({x: ellipse.baseX * dimentions.width, y: ellipse.baseY * dimentions.height}, ellipse.r * dimentions.width, x, y, settings.rubberSize);
+    return isInRangeEllipse({x: ellipse.baseX * dimentions.width, y: ellipse.baseY * dimentions.height}, ellipse.r * dimentions.width, x, y, settings.rubberSize);
 }
 
-function isInRange(point, r, x, y, range = 0){
+function isInRange(point, r, x, y){
     const dx = x - point.x;
     const dy = y - point.y;
     const dist = dx**2 + dy**2;
-    if(dist < (r + range) ** 2 && dist > (r - range) **2)
+    if(dist < r** 2)
+        return true;
+    return false;
+}
+
+function isInRangeEllipse(point, r, x, y, range){
+    const dx = x - point.x;
+    const dy = y - point.y;
+    const dist = dx**2 + dy**2;
+    if(dist <= (r + range) ** 2 && dist >= (r - range) **2)
         return true;
     return false;
 }
