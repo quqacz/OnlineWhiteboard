@@ -12,7 +12,6 @@ const elipsa = document.querySelector('#elipsa');
 const lineColorPicker = document.querySelector('#lineColor');
 const lineWidth = document.querySelector('#lineWidth');
 
-
 const uczestnicy = document.querySelector('#uczestnicy');
 const czat = document.querySelector('#chat');
 
@@ -73,24 +72,28 @@ rysik.addEventListener('click', ()=>{
     settings.tool = 'RYSIK';
     removeStyle(toolbarControls, "active")
     rysik.classList.add('active');
+    redrawCanvas(canvasContent);
 })
 
 linia.addEventListener('click', ()=>{
     settings.tool = 'LINIA';
     removeStyle(toolbarControls, "active")
     linia.classList.add('active');
+    redrawCanvas(canvasContent);
 })
 
 prostokat.addEventListener('click', ()=>{
     settings.tool = 'PROSTOKAT';
     removeStyle(toolbarControls, "active")
     prostokat.classList.add('active');
+    redrawCanvas(canvasContent);
 })
 
 elipsa.addEventListener('click', ()=>{
     settings.tool = 'ELIPSA';
     removeStyle(toolbarControls, "active")
     elipsa.classList.add('active');
+    redrawCanvas(canvasContent);
 })
 
 wyczysc.addEventListener('click', ()=>{
@@ -343,10 +346,18 @@ function drawRubber(){
     ctx.beginPath();
     ctx.arc(mousePos.x, mousePos.y, settings.rubberSize/2, 0, Math.PI * 2, false);
     ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(mousePos.x, mousePos.y - 1.2 * settings.rubberSize);
+    ctx.lineTo(mousePos.x, mousePos.y + 1.2 * settings.rubberSize);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(mousePos.x - 1.2 * settings.rubberSize, mousePos.y);
+    ctx.lineTo(mousePos.x + 1.2 * settings.rubberSize, mousePos.y);
+    ctx.stroke();
 }
 
 function removePoints(x, y, dimentions){
-    for(let i = 0; i < canvasContent.lines.length; i++){
+    for(let i = canvasContent.lines.length - 1; i > 0; i--){
         let points = canvasContent.lines[i].filter((e)=> {return isInRange(e, settings.rubberSize/dimentions.width, x/dimentions.width, y/dimentions.height)})
         if(points.length){
             canvasContent.lines.splice(i,1);
@@ -444,7 +455,7 @@ function isInRange(point, r, x, y, range = 0){
     const dx = x - point.x;
     const dy = y - point.y;
     const dist = dx**2 + dy**2;
-    if(dist < r**2 + range)
+    if(dist < (r + range) ** 2 && dist > (r - range) **2)
         return true;
     return false;
 }
