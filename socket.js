@@ -46,10 +46,12 @@ exports = module.exports = function(io){
                 Lesson.findOne({_id: socket.room}, function(err, lesson){
                     if(err)
                         console.log(err)
-                    if(socket.userId === groupOwner)
-                        socket.emit('sendCanvasToEditors', lesson.canvasContent);
-                    else
-                        socket.emit('sendCanvasToViewers', lesson.canvasContent);
+                    else{
+                        if(socket.userId === groupOwner)
+                            socket.emit('sendCanvasToEditors', lesson.canvasContent);
+                        else
+                            socket.emit('sendCanvasToViewers', lesson.canvasContent);
+                    }
                 })
             }
 
@@ -73,12 +75,14 @@ exports = module.exports = function(io){
             socket.emit('sendMessage', payload, socket.name, socket.lastName, socket.profilePic);
             
             Lesson.findOne({_id: socket.room}, function(err, lesson){
-                if(err)
+                if(err){
                     console.log(err);
-                const message = new Message({content: payload, ownerId: socket.userId});
-                lesson.messages.push(message);
-                lesson.save();
-                message.save();
+                }else{
+                    const message = new Message({content: payload, ownerId: socket.userId});
+                    lesson.messages.push(message);
+                    lesson.save();
+                    message.save();
+                }
             });
             
         })
@@ -131,5 +135,15 @@ exports = module.exports = function(io){
             io.to(id).emit('forceRemove');
         })
         
+        socket.on('requestCanvasContent', (id)=>{
+            Lesson.findOne({_id: id}, (err, lesson)=>{
+                if(err){
+                    console.log(err);
+                }else{
+                    socket.emit('getCanvasContent', lesson.canvasContent);
+                }
+            })
+        })
+
     });
 }

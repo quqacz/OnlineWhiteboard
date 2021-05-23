@@ -1,6 +1,10 @@
 <%- include ('partials/header') %>
 <%- include ('partials/navbar') %>
 
+<script src="https://cdn.socket.io/3.1.3/socket.io.min.js" integrity="sha384-cPwlPLvBTa3sKAgddT6krw0cJat7egBga3DJepJyrLl4Q9/5WLra3rrnMcyTyOnh" crossorigin="anonymous"></script>
+<script src="/scripts/canvasRender.js" async defer></script>
+<script src="/scripts/groupSocket.js" async defer></script>
+
 <%if(currentUser.lightTheme){%>
 <div class="grad-anim min-vh-100" id="bod">
 <%} else {%>
@@ -147,11 +151,18 @@
 		<h1>Lekcje</h1>
 		<%for(let i = 0; i < groupData.lessons.length; i++){%>
 		<div class="row grad borderHighlightRound m-2 p-2" style="width: 90%">
-			<div class="col-sm-10">
+			<div class="col-sm-8">
 				<div class="d-flex flex-column" style="height: 100%">
 					<div class="d-flex" style="height: 100%; align-items: center"><%= groupData.lessons[i].topic%></div>
 				</div>
 			</div>
+
+			<div class="col-sm-2">
+				<div class="d-flex flex-column center" style="height: 100%">
+					<button type="button" class="btn btn-secondary" onclick='downloadBoard("<%= groupData.lessons[i]._id.toString()%>", "<%= groupData.lessons[i].topic%>")'>Pobierz tablicę</button>
+				</div>
+			</div>
+
 			<div class="col-sm-2">
 				<div class="d-flex flex-column center" style="height: 100%">
 					<a class="nav-link active" aria-current="page" href="/group/<%= groupData._id%>/lesson/<%= groupData.lessons[i]._id%>">
@@ -189,7 +200,7 @@
 	</div>
 </div>
 </div>
-
+<canvas class="hideElement" id="canvas"></canvas>
 <script>
 var element = document.getElementById("bod2");
 if(typeof(element) != undefined && element != null){
@@ -228,6 +239,4 @@ function darkSwitch() {
   }
 }
 </script>
-
-<script> const groupId = "<%=groupData._id%>"; </script>
 <%- include ('partials/footer') %>
