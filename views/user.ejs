@@ -10,6 +10,7 @@
 <div class="container" style="padding-top:50px">
 <%- include ('partials/success') %>
 <%- include ('partials/error') %>
+<script src="/scripts/validation.js"></script>
 	<div class="row">
 		<div class="col-sm-8">
 			<div class="row">
@@ -75,12 +76,18 @@
 						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
 					<div class="modal-body">
-						<form id="noweDane" onsubmit="return validate()" action="/user/<%-user._id%>/update/data?_method=PUT" method="POST">
+						<form id="noweDane" onsubmit="return validateDataChange()" action="/user/<%-user._id%>/update/data?_method=PUT" method="POST">
 							<div class="row">
 								<input type="text" class="form-control borderHighlight" name="newName" id="newName" placeholder="Nowe imię" value="<%= user.name%>">
 							</div>
+							<div id="ImieInfo" class="form-text">
+								Imię musi być pojedyńcze i zaczynać się z dużej litery.
+							</div>
 							<div class="row" style="margin-top: 10px">
 								<input type="text" class="form-control borderHighlight" name="newLastName" id="newLastName" placeholder="Nowe nazwisko" value="<%= user.lastName%>">
+							</div>
+							<div id="NazwiskoInfo" class="form-text">
+								Nazwisko musi zaczynać się z dużej litery, w wypadku podwójnych musi być oddzielone myślnikiem. Przykład: Kowalski-Kmicic.
 							</div>
 							<div class="row" style="margin-top: 10px">
 								<button class="btn btn-secondary">Zapisz</button>
@@ -94,26 +101,6 @@
 			</div>
 		</div>
 		
-		<script>
-			function validate() {
-				const imie = document.getElementById('newName').value
-				const nazwisko = document.getElementById('newLastName').value
-				var RegImie = /^[A-ZĄĆĘŁŃÓŚŹŻ]{1}[a-ząćęłńóśźż]+$/;
-				var RegNazw = /^([A-ZĄĆĘŁŃÓŚŹŻ]{1}[a-ząćęłńóśźż]+){1}(-{1}[A-ZĄĆĘŁŃÓŚŹŻ]{1}[a-ząćęłńóśźż]+){0,1}$/;
-				if(!RegImie.test(imie))
-				{
-					alert("W imieniu występuje błąd. Upewnij się, że zaczyna się ono z dużej litery i nie ma żadnych spacji");
-					return false;
-				}
-				else if(!RegNazw.test(nazwisko))
-				{
-					alert("W nazwisku występuje błąd. Upewnij sie, że zaczyna się ono z dużej litery, a jeśli jest podwójne, to sprawdź czy jest oddzielone myślnikiem (np. Kowalski-Kmicic)");
-					return false;
-				}
-				return true;
-			}
-		</script>
-		
 		<div class="modal fade" id="three" tabindex="-1" aria-labelledby="threeLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content bg-light">
@@ -122,16 +109,19 @@
 						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
 					<div class="modal-body">
-						<form id="noweHaslo" action="/user/<%-user._id%>/update/password?_method=PUT" method="POST">
+						<form id="noweHaslo" onsubmit="return validatePassChange()" action="/user/<%-user._id%>/update/password?_method=PUT" method="POST">
 							<div class="row">
-								<input type="password" class="form-control borderHighlight" name="oldPassword" placeholder="Podaj stare hasło" required>
+								<input type="password" class="form-control borderHighlight" name="oldPassword" placeholder="Podaj stare hasło" minlength="8" maxlength="32" required>
 							</div>
 							<div class="row" style="margin-top: 10px">
-								<input type="password" class="form-control borderHighlight" placeholder="Podaj nowe hasło" required>
+								<input type="password" class="form-control borderHighlight" id="newPassword1" placeholder="Podaj nowe hasło" minlength="8" maxlength="32" required>
 							</div>
 							<div class="row" style="margin-top: 10px">
-								<input type="password" class="form-control borderHighlight" name="newPassword" placeholder="Powtórz nowe hasło" required>
+								<input type="password" class="form-control borderHighlight" id="newPassword2" name="newPassword" placeholder="Powtórz nowe hasło" minlength="8" maxlength="32" required>
 							</div>
+							<div id="PasswordInfo" class="form-text">
+								Hasło nie może zawierać spacji i musi zawierać od 8 do 32 znaków.
+							</div>	
 							<div class="row" style="margin-top: 10px">
 								<button class="btn btn-secondary">Zapisz</button>
 							</div>
