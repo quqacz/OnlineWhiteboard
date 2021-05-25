@@ -27,7 +27,7 @@ router.post('/add', isLoggedIn, upload.single('groupPic'), async(req,res)=>{
     catch(e){
         console.log(e);
 		req.flash('error', 'Nie udało się utworzyć nowej grupy')
-        res.redirect('/group/add');
+        res.redirect('/user/'+req.user._id);
     }
 })
 
