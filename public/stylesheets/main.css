@@ -112,3 +112,6 @@
 .biedaHidden{
     visibility: hidden;
 }
+.validateInfo{
+	color: red;
+}
