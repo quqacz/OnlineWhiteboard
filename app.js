@@ -82,6 +82,22 @@ app.use('', Auth);
 app.use('/user', Users);
 app.use('/group', Groups);
 
+app.get('*', (req, res)=>{
+    res.render('404');
+})
+
+app.post('*', (req, res)=>{
+    res.render('404');
+})
+
+app.put('*', (req, res)=>{
+    res.render('404');
+})
+
+app.delete('*', (req, res)=>{
+    res.render('404');
+})
+
 http.listen(3000, ()=>{
     console.log("app runs on port 3000");
 })
