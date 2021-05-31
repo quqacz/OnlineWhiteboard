@@ -51,14 +51,14 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-10 noPaddingRight">
-            <canvas id="canvas" class="borderHighlight bg-white">
+            <canvas id="canvas" class="bg-white">
 
             </canvas>
         </div>
-        <div class="col-2 borderHighlight noPaddingAndMargin">
-            <div class="container-fluid borderHighlight scrollable" id="connectedUsers">
+        <div class="col-2  noPaddingAndMargin">
+            <div class="container-fluid  scrollable" id="connectedUsers">
             </div>
-            <div class="container-fluid borderHighlight hideElement noPaddingAndMargin" id="chatBox">
+            <div class="container-fluid  hideElement noPaddingAndMargin" id="chatBox">
                 <div class="container-fluid noPaddingAndMargin chatBoxMessagesHeight scrollable" id="chatBoxMessages">
                     <%for(let i = 0; i < messages.length; i++){%>
 						<div class="row p-2">
@@ -135,9 +135,9 @@ function darkSwitch() {
     const userName = '<%- currentUser.name%>';
     const userLastName = '<%- currentUser.lastName%>';
     const currentUserId = '<%- currentUser._id%>';
-    const profilePic = '<%- currentUser.imageUrl%>'
+    const profilePic = '<%- currentUser.imageUrl%>';
     const groupOwner = '<%- owner%>';
-    const lightTheme = '<%- currentUser.lightTheme%>'
+    const lightTheme = '<%- currentUser.lightTheme%>';
 </script> 
 <script src="/scripts/canvasRender.js"></script>
 <script src="/scripts/board.js"></script>
