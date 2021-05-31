@@ -284,46 +284,19 @@ function renderPoints(linesArray){
 
 function renderLines(lines){
     for(let i = 0; i < lines.length; i ++){
-        renderLine(lines[i]);
+        lines[i].draw(canvasDimentions);
     }
-}
-
-function renderLine(line){
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round";
-    ctx.beginPath();
-    ctx.moveTo(line.baseX * canvasDimentions.width, line.baseY * canvasDimentions.height);
-    ctx.lineWidth = line.size;
-    ctx.strokeStyle = line.color;
-    ctx.lineTo(line.x * canvasDimentions.width, line.y * canvasDimentions.height);
-    ctx.closePath();
-    ctx.stroke();
 }
 
 function renderRects(rects){
     for(let i = 0; i < rects.length; i++)
-        renderRect(rects[i]);
-}
-
-function renderRect(rect){
-    ctx.lineWidth = rect.size;
-    ctx.strokeStyle = rect.color;
-    ctx.strokeRect(rect.baseX * canvasDimentions.width, rect.baseY * canvasDimentions.height, (rect.x - rect.baseX) * canvasDimentions.width, (rect.y - rect.baseY) * canvasDimentions.height);
+        rects[i].draw(canvasDimentions);
 }
 
 function renderEllipses(ellipses){
     for(let i = 0; i < ellipses.length; i++){
-        renderEllipse(ellipses[i]);
+        ellipses[i].draw(canvasDimentions);
     }
-}
-
-function renderEllipse(ellipse){
-    ctx.lineWidth = ellipse.size;
-    ctx.strokeStyle = ellipse.color;
-    ctx.beginPath();
-    ctx.arc(ellipse.baseX * canvasDimentions.width, ellipse.baseY * canvasDimentions.height, ellipse.r * canvasDimentions.width, 0, Math.PI * 2, false);
-    ctx.stroke();
-    ctx.closePath();
 }
 
 function redrawCanvas(content){
@@ -483,7 +456,7 @@ class Point{
 	}
 }
 
-class Line{
+class Shape{
     constructor(baseX, baseY, x, y, size, color, dimentions = {}){
         this.baseX = baseX / dimentions.width;
         this.baseY = baseY / dimentions.height;
@@ -494,14 +467,33 @@ class Line{
     }
 }
 
-class Rect{
+class Line extends Shape{
     constructor(baseX, baseY, x, y, size, color, dimentions = {}){
-        this.baseX = baseX / dimentions.width;
-        this.baseY = baseY / dimentions.height;
-		this.x = x / dimentions.width;
-		this.y = y / dimentions.height;
-        this.size = size;
-        this.color = color;
+        super(baseX, baseY, x, y, size, color, dimentions)
+    }
+
+    draw(canvasDimentions){
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+        ctx.beginPath();
+        ctx.moveTo(this.baseX * canvasDimentions.width, this.baseY * canvasDimentions.height);
+        ctx.lineWidth = this.size;
+        ctx.strokeStyle = this.color;
+        ctx.lineTo(this.x * canvasDimentions.width, this.y * canvasDimentions.height);
+        ctx.closePath();
+        ctx.stroke()
+    }
+}
+
+class Rect extends Shape{
+    constructor(baseX, baseY, x, y, size, color, dimentions = {}){
+        super(baseX, baseY, x, y, size, color, dimentions)
+    }
+
+    draw(canvasDimentions){
+        ctx.lineWidth = this.size;
+        ctx.strokeStyle = this.color;
+        ctx.strokeRect(this.baseX * canvasDimentions.width, this.baseY * canvasDimentions.height, (this.x - this.baseX) * canvasDimentions.width, (this.y - this.baseY) * canvasDimentions.height);
     }
 }
 
@@ -514,6 +506,16 @@ class Elipse{
         this.color = color;
         this.w = dimentions.width;
     }
+
+    draw(canvasDimentions){
+        ctx.lineWidth = this.size;
+        ctx.strokeStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.baseX * canvasDimentions.width, this.baseY * canvasDimentions.height, this.r * canvasDimentions.width, 0, Math.PI * 2, false);
+        ctx.stroke();
+        ctx.closePath();
+    }
+
     calculateR = function(x, y){
         let dist = Math.sqrt((x-this.baseX)**2 + (y-this.baseY)**2);
         this.r = dist;
