@@ -13,7 +13,7 @@ const sh = require('shorthash');
 router.post('/add', isLoggedIn, upload.single('groupPic'), async(req,res)=>{
     try{
         const {groupName, description} = req.body;
-        const entryCode = sh.unique(groupName+description);
+        const entryCode = sh.unique(groupName+description+""+Math.random()+""+Math.random());
 
         const newGroup = new Group({ groupName, description, entryCode, owner: req.user._id, 
             imageUrl: req.file ? req.file.path : 'https://wiki.dave.eu/images/4/47/Placeholder.png', 

@@ -91,12 +91,12 @@ exports = module.exports = function(io){
             let editors = Object.keys(roomsData[socket.room].editors);
             for(let i = 0; i < editors.length; i++){
                 if(editors[i] !== socket.id)
-                    io.to(editors[i]).emit('sendCanvasToEditors', canvasDataURI);
+                    io.to(editors[i]).emit('sendCanvas', canvasDataURI);
             }
     
             let viewer = Object.keys(roomsData[socket.room].viewers);
             for(let i = 0; i < viewer.length; i++){
-                io.to(viewer[i]).emit('sendCanvasToViewers', canvasDataURI);
+                io.to(viewer[i]).emit('sendCanvas', canvasDataURI);
             }
     
             Lesson.updateOne({_id: socket.room}, {canvasContent: canvasDataURI}, function(err, doc){

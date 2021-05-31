@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const GroupSchema = new Schema({
     groupName: { type: String, required: true},
-    entryCode: { type: String, require: true},
+    entryCode: { type: String, require: true, unique: true},
     description: String,
     imageUrl: {type: String},
     imageFileName: {type: String},

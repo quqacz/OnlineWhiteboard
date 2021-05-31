@@ -58,8 +58,10 @@ socket.on('sendMessage', (payload, name, lastName, profilePic)=>{
 
 	const message = document.createElement('div');
 	message.classList.add('d-flex');
-	message.style.height = "50%";
+	message.classList.add('text-break');
 	message.textContent = payload;
+	message.style.height = "50%";
+	
 		
 	dataContent.appendChild(sender);
 	dataContent.appendChild(message);
@@ -72,22 +74,7 @@ socket.on('sendMessage', (payload, name, lastName, profilePic)=>{
 })
 
 
-socket.on('sendCanvasToViewers', (jsonObject)=>{
-    let content ='';
-    if(jsonObject.length !== 0){
-        content = JSON.parse(jsonObject);
-        canvasContent.lines = content.lines;
-        canvasContent.Lines = content.Lines;
-        canvasContent.rects = content.rects;
-        canvasContent.ellipses = content.ellipses;
-        canvasContent.tmpLine = content.tmpLine;
-        canvasContent.tmpRect = content.tmpRect;
-        canvasContent.tmpEllipse = content.tmpEllipse;
-        redrawCanvas(content);
-    }
-})
-
-socket.on('sendCanvasToEditors', (jsonObject)=>{
+socket.on('sendCanvas', (jsonObject)=>{
     let content ='';
     if(jsonObject.length !== 0){
         content = JSON.parse(jsonObject);

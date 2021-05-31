@@ -179,10 +179,10 @@ canvas.addEventListener('mousedown', ()=>{
         ctx.moveTo(mousePos.x, mousePos.y);
         ctx.beginPath();
     }else if(settings.tool === 'LINIA'){
-        canvasContent.tmpLine = new Line(mousePos.x, mousePos.y, mousePos.x, mousePos.y, settings.strokeWidth, settings.strokeColor, canvasDimentions);
+        canvasContent.tmpLine = new Shape(mousePos.x, mousePos.y, mousePos.x, mousePos.y, settings.strokeWidth, settings.strokeColor, canvasDimentions);
         drawing = true;
     }else if(settings.tool === 'PROSTOKAT'){
-        canvasContent.tmpRect = new Rect(mousePos.x, mousePos.y, mousePos.x, mousePos.y, settings.strokeWidth, settings.strokeColor, canvasDimentions);
+        canvasContent.tmpRect = new Shape(mousePos.x, mousePos.y, mousePos.x, mousePos.y, settings.strokeWidth, settings.strokeColor, canvasDimentions);
         drawing = true;
     }else if(settings.tool === 'ELIPSA'){
         canvasContent.tmpEllipse = new Elipse(mousePos.x, mousePos.y, settings.strokeWidth, settings.strokeColor, canvasDimentions);
@@ -284,19 +284,47 @@ function renderPoints(linesArray){
 
 function renderLines(lines){
     for(let i = 0; i < lines.length; i ++){
-        lines[i].draw(canvasDimentions);
+        renderLine(lines[i]);
     }
+}
+
+function renderLine(line){
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.beginPath();
+    ctx.moveTo(line.baseX * canvasDimentions.width, line.baseY * canvasDimentions.height);
+    ctx.lineWidth = line.size;
+    ctx.strokeStyle = line.color;
+    ctx.lineTo(line.x * canvasDimentions.width, line.y * canvasDimentions.height);
+    ctx.closePath();
+    ctx.stroke();
 }
 
 function renderRects(rects){
     for(let i = 0; i < rects.length; i++)
-        rects[i].draw(canvasDimentions);
+        renderRect(rects[i]);
 }
+
+function renderRect(rect){
+    ctx.lineWidth = rect.size;
+    ctx.strokeStyle = rect.color;
+    ctx.strokeRect(rect.baseX * canvasDimentions.width, rect.baseY * canvasDimentions.height, (rect.x - rect.baseX) * canvasDimentions.width, (rect.y - rect.baseY) * canvasDimentions.height);
+}
+
 
 function renderEllipses(ellipses){
     for(let i = 0; i < ellipses.length; i++){
-        ellipses[i].draw(canvasDimentions);
+        renderEllipse(ellipses[i]);
     }
+}
+
+function renderEllipse(ellipse){
+    ctx.lineWidth = ellipse.size;
+    ctx.strokeStyle = ellipse.color;
+    ctx.beginPath();
+    ctx.arc(ellipse.baseX * canvasDimentions.width, ellipse.baseY * canvasDimentions.height, ellipse.r * canvasDimentions.width, 0, Math.PI * 2, false);
+    ctx.stroke();
+    ctx.closePath();
 }
 
 function redrawCanvas(content){
@@ -467,36 +495,6 @@ class Shape{
     }
 }
 
-class Line extends Shape{
-    constructor(baseX, baseY, x, y, size, color, dimentions = {}){
-        super(baseX, baseY, x, y, size, color, dimentions)
-    }
-
-    draw(canvasDimentions){
-        ctx.lineCap = "round";
-        ctx.lineJoin = "round";
-        ctx.beginPath();
-        ctx.moveTo(this.baseX * canvasDimentions.width, this.baseY * canvasDimentions.height);
-        ctx.lineWidth = this.size;
-        ctx.strokeStyle = this.color;
-        ctx.lineTo(this.x * canvasDimentions.width, this.y * canvasDimentions.height);
-        ctx.closePath();
-        ctx.stroke()
-    }
-}
-
-class Rect extends Shape{
-    constructor(baseX, baseY, x, y, size, color, dimentions = {}){
-        super(baseX, baseY, x, y, size, color, dimentions)
-    }
-
-    draw(canvasDimentions){
-        ctx.lineWidth = this.size;
-        ctx.strokeStyle = this.color;
-        ctx.strokeRect(this.baseX * canvasDimentions.width, this.baseY * canvasDimentions.height, (this.x - this.baseX) * canvasDimentions.width, (this.y - this.baseY) * canvasDimentions.height);
-    }
-}
-
 class Elipse{
     constructor(baseX, baseY, size, color, dimentions = {}){
         this.baseX = baseX / dimentions.width;
@@ -505,15 +503,6 @@ class Elipse{
         this.size = size;
         this.color = color;
         this.w = dimentions.width;
-    }
-
-    draw(canvasDimentions){
-        ctx.lineWidth = this.size;
-        ctx.strokeStyle = this.color;
-        ctx.beginPath();
-        ctx.arc(this.baseX * canvasDimentions.width, this.baseY * canvasDimentions.height, this.r * canvasDimentions.width, 0, Math.PI * 2, false);
-        ctx.stroke();
-        ctx.closePath();
     }
 
     calculateR = function(x, y){
