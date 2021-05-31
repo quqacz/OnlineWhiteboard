@@ -203,3 +203,10 @@ svg {
       text-align: center;
     }
   }
+
+  .mainPageAlert{
+    padding-top: 1rem;
+  }
+  .mainPageAlert div div{
+    margin-bottom: 0;
+  }
