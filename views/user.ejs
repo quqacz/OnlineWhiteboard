@@ -83,12 +83,16 @@
 							<div id="ImieInfo" class="form-text">
 								Imię musi być pojedyńcze i zaczynać się z dużej litery.
 							</div>
+							<span class="validateInfo" id="ValidateImieInfo" >
+							</span>
 							<div class="row" style="margin-top: 10px">
 								<input type="text" class="form-control borderHighlight" name="newLastName" id="newLastName" placeholder="Nowe nazwisko" value="<%= user.lastName%>">
 							</div>
 							<div id="NazwiskoInfo" class="form-text">
 								Nazwisko musi zaczynać się z dużej litery, w wypadku podwójnych musi być oddzielone myślnikiem. Przykład: Kowalski-Kmicic.
 							</div>
+							<span class="validateInfo" id="ValidateNazwInfo" >
+							</span>
 							<div class="row" style="margin-top: 10px">
 								<button class="btn btn-secondary">Zapisz</button>
 							</div>
@@ -116,12 +120,16 @@
 							<div class="row" style="margin-top: 10px">
 								<input type="password" class="form-control borderHighlight" id="newPassword1" placeholder="Podaj nowe hasło" minlength="8" maxlength="32" required>
 							</div>
+							<span class="validateInfo" id="ValidatePassInfo" >
+							</span>
 							<div class="row" style="margin-top: 10px">
 								<input type="password" class="form-control borderHighlight" id="newPassword2" name="newPassword" placeholder="Powtórz nowe hasło" minlength="8" maxlength="32" required>
 							</div>
 							<div id="PasswordInfo" class="form-text">
 								Hasło nie może zawierać spacji i musi zawierać od 8 do 32 znaków.
 							</div>	
+							<span class="validateInfo" id="ValidatePass2Info" >
+							</span>
 							<div class="row" style="margin-top: 10px">
 								<button class="btn btn-secondary">Zapisz</button>
 							</div>
