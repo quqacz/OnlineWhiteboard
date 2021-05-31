@@ -210,3 +210,7 @@ svg {
   .mainPageAlert div div{
     margin-bottom: 0;
   }
+
+  .footer{
+    padding: .5rem;
+  }
