@@ -14,7 +14,7 @@ router.get('/login', (req, res)=>{
 	res.render("login");
 })
 
-router.post('/login', passport.authenticate('local', {failureRedirect: '/login'}), (req, res)=>{
+router.post('/login', passport.authenticate('local', {failureRedirect: '/login', failureFlash: 'Błędny login lub hasło'}), (req, res)=>{
     req.flash('success', 'Pomyślnie zalogowano')
     res.redirect(req.session.returnTo ? req.session.returnTo : '/user/'+req.user._id);
 })
