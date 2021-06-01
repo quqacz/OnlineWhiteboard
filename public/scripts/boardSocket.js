@@ -53,7 +53,6 @@ socket.on('sendMessage', (payload, name, lastName, profilePic)=>{
 		
 	const sender = document.createElement('div');
 	sender.classList.add('d-flex');
-	sender.style.height = "50%";
 	sender.textContent = `${name} ${lastName}`;
 
 	const message = document.createElement('div');
@@ -122,18 +121,6 @@ function sendMessage(){
 function sendCanvasContent(){
     let canvasShapes = JSON.stringify(canvasContent);
     socket.emit('sendCanvas', canvasShapes);
-}
-
-function drawFromBase64(URI){
-    if(URI.length === 0) return;
-    
-    let data = JSON.parse(URI);
-    let image = new Image();
-    image.onload = function () {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
-    }
-    image.src = data.image;
 }
 
 function fillActiveUserData(){
