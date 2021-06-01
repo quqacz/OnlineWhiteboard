@@ -281,44 +281,5 @@
 	</div>
 </div>
 </div>
-
-<script>
-var element = document.getElementById("bod2");
-if(typeof(element) != undefined && element != null){
-	document.addEventListener("load", darkSwitch());
-}
-
-function darkSwitch() {
-  document.body.style.color = "white";
-  
-  var linki = document.getElementsByClassName("nav-link");
-  for(let i = 0; i < linki.length; i++){
-	linki[i].style.color = "white";
-  }
-  
-  var linki2 = document.getElementsByClassName("navbar-brand");
-  for(let i = 0; i < linki2.length; i++){
-	linki2[i].style.color = "white";
-  }
-
-  var borderList_switch = document.getElementsByClassName("borderList");
-  while(borderList_switch.length > 0) {
-    borderList_switch[0].classList.add("borderList-black");
-	borderList_switch[0].classList.remove("borderList");
-  }
-  
-  var bg_switch = document.getElementsByClassName("bg-light");
-  while(bg_switch.length > 0) {
-    bg_switch[0].classList.add("bg-dark");
-	bg_switch[0].classList.remove("bg-light");
-  }
-  
-  var grad_switch = document.getElementsByClassName("grad");
-  while(grad_switch.length > 0) {
-    grad_switch[0].classList.add("grad-dark");
-	grad_switch[0].classList.remove("grad");
-  }
-}
-</script>
-
+<script src="/scripts/themeChange.js"></script>
 <%- include ('partials/footer') %>

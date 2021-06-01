@@ -2,12 +2,12 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
 const Group = require('../models/group');
-const {isLoggedIn} = require('../middleware');
+const {isLoggedIn, isUser} = require('../middleware');
 const mutler = require('multer');
 const { storage } = require('../cloudinary');
 const upload = mutler({ storage });
 
-router.get('/:id', isLoggedIn, async(req, res)=>{
+router.get('/:id', isLoggedIn, isUser, async(req, res)=>{
     const user = await User.findOne({_id: req.user._id}).populate('groups');
     const ownedGroups = await Group.find({owner: req.user._id}).populate('students').populate('lessons');
     res.render('user', {user, ownedGroups})
