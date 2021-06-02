@@ -275,7 +275,6 @@ function sendLastPoint(){
 	let lastPath = canvasContent.lines[canvasContent.lines.length - 1];
 	let previousPoint = lastPath[lastPath.length - 2];
 	let lastPoint = lastPath[lastPath.length - 1];
-	console.log(previousPoint, lastPoint);
 	socket.emit('sendLastPoints', previousPoint, lastPoint);
 }
 
