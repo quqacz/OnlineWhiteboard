@@ -146,6 +146,7 @@ canvas.addEventListener('mousemove', (event)=>{
         ctx.lineJoin = "round";
         ctx.lineTo(mousePos.x, mousePos.y);
         ctx.stroke();
+        sendLastPoint();
     }else if(settings.tool === 'LINIA'){
         canvasContent.tmpLine.x = (mousePos.x / canvasDimentions.width);
         canvasContent.tmpLine.y = (mousePos.y / canvasDimentions.height);
@@ -162,7 +163,7 @@ canvas.addEventListener('mousemove', (event)=>{
         drawRubber();
     }
 
-    if(settings.tool !== 'GUMKA')
+    if(settings.tool !== 'GUMKA' && settings.tool !== 'RYSIK')
         sendCanvasContent();
 })
 
@@ -177,6 +178,7 @@ canvas.addEventListener('mousedown', ()=>{
         ctx.strokeStyle = settings.strokeColor;
         ctx.moveTo(mousePos.x, mousePos.y);
         ctx.beginPath();
+        pushNewPath();
     }else if(settings.tool === 'LINIA'){
         canvasContent.tmpLine = new Shape(mousePos.x, mousePos.y, mousePos.x, mousePos.y, settings.strokeWidth, settings.strokeColor, canvasDimentions);
         drawing = true;

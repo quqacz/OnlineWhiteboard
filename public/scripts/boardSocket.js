@@ -110,6 +110,15 @@ socket.on('forceRemove', ()=>{
     redirect.click();
 })
 
+socket.on('sendLastPoints', (point1, point2)=>{
+	canvasContent.lines[canvasContent.lines.length - 1].push(point2);
+	renderLine({baseX: point1.x, baseY: point1.y, x: point2.x, y: point2.y, size: point1.size, color: point1.size})
+})
+
+socket.on('pushNewPath', ()=>{
+	canvasContent.lines.push([]);
+})
+
 function sendMessage(){
     const payload = textMessageContent.value;
 	if(payload.length > 0){
@@ -260,4 +269,16 @@ function fillViewersData(){
         }
         boardUsers.appendChild(userFrame);
     }
+}
+
+function sendLastPoint(){
+	let lastPath = canvasContent.lines[canvasContent.lines.length - 1];
+	let previousPoint = lastPath[lastPath.length - 2];
+	let lastPoint = lastPath[lastPath.length - 1];
+	console.log(previousPoint, lastPoint);
+	socket.emit('sendLastPoints', previousPoint, lastPoint);
+}
+
+function pushNewPath(){
+	socket.emit('pushNewPath');
 }

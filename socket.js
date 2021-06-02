@@ -158,5 +158,12 @@ exports = module.exports = function(io){
             })
         })
 
+        socket.on('sendLastPoints', (point1, point2)=>{
+            socket.to(socket.room).emit('sendLastPoints', point1, point2);
+        })
+
+        socket.on('pushNewPath', ()=>{
+            socket.to(socket.room).emit('pushNewPath');
+        })
     });
 }
