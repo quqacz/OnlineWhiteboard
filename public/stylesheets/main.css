@@ -215,3 +215,11 @@ svg {
     padding: .5rem;
     color: #000000;
   }
+
+  .settingsControls{
+    padding: 6px 12px;
+  }
+
+  .settingsControls input{
+    border: none;
+  }

@@ -22,9 +22,6 @@ const sendMessageButton = document.querySelector('#sendChatMessage');
 const textMessageContent = document.querySelector('#textMessageContent');
 const chatBoxMessages = document.querySelector('#chatBoxMessages');
 
-
-const lineControl = document.querySelector('#lineControls');
-
 const toolbarControls = [gumka, rysik, linia, prostokat, elipsa];
 const sidePanelControls = [uczestnicy, czat];
 
@@ -206,9 +203,7 @@ canvas.addEventListener('mouseup', ()=>{
     if(settings.tool === 'RYSIK'){
         canvasContent.lines[canvasContent.lines.length-1].push(new Point(mousePos.x, mousePos.y, settings.strokeWidth, settings.strokeColor, canvasDimentions));
         drawing = false;
-        console.log(canvasContent.lines[canvasContent.lines.length-1].length);
         simplifyLine(canvasContent.lines[canvasContent.lines.length - 1], settings.tolerance);
-        console.log(canvasContent.lines[canvasContent.lines.length-1].length);
         sendCanvasContent();
     }else if(settings.tool === 'LINIA'){
         canvasContent.Lines.push(canvasContent.tmpLine);
