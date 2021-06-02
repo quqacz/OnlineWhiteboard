@@ -15,7 +15,7 @@ const LocalStrategy = require('passport-local');
 const methodOverride = require('method-override');
 const flash = require('connect-flash');
 
-const dbUrl = 'mongodb://localhost:27017/inzynieria-projekt';
+const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/inzynieria-projekt';
 
 const MongoStore = require('connect-mongo');
 
@@ -46,9 +46,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 
 // session config
+const secret = process.env.SECRET || 'thisisagoodsecretforfuckssake';
+
 const store = new MongoStore({
     mongoUrl: dbUrl,
-    secret: 'sagdsevbwv87ec8sdvsiauvoagiwerbhguioasgo',
+    secret,
     touchAfter: 24 * 3600
 })
 
@@ -58,7 +60,7 @@ store.on("error", function(e){
 
 const sessionConfig = {
     store,
-    secret: 'dngdngmvmvcbmfgwgfejhfkjghkfghjkrsywrgreykiyt',
+    secret,
     resave: false,
     saveUninitialized: true,
     cookie: {
