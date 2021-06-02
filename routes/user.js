@@ -4,7 +4,7 @@ const User = require('../models/user');
 const Group = require('../models/group');
 const {isLoggedIn, isUser} = require('../middleware');
 const mutler = require('multer');
-const { storage } = require('../cloudinary');
+const { storage, cloudinary } = require('../cloudinary');
 const upload = mutler({ storage });
 
 router.get('/:id', isLoggedIn, isUser, async(req, res)=>{
@@ -36,12 +36,14 @@ router.put('/:id/update/avatar', isLoggedIn, upload.single('newUserPic'), async(
     try{
         const user = await User.findOne({_id: req.params.id});
         if(req.file){
+            if(user.imageFileName)
+                await cloudinary.uploader.destroy(user.imageFileName);
             user.imageUrl = req.file.path;
             user.imageFileName = req.file.filename;
             await user.save();
             req.flash('success', 'Pomyślnie zmieniono zdjęcie profilowe');
         }else{
-            req.flash('error', 'Błąd przesłanego pliku');
+            req.flash('error', 'Nie przesłano pliku');
         }
     }catch(e){
         console.log(e);

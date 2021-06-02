@@ -5,7 +5,7 @@ const Group = require('../models/group');
 const User = require('../models/user');
 const Lesson = require('../models/lesson');
 const mutler = require('multer');
-const { storage } = require('../cloudinary');
+const { storage, cloudinary } = require('../cloudinary');
 const upload = mutler({ storage });
 const sh = require('shorthash');
 
@@ -93,12 +93,14 @@ router.put('/:id/update/avatar', isLoggedIn, isGroupOwner, upload.single('newGro
     try{
         const group = await Group.findOne({_id: req.params.id});
         if(req.file){
+            if(group.imageFileName)
+                await cloudinary.uploader.destroy(group.imageFileName);
             group.imageUrl = req.file.path;
             group.imageFileName = req.file.filename;
             await group.save();
             req.flash('success', 'Zmieniono awatar grupy');
         }else{
-            req.flash('error', 'Błąd przesłanego pliku');
+            req.flash('error', 'Nie przesłano pliku');
         }
         
     }catch(e){
