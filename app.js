@@ -15,10 +15,28 @@ const LocalStrategy = require('passport-local');
 const methodOverride = require('method-override');
 const flash = require('connect-flash');
 
+const dbUrl = 'mongodb://localhost:27017/inzynieria-projekt';
+
+const MongoStore = require('connect-mongo');
 
 const Auth = require('./routes/auth');
 const Users = require('./routes/user');
 const Groups = require('./routes/group');
+
+// 'mongodb://localhost:27017/inzynieria-projekt'
+//połączenie do bazy danych
+mongoose.connect(dbUrl, {
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    useUnifiedTopology: true
+});
+
+//połączenie do bazy i ustanowienie połączenia
+const db = mongoose.connection;
+db.on("error", console.error.bind(console, 'connection error:'));
+db.once("open", ()=>{
+    console.log("Database connected");
+})
 
 //express setup
 app.set('view engine', 'ejs');
@@ -28,7 +46,18 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 
 // session config
+const store = new MongoStore({
+    mongoUrl: dbUrl,
+    secret: 'sagdsevbwv87ec8sdvsiauvoagiwerbhguioasgo',
+    touchAfter: 24 * 3600
+})
+
+store.on("error", function(e){
+    console.log("SESSION STORE ERROR", e);
+})
+
 const sessionConfig = {
+    store,
     secret: 'dngdngmvmvcbmfgwgfejhfkjghkfghjkrsywrgreykiyt',
     resave: false,
     saveUninitialized: true,
@@ -58,20 +87,6 @@ app.use((req, res, next) => {
     res.locals.error = req.flash('error');
     res.locals.currentUser = req.user;
     next();
-})
-
-//połączenie do bazy danych
-mongoose.connect('mongodb://localhost:27017/inzynieria-projekt', {
-    useNewUrlParser: true,
-    useCreateIndex: true,
-    useUnifiedTopology: true
-});
-
-//połączenie do bazy i ustanowienie połączenia
-const db = mongoose.connection;
-db.on("error", console.error.bind(console, 'connection error:'));
-db.once("open", ()=>{
-    console.log("Database connected");
 })
 
 // socket connection
