@@ -4,7 +4,8 @@
   "description": "prejekt grupowy na inzynierie oprogramowania",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app.js"
+    "start": "node app.js",
+    "run": "nodemon app.js"
   },
   "repository": {
     "type": "git",

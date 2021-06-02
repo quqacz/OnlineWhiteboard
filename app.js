@@ -115,6 +115,8 @@ app.delete('*', (req, res)=>{
     res.render('404');
 })
 
-http.listen(3000, ()=>{
-    console.log("app runs on port 3000");
+const port = process.env.PORT || 3000;
+
+http.listen(port, ()=>{
+    console.log("app runs on port "+ port);
 })
