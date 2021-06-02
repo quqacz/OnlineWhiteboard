@@ -10,29 +10,32 @@
 <div class="d-flex align-items-center min-vh-100 grad-anim">
 	<div class="container">
 	  <div class="row justify-content-md-center">
-		<div class="col-lg-3">
-		  
+		<div class="col-lg-3">	  
 		</div>
 		<div class="col-lg-6">
 			<span>
 				<div class="bg-light borderList" style="padding: 40px">	
-					<form action="/register" onsubmit="return validate()" method="POST" id="reg-form" enctype="multipart/form-data">					
+					<form action="/register" onsubmit="return validateRegister()" method="POST" id="reg-form" enctype="multipart/form-data">					
 						<center><span id="informacja"></span></center>
 						<div class="form-floating mb-3" aria-describedby="ImieInfo"> <!-- w-25 -->
-							<input type="text" name="name"  class="form-control" id="imie" placeholder="Imie" required>
+							<input type="text" name="name"  class="form-control" id="newName" placeholder="Imie" required>
 								<label for="imie">Imię</label>
 									<div id="ImieInfo" class="form-text">
 										Imię musi być pojedyńcze i zaczynać się z dużej litery.
 									</div>
+									<span class="validateInfo" id="ValidateImieInfo" >
+									</span>
 						</div>
 
 
 						<div class="form-floating mb-3" aria-describedby="NazwiskoInfo"> <!-- w-25 -->
-							<input type="text" name="lastName" class="form-control" id="nazwisko" placeholder="Nazwisko"  required>
+							<input type="text" name="lastName" class="form-control" id="newLastName" placeholder="Nazwisko"  required>
 							<label for="nazwisko">Nazwisko</label>
 									<div id="NazwiskoInfo" class="form-text">
 										Nazwisko musi zaczynać się z dużej litery, w wypadku podwójnych musi być oddzielone myślnikiem. Przykład: Kowalski-Kmicic.
 									</div>
+									<span class="validateInfo" id="ValidateNazwInfo" >
+									</span>
 						</div>
 
 						<div class="form-floating mb-3" aria-describedby="LoginInfo"> <!-- w-25 -->
@@ -40,22 +43,27 @@
 							<label for="login">Login</label>
 									<div id="LoginInfo" class="form-text">
 										Login nie może zawierać spacji.
-									</div>							
+									</div>			
+									<span class="validateInfo" id="ValidateLoginInfo" >
+									</span>	
 						</div>
 						
 						<div class="form-floating mb-3" aria-describedby="PasswordInfo">
-							<input type="password" name="password" class="form-control" id="haslo" placeholder="Password" minlength="8" maxlength="32"  required>
+							<input type="password" name="password" class="form-control" id="newPassword1" placeholder="Password" minlength="8" maxlength="32"  required>
 							<label for="haslo">Hasło</label>
 									<div id="PasswordInfo" class="form-text">
 										Hasło nie może zawierać spacji i musi zawierać od 8 do 32 znaków.
-									</div>								
+									</div>	
+									<span class="validateInfo" id="ValidatePassInfo" >
+									</span>									
 						</div>
 
 						<div class="form-floating mb-3">
-							<input type="password" class="form-control" id="haslo2" placeholder="Confirm password" minlength="8" maxlength="32" required>
+							<input type="password" class="form-control" id="newPassword2" placeholder="Confirm password" minlength="8" maxlength="32" required>
 							<label for="haslo2">Zatwierdź Hasło</label>
+							<span class="validateInfo" id="ValidatePass2Info" >
+							</span>
 						</div>
-
 						<div>
 							<input type="file" name="profilePic">
 						</div>
@@ -72,44 +80,5 @@
 	 </div>
 	</div>
 </div>
-
-<script>
-		function validate() {
-			const imie = document.getElementById('imie').value 
-			const nazwisko = document.getElementById('nazwisko').value 
-			const login = document.getElementById('login').value 
-			const haslo = document.getElementById('haslo').value
-			const haslo2 = document.getElementById('haslo2').value
-			var RegImie = /^[A-ZĄĆĘŁŃÓŚŹŻ]{1}[a-ząćęłńóśźż]+$/;
-			var RegNazw = /^([A-ZĄĆĘŁŃÓŚŹŻ]{1}[a-ząćęłńóśźż]+){1}(-{1}[A-ZĄĆĘŁŃÓŚŹŻ]{1}[a-ząćęłńóśźż]+){0,1}$/;
-			
-			if(!RegImie.test(imie))
-			{
-				alert("W imieniu występuje błąd. Upewnij się, że zaczyna się ono z dużej litery i nie ma żadnych spacji");
-				return false;
-			}
-			else if(!RegNazw.test(nazwisko))
-			{
-				alert("W nazwisku występuje błąd. Upewnij sie, że zaczyna się ono z dużej litery, a jeśli jest podwójne, to sprawdź czy jest oddzielone myślnikiem (np. Kowalski-Kmicic)");
-				return false;
-			}
-			else if(login.includes(' '))
-			{
-				alert("Login nie może mieć spacji");
-				return false;
-			}
-			else if(haslo.includes(' '))
-			{
-				alert("Haslo nie może mieć spacji");
-				return false;
-			}
-			else if(haslo!=haslo2)
-			{
-				alert("Hasla sa różne");
-				return false;
-			}
-			return true;
-		}
-</script>
 
 <%- include ('partials/footer') %>

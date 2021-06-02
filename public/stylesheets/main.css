@@ -112,7 +112,6 @@
 .biedaHidden{
     visibility: hidden;
 }
-
 .wrapper404{
     width: 100vw;
     height: 100vh;
@@ -223,3 +222,7 @@ svg {
   .settingsControls input{
     border: none;
   }
+
+.validateInfo{
+	color: red;
+}
