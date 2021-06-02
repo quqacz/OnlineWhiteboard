@@ -25,3 +25,11 @@ module.exports.isInTheGroup = async(req, res, next)=>{
         return res.redirect('/user/'+req.user._id);
     }
 }
+
+module.exports.isUser = async(req, res, next)=>{
+    if(req.user._id.toString() === req.params.id){
+        next();
+    }else{
+        return res.redirect('/user/'+req.user._id);
+    }
+}

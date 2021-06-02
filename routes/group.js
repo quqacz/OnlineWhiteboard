@@ -5,7 +5,7 @@ const Group = require('../models/group');
 const User = require('../models/user');
 const Lesson = require('../models/lesson');
 const mutler = require('multer');
-const { storage } = require('../cloudinary');
+const { storage, cloudinary } = require('../cloudinary');
 const upload = mutler({ storage });
 const sh = require('shorthash');
 
@@ -13,7 +13,7 @@ const sh = require('shorthash');
 router.post('/add', isLoggedIn, upload.single('groupPic'), async(req,res)=>{
     try{
         const {groupName, description} = req.body;
-        const entryCode = sh.unique(groupName+description);
+        const entryCode = sh.unique(groupName+description+""+Math.random()+""+Math.random());
 
         const newGroup = new Group({ groupName, description, entryCode, owner: req.user._id, 
             imageUrl: req.file ? req.file.path : 'https://wiki.dave.eu/images/4/47/Placeholder.png', 
@@ -27,7 +27,7 @@ router.post('/add', isLoggedIn, upload.single('groupPic'), async(req,res)=>{
     catch(e){
         console.log(e);
 		req.flash('error', 'Nie udało się utworzyć nowej grupy')
-        res.redirect('/group/add');
+        res.redirect('/user/'+req.user._id);
     }
 })
 
@@ -63,11 +63,11 @@ router.post('/:id/lesson/add', isLoggedIn, isGroupOwner, async(req, res)=>{
         const group = await Group.findOne({_id: req.params.id});
         group.lessons.push(newLesson);
         const updatetGroup = await group.save();
-	    	req.flash('success', 'Pomyślnie dodano nową lekcję') 
+	    req.flash('success', 'Pomyślnie dodano nową lekcję') 
         res.redirect('/group/'+req.params.id);
     }catch (e){
         console.log(e);
-	    	req.flash('error', 'Wystąpił błąd przy tworzeniu lekcji')
+	    req.flash('error', 'Wystąpił błąd przy tworzeniu lekcji')
         res.redirect('/group/'+req.params.id);
     }
 })
@@ -93,12 +93,14 @@ router.put('/:id/update/avatar', isLoggedIn, isGroupOwner, upload.single('newGro
     try{
         const group = await Group.findOne({_id: req.params.id});
         if(req.file){
+            if(group.imageFileName)
+                await cloudinary.uploader.destroy(group.imageFileName);
             group.imageUrl = req.file.path;
             group.imageFileName = req.file.filename;
             await group.save();
             req.flash('success', 'Zmieniono awatar grupy');
         }else{
-            req.flash('error', 'Błąd przesłanego pliku');
+            req.flash('error', 'Nie przesłano pliku');
         }
         
     }catch(e){

@@ -2,12 +2,12 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
 const Group = require('../models/group');
-const {isLoggedIn} = require('../middleware');
+const {isLoggedIn, isUser} = require('../middleware');
 const mutler = require('multer');
-const { storage } = require('../cloudinary');
+const { storage, cloudinary } = require('../cloudinary');
 const upload = mutler({ storage });
 
-router.get('/:id', isLoggedIn, async(req, res)=>{
+router.get('/:id', isLoggedIn, isUser, async(req, res)=>{
     const user = await User.findOne({_id: req.user._id}).populate('groups');
     const ownedGroups = await Group.find({owner: req.user._id}).populate('students').populate('lessons');
     res.render('user', {user, ownedGroups})
@@ -36,12 +36,14 @@ router.put('/:id/update/avatar', isLoggedIn, upload.single('newUserPic'), async(
     try{
         const user = await User.findOne({_id: req.params.id});
         if(req.file){
+            if(user.imageFileName)
+                await cloudinary.uploader.destroy(user.imageFileName);
             user.imageUrl = req.file.path;
             user.imageFileName = req.file.filename;
             await user.save();
             req.flash('success', 'Pomyślnie zmieniono zdjęcie profilowe');
         }else{
-            req.flash('error', 'Błąd przesłanego pliku');
+            req.flash('error', 'Nie przesłano pliku');
         }
     }catch(e){
         console.log(e);
@@ -72,10 +74,11 @@ router.put('/:id/update/password', isLoggedIn, async(req,res)=>{
                     console.log(err);
                     req.flash('error', 'Błąd zmiany hasła');
                     res.redirect('/user/'+req.params.id);
+                }else{
+                    sanitizedUser.save();
+                    req.flash('success', 'Pomyślnie zmieniono hasło');
+                    res.redirect('/user/'+req.params.id);
                 }
-                sanitizedUser.save();
-                req.flash('success', 'Pomyślnie zmieniono hasło');
-                res.redirect('/user/'+req.params.id);
             });
         } else {
             req.flash('error', 'Błąd zmiany hasła');

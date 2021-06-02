@@ -1,6 +1,6 @@
 <%- include ('partials/header') %>
 <%- include ('partials/navbar') %>
-
+<script src="/scripts/themeChange.js" defer></script>
 <!-- pasek narzędzi -->
 <%if(currentUser.lightTheme){%>
 <div class="grad-anim" id="bod">
@@ -9,7 +9,7 @@
 <%};%>
 <div class="container-fluid" >
     <div class="row">
-        <div class="col-5 drawingControls">
+        <div class="col-10 drawingControls">
             <div class="btn-group" role="group" aria-label="Basic example">
                 <button type="button" class="btn btn-danger" id="wyczysc">Wyczyść</button>
                 <button type="button" class="btn btn-secondary active" id="rysik">Rysik</button>
@@ -17,26 +17,25 @@
                 <button type="button" class="btn btn-secondary" id="linia">Linia</button>
                 <button type="button" class="btn btn-secondary" id="prostokat">Prostokąt</button>
                 <button type="button" class="btn btn-secondary" id="elipsa">Okrąg</button>
-            </div>
-        </div>
-        <div class="col-5 drawingControls">
-            <div class="container-fluid" id="lineControls">
-                <label for="lineColor">Kolor</label>
-                <input type="color" id="lineColor">
-
-                <label for="lineWidth">Grubość kreski</label>
-                <select id="lineWidth">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
-                </select>
+                <div class="settingsControls">
+                    <label for="lineColor" class="text-center align-middle">Kolor</label>
+                    <input type="color" id="lineColor" class="align-middle">
+                </div>
+                <div class="settingsControls">
+                    <label for="lineWidth" class="text-center align-middle">Grubość kreski</label>
+                    <select id="lineWidth" class="align-middle">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                    </select>
+                </div>
             </div>
         </div>
         <div class="col-2 noPaddingAndMargin">
@@ -51,14 +50,14 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-10 noPaddingRight">
-            <canvas id="canvas" class="borderHighlight bg-white">
+            <canvas id="canvas" class="bg-white">
 
             </canvas>
         </div>
-        <div class="col-2 borderHighlight noPaddingAndMargin">
-            <div class="container-fluid borderHighlight scrollable" id="connectedUsers">
+        <div class="col-2  noPaddingAndMargin">
+            <div class="container-fluid  scrollable" id="connectedUsers">
             </div>
-            <div class="container-fluid borderHighlight hideElement noPaddingAndMargin" id="chatBox">
+            <div class="container-fluid  hideElement noPaddingAndMargin" id="chatBox">
                 <div class="container-fluid noPaddingAndMargin chatBoxMessagesHeight scrollable" id="chatBoxMessages">
                     <%for(let i = 0; i < messages.length; i++){%>
 						<div class="row p-2">
@@ -86,58 +85,14 @@
 
 
 <script src="https://cdn.socket.io/3.1.3/socket.io.min.js" integrity="sha384-cPwlPLvBTa3sKAgddT6krw0cJat7egBga3DJepJyrLl4Q9/5WLra3rrnMcyTyOnh" crossorigin="anonymous"></script>
-<script>
-const element = document.getElementById("bod2");
-if(typeof(element) != undefined && element != null){
-	document.addEventListener("load", darkSwitch());
-}
-
-function darkSwitch() {
-  document.body.style.color = "white";
-  
-  document.getElementById("sendChatMessage").classList.add("bg-secondary")
-  document.getElementById("sendChatMessage").style.color = "white";
-  
-  document.getElementById("textMessageContent").classList.add("bg-dark")
-  document.getElementById("textMessageContent").style.color = "white";
-  
-  const linki = document.getElementsByClassName("nav-link");
-  for(let i = 0; i < linki.length; i++){
-	linki[i].style.color = "white";
-  }
-  
-  const linki2 = document.getElementsByClassName("navbar-brand");
-  for(let i = 0; i < linki2.length; i++){
-	linki2[i].style.color = "white";
-  }
-
-  const borderList_switch = document.getElementsByClassName("borderList");
-  while(borderList_switch.length > 0) {
-    borderList_switch[0].classList.add("borderList-black");
-	borderList_switch[0].classList.remove("borderList");
-  }
-  
-  const bg_switch = document.getElementsByClassName("bg-light");
-  while(bg_switch.length > 0) {
-    bg_switch[0].classList.add("bg-dark");
-	bg_switch[0].classList.remove("bg-light");
-  }
-  
-  const grad_switch = document.getElementsByClassName("grad");
-  while(grad_switch.length > 0) {
-    grad_switch[0].classList.add("grad-dark");
-	grad_switch[0].classList.remove("grad");
-  }
-}
-</script>
 <script> 
     const groupId = '<%-groupId%>'; 
     const userName = '<%- currentUser.name%>';
     const userLastName = '<%- currentUser.lastName%>';
     const currentUserId = '<%- currentUser._id%>';
-    const profilePic = '<%- currentUser.imageUrl%>'
+    const profilePic = '<%- currentUser.imageUrl%>';
     const groupOwner = '<%- owner%>';
-    const lightTheme = '<%- currentUser.lightTheme%>'
+    const lightTheme = '<%- currentUser.lightTheme%>';
 </script> 
 <script src="/scripts/canvasRender.js"></script>
 <script src="/scripts/board.js"></script>

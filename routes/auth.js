@@ -14,7 +14,7 @@ router.get('/login', (req, res)=>{
 	res.render("login");
 })
 
-router.post('/login', passport.authenticate('local', {failureRedirect: '/login'}), (req, res)=>{
+router.post('/login', passport.authenticate('local', {failureRedirect: '/login', failureFlash: 'Błędny login lub hasło'}), (req, res)=>{
     req.flash('success', 'Pomyślnie zalogowano')
     res.redirect(req.session.returnTo ? req.session.returnTo : '/user/'+req.user._id);
 })
@@ -42,7 +42,11 @@ router.post('/register', upload.single('profilePic'), async(req, res)=>{
         });
     }catch (e){
         console.log(e);
-        req.flash('error', 'Błąd rejestracji użytkownika');
+        if(e.name ==='UserExistsError'){
+            req.flash('error', 'Użytkownik o podanym loginie już istnieje');
+        }else{
+            req.flash('error', 'Błąd rejestracji użytkownika');
+        }
         res.redirect('/register');
     }
 })

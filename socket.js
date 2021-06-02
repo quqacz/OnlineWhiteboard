@@ -31,28 +31,33 @@ exports = module.exports = function(io){
             socket.userId = userId; // User._id
             socket.profilePic = profilePic; 
             if(roomsData[roomId]){
-                Lesson.findOne({_id: socket.room}, function(err, lesson){
-                    if(err)
-                        console.log(err)
-                    if(socket.userId === groupOwner)
-                        socket.emit('sendCanvasToEditors', lesson.canvasContent);
-                    else
-                        socket.emit('sendCanvasToViewers', lesson.canvasContent);
-                })
+                try{
+                    Lesson.findOne({_id: socket.room}, function(err, lesson){
+                        if(err){
+                            console.log(err);
+                        }
+                        socket.emit('sendCanvas', lesson.canvasContent);
+
+                    })
+                }catch(e){
+                    console.log(e);
+                    socket.emit('sendCanvas', "");
+                }
             }else{
                 roomsData[roomId] = {};
                 roomsData[roomId].editors = {};
                 roomsData[roomId].viewers = {};
-                Lesson.findOne({_id: socket.room}, function(err, lesson){
-                    if(err)
-                        console.log(err)
-                    else{
-                        if(socket.userId === groupOwner)
-                            socket.emit('sendCanvasToEditors', lesson.canvasContent);
-                        else
-                            socket.emit('sendCanvasToViewers', lesson.canvasContent);
-                    }
-                })
+                try{
+                    Lesson.findOne({_id: socket.room}, function(err, lesson){
+                        if(err){
+                            console.log(err);
+                        }
+                        socket.emit('sendCanvas', lesson.canvasContent);
+                    })
+                }catch(e){
+                    console.log(e);
+                    socket.emit('sendCanvas', "");
+                }
             }
 
             if(socket.userId === groupOwner){
@@ -74,16 +79,20 @@ exports = module.exports = function(io){
             socket.to(socket.room).emit('sendMessage', payload, socket.name, socket.lastName, socket.profilePic);
             socket.emit('sendMessage', payload, socket.name, socket.lastName, socket.profilePic);
             
-            Lesson.findOne({_id: socket.room}, function(err, lesson){
-                if(err){
-                    console.log(err);
-                }else{
-                    const message = new Message({content: payload, ownerId: socket.userId});
-                    lesson.messages.push(message);
-                    lesson.save();
-                    message.save();
-                }
-            });
+            try{
+                Lesson.findOne({_id: socket.room}, function(err, lesson){
+                    if(err){
+                        console.log(err);
+                    }else{
+                        const message = new Message({content: payload, ownerId: socket.userId});
+                        lesson.messages.push(message);
+                        lesson.save();
+                        message.save();
+                    }
+                });
+            }catch(e){
+                console.log(e);
+            }
             
         })
     
@@ -91,18 +100,22 @@ exports = module.exports = function(io){
             let editors = Object.keys(roomsData[socket.room].editors);
             for(let i = 0; i < editors.length; i++){
                 if(editors[i] !== socket.id)
-                    io.to(editors[i]).emit('sendCanvasToEditors', canvasDataURI);
+                    io.to(editors[i]).emit('sendCanvas', canvasDataURI);
             }
     
             let viewer = Object.keys(roomsData[socket.room].viewers);
             for(let i = 0; i < viewer.length; i++){
-                io.to(viewer[i]).emit('sendCanvasToViewers', canvasDataURI);
+                io.to(viewer[i]).emit('sendCanvas', canvasDataURI);
             }
-    
-            Lesson.updateOne({_id: socket.room}, {canvasContent: canvasDataURI}, function(err, doc){
+            
+            try{
+                Lesson.updateOne({_id: socket.room}, {canvasContent: canvasDataURI}, function(err, doc){
                 if(err)
                     console.log(err);
-            })
+                })
+            }catch(e){
+                console.log(e);
+            }
         })
 
         socket.on('giveDrawingPer', (id, name, lastName)=>{
@@ -145,5 +158,12 @@ exports = module.exports = function(io){
             })
         })
 
+        socket.on('sendLastPoints', (point1, point2)=>{
+            socket.to(socket.room).emit('sendLastPoints', point1, point2);
+        })
+
+        socket.on('pushNewPath', ()=>{
+            socket.to(socket.room).emit('pushNewPath');
+        })
     });
 }

@@ -53,13 +53,14 @@ socket.on('sendMessage', (payload, name, lastName, profilePic)=>{
 		
 	const sender = document.createElement('div');
 	sender.classList.add('d-flex');
-	sender.style.height = "50%";
 	sender.textContent = `${name} ${lastName}`;
 
 	const message = document.createElement('div');
 	message.classList.add('d-flex');
-	message.style.height = "50%";
+	message.classList.add('text-break');
 	message.textContent = payload;
+	message.style.height = "50%";
+	
 		
 	dataContent.appendChild(sender);
 	dataContent.appendChild(message);
@@ -72,22 +73,7 @@ socket.on('sendMessage', (payload, name, lastName, profilePic)=>{
 })
 
 
-socket.on('sendCanvasToViewers', (jsonObject)=>{
-    let content ='';
-    if(jsonObject.length !== 0){
-        content = JSON.parse(jsonObject);
-        canvasContent.lines = content.lines;
-        canvasContent.Lines = content.Lines;
-        canvasContent.rects = content.rects;
-        canvasContent.ellipses = content.ellipses;
-        canvasContent.tmpLine = content.tmpLine;
-        canvasContent.tmpRect = content.tmpRect;
-        canvasContent.tmpEllipse = content.tmpEllipse;
-        redrawCanvas(content);
-    }
-})
-
-socket.on('sendCanvasToEditors', (jsonObject)=>{
+socket.on('sendCanvas', (jsonObject)=>{
     let content ='';
     if(jsonObject.length !== 0){
         content = JSON.parse(jsonObject);
@@ -124,6 +110,15 @@ socket.on('forceRemove', ()=>{
     redirect.click();
 })
 
+socket.on('sendLastPoints', (point1, point2)=>{
+	canvasContent.lines[canvasContent.lines.length - 1].push(point2);
+	renderLine({baseX: point1.x, baseY: point1.y, x: point2.x, y: point2.y, size: point1.size, color: point1.size})
+})
+
+socket.on('pushNewPath', ()=>{
+	canvasContent.lines.push([]);
+})
+
 function sendMessage(){
     const payload = textMessageContent.value;
 	if(payload.length > 0){
@@ -135,18 +130,6 @@ function sendMessage(){
 function sendCanvasContent(){
     let canvasShapes = JSON.stringify(canvasContent);
     socket.emit('sendCanvas', canvasShapes);
-}
-
-function drawFromBase64(URI){
-    if(URI.length === 0) return;
-    
-    let data = JSON.parse(URI);
-    let image = new Image();
-    image.onload = function () {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
-    }
-    image.src = data.image;
 }
 
 function fillActiveUserData(){
@@ -286,4 +269,16 @@ function fillViewersData(){
         }
         boardUsers.appendChild(userFrame);
     }
+}
+
+function sendLastPoint(){
+	let lastPath = canvasContent.lines[canvasContent.lines.length - 1];
+	let previousPoint = lastPath[lastPath.length - 2];
+	let lastPoint = lastPath[lastPath.length - 1];
+	console.log(previousPoint, lastPoint);
+	socket.emit('sendLastPoints', previousPoint, lastPoint);
+}
+
+function pushNewPath(){
+	socket.emit('pushNewPath');
 }
