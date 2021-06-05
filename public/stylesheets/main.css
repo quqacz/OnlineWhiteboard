@@ -121,6 +121,11 @@
     background-color: #2F3242;
 }
 
+.profilowe{
+	width: 200px;
+	height: 200px;
+}
+
 svg {
     position: absolute;
     top: 50%;
