@@ -1,13 +1,13 @@
 const canvas = document.querySelector('#canvas');
 const ctx = canvas.getContext('2d');
 
-const wyczysc = document.querySelector('#wyczysc');
+const clear = document.querySelector('#clear');
 
-const gumka = document.querySelector('#gumka');
-const rysik = document.querySelector('#rysik');
-const linia = document.querySelector('#linia');
-const prostokat = document.querySelector('#prostokat');
-const elipsa = document.querySelector('#elipsa');
+const rubber = document.querySelector('#rubber');
+const path = document.querySelector('#path');
+const line = document.querySelector('#line');
+const rect = document.querySelector('#rect');
+const ellipse = document.querySelector('#ellipse');
 
 const lineColorPicker = document.querySelector('#lineColor');
 const lineWidth = document.querySelector('#lineWidth');
@@ -22,7 +22,7 @@ const sendMessageButton = document.querySelector('#sendChatMessage');
 const textMessageContent = document.querySelector('#textMessageContent');
 const chatBoxMessages = document.querySelector('#chatBoxMessages');
 
-const toolbarControls = [gumka, rysik, linia, prostokat, elipsa];
+const toolbarControls = [rubber, path, line, rect, ellipse];
 const sidePanelControls = [uczestnicy, czat];
 
 
@@ -61,41 +61,41 @@ let drawing = false;
 
 let lastCanvasURI = '';
 
-gumka.addEventListener('click', ()=>{
+rubber.addEventListener('click', ()=>{
     settings.tool = 'GUMKA';
     removeStyle(toolbarControls, "active")
-    gumka.classList.add('active');
+    rubber.classList.add('active');
 })
 
-rysik.addEventListener('click', ()=>{
+path.addEventListener('click', ()=>{
     settings.tool = 'RYSIK';
     removeStyle(toolbarControls, "active")
-    rysik.classList.add('active');
+    path.classList.add('active');
     redrawCanvas(canvasContent);
 })
 
-linia.addEventListener('click', ()=>{
+line.addEventListener('click', ()=>{
     settings.tool = 'LINIA';
     removeStyle(toolbarControls, "active")
-    linia.classList.add('active');
+    line.classList.add('active');
     redrawCanvas(canvasContent);
 })
 
-prostokat.addEventListener('click', ()=>{
+rect.addEventListener('click', ()=>{
     settings.tool = 'PROSTOKAT';
     removeStyle(toolbarControls, "active")
-    prostokat.classList.add('active');
+    rect.classList.add('active');
     redrawCanvas(canvasContent);
 })
 
-elipsa.addEventListener('click', ()=>{
+ellipse.addEventListener('click', ()=>{
     settings.tool = 'ELIPSA';
     removeStyle(toolbarControls, "active")
-    elipsa.classList.add('active');
+    ellipse.classList.add('active');
     redrawCanvas(canvasContent);
 })
 
-wyczysc.addEventListener('click', ()=>{
+clear.addEventListener('click', ()=>{
     canvasContent.lines.length = 0;
     canvasContent.Lines.length = 0;
     canvasContent.rects.length = 0;
