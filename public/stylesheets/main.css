@@ -64,7 +64,7 @@
 }
 
 .borderHighlightRound{
-    border: 1px solid silver;
+  border: 1px solid silver;
 	border-radius: 8px;
 }
 
@@ -102,11 +102,11 @@
 }
 
 .chatBoxMessagesHeight{
-    height: 90%;
+    height: calc(100% - 5em);
 }
 
 .chatBoxHeight{
-    height: 10%;
+    height: 5em;
 }
 
 .biedaHidden{
@@ -208,25 +208,25 @@ svg {
     }
   }
 
-  .mainPageAlert{
-    padding-top: 1rem;
-  }
-  .mainPageAlert div div{
-    margin-bottom: 0;
-  }
+.mainPageAlert{
+  padding-top: 1rem;
+}
+.mainPageAlert div div{
+  margin-bottom: 0;
+}
 
-  .footer{
-    padding: .5rem;
-    color: #000000;
-  }
+.footer{
+  padding: .5rem;
+  color: #000000;
+}
 
-  .settingsControls{
-    padding: 6px 12px;
-  }
+.settingsControls{
+  padding: 6px 12px;
+}
 
-  .settingsControls input{
-    border: none;
-  }
+.settingsControls input{
+  border: none;
+}
 
 .validateInfo{
 	color: red;
