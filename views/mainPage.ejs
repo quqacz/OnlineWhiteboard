@@ -1,15 +1,13 @@
 <%- include ('partials/header') %>
 <%- include ('partials/navbar') %>	
 
-
-<!-- Jeżeli tło miałoby być ciemniejsze, do ostatniego diva od tekstu wrzucić bg-light -->
 <%if(currentUser != undefined){%>
 <%if(currentUser.lightTheme){%>
 <div class="grad-anim" id="bod">
 <%} else {%>
 <div class="grad-anim-dark" id="bod2">
 <%};%>
-<%};%><!-- Utworzony na siłę div, żeby success/error wyglądał bardziej estetycznie -->
+<%};%>
   <div class="grad-anim mainPageAlert">
     <div class="container">
       <%- include ('partials/success') %>
@@ -21,8 +19,8 @@
     
 	<div class="container p-3 borderList bg-light">
 	  <div class="row justify-content-md-center">
-		<div class="col col-lg-5 d-flex justify-content-center align-items-center"> <!-- zdjęcie tymczasowe -->
-		  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Paint.NET_Gui_v.4.0.21_%28Windows_10%29.png/1200px-Paint.NET_Gui_v.4.0.21_%28Windows_10%29.png" class="img-fluid" >
+		<div class="col col-lg-5 d-flex justify-content-center align-items-center"> 
+		  <img src="https://cdn.discordapp.com/attachments/691557307896692737/851762258648236042/MainImage.PNG" class="img-fluid" alt="Prezentacja tablicy" >
 		</div>
 		<div class="col-lg-3">
 		  
